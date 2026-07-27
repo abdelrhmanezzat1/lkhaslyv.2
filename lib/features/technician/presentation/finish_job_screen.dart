@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+// Phase 3.3: repository providers now live in the central DI bridge.
+import 'package:flutter_application_1/core/di/service_locator_provider.dart';
+import 'package:flutter_application_1/core/router/app_routes.dart';
+import 'package:flutter_application_1/core/theme/app_colors.dart';
+import 'package:flutter_application_1/core/theme/app_spacing.dart';
+import 'package:flutter_application_1/features/technician/models/job_status.dart';
+import 'package:flutter_application_1/features/technician/models/technician_request.dart';
+import 'package:flutter_application_1/shared/widgets/app_button.dart';
+import 'package:flutter_application_1/shared/widgets/app_card.dart';
+import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
+import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_application_1/core/router/app_routes.dart';
-import 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart';
-import 'package:flutter_application_1/features/technician/models/technician_request.dart';
-import 'package:flutter_application_1/features/technician/models/job_status.dart';
-import 'package:flutter_application_1/shared/widgets/app_card.dart';
-import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
-import 'package:flutter_application_1/shared/widgets/app_button.dart';
-import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
-import 'package:flutter_application_1/core/theme/app_spacing.dart';
-import 'package:flutter_application_1/core/theme/app_colors.dart';
 
 /// Screen for finishing a job with notes and amount.
 class FinishJobScreen extends ConsumerStatefulWidget {
-  final String requestId;
 
   const FinishJobScreen({super.key, required this.requestId});
+  final String requestId;
 
   @override
   ConsumerState<FinishJobScreen> createState() => _FinishJobScreenState();
@@ -123,7 +124,7 @@ class _FinishJobScreenState extends ConsumerState<FinishJobScreen> {
               child: AppTextField(
                 controller: _amountController,
                 hintText: 'Enter total amount',
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
             ),
             const SizedBox(height: AppSpacing.xl),

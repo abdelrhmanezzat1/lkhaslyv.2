@@ -1,21 +1,22 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// Phase 3.3: location repository provider moved to the central DI bridge.
+import 'package:flutter_application_1/core/di/service_locator_provider.dart';
+import 'package:flutter_application_1/core/theme/app_spacing.dart';
+import 'package:flutter_application_1/features/_shared/domain/entities/order.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_application_1/features/auth/controllers/registration_controller.dart';
-import 'package:flutter_application_1/features/auth/domain/repositories/auth_repository.dart';
-import 'package:flutter_application_1/core/di/service_locator.dart';
-import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_badge.dart';
-import 'package:flutter_application_1/shared/widgets/app_loader.dart';
-import 'package:flutter_application_1/shared/widgets/app_empty_state.dart';
-import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/app_button.dart';
-import 'package:flutter_application_1/core/theme/app_spacing.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_application_1/shared/widgets/app_card.dart';
+import 'package:flutter_application_1/shared/widgets/app_empty_state.dart';
+import 'package:flutter_application_1/shared/widgets/app_loader.dart';
+import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TechnicianHomeScreen extends ConsumerStatefulWidget {
   const TechnicianHomeScreen({super.key});
@@ -26,7 +27,7 @@ class TechnicianHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _TechnicianHomeScreenState extends ConsumerState<TechnicianHomeScreen> {
-  List<Map<String, dynamic>> _orders = [];
+  List<Order> _orders = const <Order>[];
   bool _isLoading = true;
   StreamSubscription? _realtimeSubscription;
   Timer? _locationTimer;
@@ -55,8 +56,8 @@ class _TechnicianHomeScreenState extends ConsumerState<TechnicianHomeScreen> {
       if (userType != 'technician') return;
 
       try {
-        final authRepository = sl<AuthRepository>();
-        final hasAccepted = await authRepository.hasAcceptedOrders(
+        final ordersRepository = ref.read(ordersRepositoryProvider);
+        final hasAccepted = await ordersRepository.hasAcceptedOrders(
           technicianId: user.id,
         );
         if (!hasAccepted || !mounted) return;
@@ -67,7 +68,10 @@ class _TechnicianHomeScreenState extends ConsumerState<TechnicianHomeScreen> {
 
         if (!mounted) return;
 
-        await authRepository.updateTechnicianLocation(
+        // Phase 2.5: technician live-location moved to TechnicianLocationRepository.
+        final locationRepository =
+            ref.read(technicianLocationRepositoryProvider);
+        await locationRepository.updateLocation(
           technicianId: user.id,
           latitude: position.latitude,
           longitude: position.longitude,
@@ -113,12 +117,12 @@ class _TechnicianHomeScreenState extends ConsumerState<TechnicianHomeScreen> {
     }
   }
 
-  Future<void> _acceptOrder(Map<String, dynamic> order) async {
+  Future<void> _acceptOrder(Order order) async {
     final user = ref.read(authStateChangesProvider).valueOrNull;
     if (user == null) return;
 
     final fullName = user.userMetadata?['full_name'] as String? ?? 'Technician';
-    final orderId = order['id'].toString();
+    final orderId = order.id;
 
     try {
       await ref
@@ -145,7 +149,7 @@ class _TechnicianHomeScreenState extends ConsumerState<TechnicianHomeScreen> {
     if (isoString.isEmpty) return '';
     try {
       final dateTime = DateTime.parse(isoString);
-      return DateFormat('MMM d, yyyy – h:mm a').format(dateTime);
+      return DateFormat('MMM d, yyyy â€“ h:mm a').format(dateTime);
     } catch (_) {
       return isoString;
     }
@@ -208,15 +212,19 @@ class _TechnicianHomeScreenState extends ConsumerState<TechnicianHomeScreen> {
             itemCount: _orders.length,
             itemBuilder: (context, index) {
               final order = _orders[index];
-              final serviceType = order['service_type'] as String? ?? 'Unknown';
-              final description = order['description'] as String? ?? '';
-              final createdAt = order['created_at'] as String? ?? '';
-              final carInfo = order['car_info'] as Map<String, dynamic>?;
-              final brand = carInfo?['brand'] as String? ?? '';
-              final model = carInfo?['model'] as String? ?? '';
-              final vehicleName = brand.isNotEmpty ? '$brand $model' : null;
-              final latitude = order['latitude'] as double?;
-              final longitude = order['longitude'] as double?;
+              final serviceType =
+                  order.serviceType.isEmpty ? 'Unknown' : order.serviceType;
+              final description = order.description;
+              final createdAt = order.createdAt.toIso8601String();
+              final carInfo = order.carInfo;
+              final carType = carInfo?['car_type'] as String? ?? '';
+              final carModel = carInfo?['car_model'] as String? ?? '';
+              final vehicleName = carType.isNotEmpty
+                  ? '$carType $carModel'
+                  : null;
+              final latitude = order.latitude;
+              final longitude = order.longitude;
+              final distance = (carInfo?['distance'] as num?)?.toDouble();
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -224,121 +232,121 @@ class _TechnicianHomeScreenState extends ConsumerState<TechnicianHomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                        // Service type header
+                      // Service type header
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              serviceType,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          const AppBadge(
+                            label: 'Pending',
+                            backgroundColor: Colors.orange,
+                            size: AppBadgeSize.small,
+                          ),
+                        ],
+                      ),
+                      if (description.isNotEmpty) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          description,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Colors.grey.shade600),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                      const SizedBox(height: AppSpacing.sm),
+                      // Car info
+                      if (vehicleName != null)
                         Row(
                           children: [
+                            const Icon(
+                              Icons.directions_car,
+                              size: 16,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                serviceType,
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.w600),
+                                vehicleName,
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(color: Colors.grey),
                               ),
-                            ),
-                            AppBadge(
-                              label: 'Pending',
-                              backgroundColor: Colors.orange,
-                              size: AppBadgeSize.small,
                             ),
                           ],
                         ),
-                        if (description.isNotEmpty) ...[
-                          const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            description,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(color: Colors.grey.shade600),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                        const SizedBox(height: AppSpacing.sm),
-                        // Car info
-                        if (vehicleName != null)
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.directions_car,
-                                  size: 16,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    vehicleName,
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(color: Colors.grey),
-                                  ),
-                                ),
-                              ],
+                      const SizedBox(height: AppSpacing.xs),
+                      // Client location
+                      if (latitude != 0 && longitude != 0)
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              size: 16,
+                              color: Colors.red,
                             ),
-                        const SizedBox(height: AppSpacing.xs),
-                        // Client location
-                        if (latitude != null && longitude != null)
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on,
-                                size: 16,
-                                color: Colors.red,
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                '${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}',
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(color: Colors.grey),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  '${latitude.toStringAsFixed(6)}, ${longitude.toStringAsFixed(6)}',
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(color: Colors.grey),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        // Distance if available
-                        if (order['distance'] != null) ...[
-                          const SizedBox(height: AppSpacing.xs),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.straighten,
-                                  size: 16,
-                                  color: Colors.blue,
-                                ),
-                                const SizedBox(width: 4),
-                                Expanded(
-                                  child: Text(
-                                    '${order['distance']}',
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(color: Colors.grey),
-                                  ),
-                                ),
-                              ],
                             ),
-                        ],
+                          ],
+                        ),
+                      // Distance if available
+                      if (distance != null) ...[
                         const SizedBox(height: AppSpacing.xs),
-                        // Created at
-                        if (createdAt.isNotEmpty)
-                          Text(
-                            _formatDateTime(createdAt),
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
-                          ),
-                        const SizedBox(height: AppSpacing.sm),
-                        // Accept button
-                        SizedBox(
-                          width: double.infinity,
-                          child: AppButton(
-                            onPressed: () => _acceptOrder(order),
-                            text: 'Accept',
-                            variant: AppButtonVariant.filled,
-                          ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.straighten,
+                              size: 16,
+                              color: Colors.blue,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                '$distance',
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(color: Colors.grey),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
+                      const SizedBox(height: AppSpacing.xs),
+                      // Created at
+                      if (createdAt.isNotEmpty)
+                        Text(
+                          _formatDateTime(createdAt),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                        ),
+                      const SizedBox(height: AppSpacing.sm),
+                      // Accept button
+                      SizedBox(
+                        width: double.infinity,
+                        child: AppButton(
+                          onPressed: () => _acceptOrder(order),
+                          text: 'Accept',
+                          variant: AppButtonVariant.filled,
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-            );
+                ),
+              );
+            },
+          );
         },
         loading: () => const Center(child: AppLoader()),
         error: (error, stack) => Center(child: Text('Error: $error')),

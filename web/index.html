@@ -31,6 +31,19 @@
 
   <title>flutter_application_1</title>
   <link rel="manifest" href="manifest.json">
+  
+  <!-- Firebase Messaging Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then((registration) => {
+          console.log('Firebase Messaging SW registered:', registration.scope);
+        })
+        .catch((error) => {
+          console.error('Firebase Messaging SW registration failed:', error);
+        });
+    }
+  </script>
 </head>
 <body>
   <!--

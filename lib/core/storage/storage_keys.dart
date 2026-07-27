@@ -5,4 +5,7 @@ class StorageKeys {
   static const String appTheme = 'app_theme';
   static const String hasSeenOnboarding = 'has_seen_onboarding';
   static const String isDarkMode = 'is_dark_mode';
+  static const String fcmToken = 'fcm_token';
+  static const String pendingNotificationPayload =
+      'pending_notification_payload';
 }

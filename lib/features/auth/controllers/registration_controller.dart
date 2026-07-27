@@ -1,7 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter_application_1/core/di/service_locator.dart';
-import 'package:flutter_application_1/features/auth/domain/repositories/auth_repository.dart';
+import 'package:flutter_application_1/core/di/service_locator_provider.dart';
+import 'package:flutter_application_1/features/_shared/domain/entities/car.dart';
+import 'package:flutter_application_1/features/_shared/domain/entities/order.dart';
+import 'package:flutter_application_1/features/_shared/domain/entities/user_profile.dart';
+import 'package:flutter_application_1/features/auth/domain/entities/registration_payload.dart';
+import 'package:flutter_application_1/features/orders/domain/usecases/accept_order_use_case.dart';
+import 'package:flutter_application_1/features/orders/domain/usecases/pay_order_use_case.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -9,10 +14,9 @@ part 'registration_controller.g.dart';
 
 /// Result of registration.
 class RegistrationResult {
+  const RegistrationResult({required this.user, required this.isTechnician});
   final User user;
   final bool isTechnician;
-
-  RegistrationResult({required this.user, required this.isTechnician});
 }
 
 @riverpod
@@ -23,6 +27,10 @@ class RegistrationController extends _$RegistrationController {
   }
 
   /// Registers a new user with full profile.
+  ///
+  /// Phase 3.4: the two-repo orchestration (auth `signUp` + profile save)
+  /// lives in `register_user_use_case.dart`. The controller just bundles
+  /// input into a typed `RegistrationPayload` and forwards it.
   Future<void> register({
     required String firstName,
     required String lastName,
@@ -31,39 +39,20 @@ class RegistrationController extends _$RegistrationController {
     required String phone,
     required String userType,
   }) async {
-    final authRepository = sl<AuthRepository>();
+    final registerUser = ref.read(registerUserUseCaseProvider);
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      print('[REG] signUpWithEmailAndPassword starting');
-      final user = await authRepository.signUpWithEmailAndPassword(
-        email: email,
-        password: password,
-        metadata: {
-          'full_name': '$firstName $lastName',
-          'first_name': firstName,
-          'last_name': lastName,
-          'phone': phone,
-          'user_type': userType,
-        },
+      final user = await registerUser(
+        RegistrationPayload(
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          phone: phone,
+          userType: userType,
+        ),
       );
-      print('[REG] signUpWithEmailAndPassword completed. user=${user?.id}');
-
-      if (user == null) {
-        print('[REG] user is null, throwing exception');
-        throw Exception('Registration failed. No user returned.');
-      }
-
-      print('[REG] Calling saveProfile for userId=${user.id}');
-      await authRepository.saveProfile(
-        userId: user.id,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phone: phone,
-        userType: userType,
-      );
-      print('[REG] saveProfile completed');
 
       return RegistrationResult(
         user: user,
@@ -81,12 +70,12 @@ class RegistrationController extends _$RegistrationController {
     String? carYear,
     String? color,
   }) async {
-    final authRepository = sl<AuthRepository>();
+    final carsRepository = ref.read(carsRepositoryProvider);
     final currentResult = state.value;
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      await authRepository.saveCar(
+      await carsRepository.saveCar(
         userId: userId,
         carType: carType,
         carModel: carModel,
@@ -108,11 +97,11 @@ class RegistrationController extends _$RegistrationController {
     required double latitude,
     required double longitude,
   }) async {
-    final authRepository = sl<AuthRepository>();
+    final ordersRepository = ref.read(ordersRepositoryProvider);
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      await authRepository.createOrder(
+      await ordersRepository.createOrder(
         clientId: clientId,
         carId: carId,
         serviceType: serviceType,
@@ -126,43 +115,47 @@ class RegistrationController extends _$RegistrationController {
   }
 
   /// Gets cars for the current user.
-  Future<List<Map<String, dynamic>>> getCars(String userId) async {
-    final authRepository = sl<AuthRepository>();
-    return authRepository.getCars(userId: userId);
+  Future<List<Car>> getCars(String userId) async {
+    final carsRepository = ref.read(carsRepositoryProvider);
+    return carsRepository.getCars(userId: userId);
   }
 
   /// Gets orders for the current user.
-  Future<List<Map<String, dynamic>>> getOrders(String userId) async {
-    final authRepository = sl<AuthRepository>();
-    return authRepository.getOrders(userId: userId);
+  Future<List<Order>> getOrders(String userId) async {
+    final ordersRepository = ref.read(ordersRepositoryProvider);
+    return ordersRepository.getClientOrders(clientId: userId);
   }
 
   /// Gets a user profile by user ID.
-  Future<Map<String, dynamic>?> getProfile(String userId) async {
-    final authRepository = sl<AuthRepository>();
-    return authRepository.getProfile(userId: userId);
+  Future<UserProfile?> getProfile(String userId) async {
+    final profileRepository = ref.read(profileRepositoryProvider);
+    return profileRepository.getProfile(userId);
   }
 
   /// Gets all pending orders for technicians.
-  Future<List<Map<String, dynamic>>> getPendingOrders() async {
-    final authRepository = sl<AuthRepository>();
-    return authRepository.getPendingOrders();
+  Future<List<Order>> getPendingOrders() async {
+    final ordersRepository = ref.read(ordersRepositoryProvider);
+    return ordersRepository.getPendingOrders();
   }
 
   /// Technician accepts a pending order.
+  ///
+  /// Phase 3.4: the underlying work lives in `accept_order_use_case.dart`.
   Future<void> acceptOrder({
     required String orderId,
     required String technicianId,
     required String technicianName,
   }) async {
-    final authRepository = sl<AuthRepository>();
+    final acceptOrder = ref.read(acceptOrderUseCaseProvider);
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      await authRepository.acceptOrder(
-        orderId: orderId,
-        technicianId: technicianId,
-        technicianName: technicianName,
+      await acceptOrder(
+        AcceptOrderCommand(
+          orderId: orderId,
+          technicianId: technicianId,
+          technicianName: technicianName,
+        ),
       );
       return state.value;
     });
@@ -170,21 +163,33 @@ class RegistrationController extends _$RegistrationController {
 
   /// Confirms completion of a finished order.
   Future<void> confirmOrderCompletion({required String orderId}) async {
-    final authRepository = sl<AuthRepository>();
+    final ordersRepository = ref.read(ordersRepositoryProvider);
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      await authRepository.confirmOrderCompletion(orderId: orderId);
+      await ordersRepository.confirmOrderCompletion(orderId: orderId);
       return state.value;
     });
   }
 
-  Future<void> payOrder({required String orderId, required String paymentMethod}) async {
-    final authRepository = sl<AuthRepository>();
+  /// Pays an order. Phase 3.4: the orchestration
+  /// (`orders.payOrder` + `technician.completeOrderAfterPayment`)
+  /// lives in `pay_order_use_case.dart`, which documents call order and
+  /// error semantics.
+  Future<void> payOrder({
+    required String orderId,
+    required String paymentMethod,
+  }) async {
+    final payOrder = ref.read(payOrderUseCaseProvider);
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      await authRepository.payOrder(orderId: orderId, paymentMethod: paymentMethod);
+      await payOrder(
+        PayOrderCommand(
+          orderId: orderId,
+          paymentMethod: paymentMethod,
+        ),
+      );
       return state.value;
     });
   }

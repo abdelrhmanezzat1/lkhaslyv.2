@@ -1,18 +1,19 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_application_1/core/di/service_locator.dart';
-import 'package:flutter_application_1/features/technician/models/technician.dart';
-import 'package:flutter_application_1/features/technician/models/technician_request.dart';
 import 'package:flutter_application_1/features/technician/models/job_status.dart';
 import 'package:flutter_application_1/features/technician/models/service_progress.dart';
+import 'package:flutter_application_1/features/technician/models/technician.dart';
+import 'package:flutter_application_1/features/technician/models/technician_request.dart';
 
-final technicianRepositoryProvider = Provider<TechnicianRepository>((ref) {
-  return sl<TechnicianRepository>();
-});
+// Phase 3.3: the Provider that used to live here has been moved to
+// `lib/core/di/service_locator_provider.dart` (see
+// `technicianRepositoryProvider`). Feature code imports it from there so
+// there is exactly one source of truth for DI.
 
 /// Abstract repository for the technician module.
 /// Provides local-only data with no backend dependency.
 abstract class TechnicianRepository {
   Technician getTechnicianProfile();
+  Future<void> loadTechnicianProfile(String userId);
+  void setTechnicianProfile(Technician technician);
   void toggleOnline();
 
   List<TechnicianRequest> getPendingRequests();
@@ -24,10 +25,14 @@ abstract class TechnicianRepository {
   Future<void> acceptRequest(String requestId);
   Future<void> rejectRequest(String requestId);
 
-  void updateRequestStatus(String requestId, JobStatus newStatus);
+  Future<void> updateRequestStatus(String requestId, JobStatus newStatus);
   ServiceProgress getProgress(String requestId);
 
-  void finishJob(String requestId, String notes, double amount);
+  Future<void> finishJob(String requestId, String notes, double amount);
+
+  Future<void> completeOrderAfterPayment(String requestId);
+
+  Future<Map<String, dynamic>?> getOrderById(String orderId);
 
   int get pendingCount;
   int get acceptedCount;

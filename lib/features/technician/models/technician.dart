@@ -1,12 +1,5 @@
 /// Represents a technician profile used locally for the technician flow.
 class Technician {
-  final String id;
-  final String name;
-  final String email;
-  final String phone;
-  final double rating;
-  int completedJobs;
-  bool isOnline;
 
   Technician({
     required this.id,
@@ -17,4 +10,11 @@ class Technician {
     this.completedJobs = 0,
     this.isOnline = true,
   });
+  final String id;
+  final String name;
+  final String email;
+  final String phone;
+  final double rating;
+  int completedJobs;
+  bool isOnline;
 }

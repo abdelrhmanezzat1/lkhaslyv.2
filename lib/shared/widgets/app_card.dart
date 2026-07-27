@@ -63,7 +63,9 @@ class AppCard extends StatelessWidget {
     );
 
     if (onTap == null) {
-      return Container(
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
         width: width,
         height: height,
         margin: margin,
@@ -75,19 +77,23 @@ class AppCard extends StatelessWidget {
       );
     }
 
-    return Container(
-      width: width,
-      height: height,
-      margin: margin,
-      decoration: decoration,
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: borderRadius ?? AppRadius.borderRadiusLg,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: padding ?? AppSpacing.paddingAllMd,
-            child: child,
+    return AnimatedScale(
+      scale: 0.98,
+      duration: const Duration(milliseconds: 150),
+      child: Container(
+        width: width,
+        height: height,
+        margin: margin,
+        decoration: decoration,
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: borderRadius ?? AppRadius.borderRadiusLg,
+          child: InkWell(
+            onTap: onTap,
+            child: Padding(
+              padding: padding ?? AppSpacing.paddingAllMd,
+              child: child,
+            ),
           ),
         ),
       ),

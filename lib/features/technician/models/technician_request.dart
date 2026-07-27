@@ -2,18 +2,6 @@ import 'job_status.dart';
 
 /// Represents a service request shown to the technician.
 class TechnicianRequest {
-  final String id;
-  final String customerName;
-  final String customerPhone;
-  final String serviceType;
-  final String vehicleName;
-  final String vehiclePlate;
-  final String description;
-  final double distanceKm;
-  final DateTime requestTime;
-  final double latitude;
-  final double longitude;
-  JobStatus status;
 
   TechnicianRequest({
     required this.id,
@@ -29,4 +17,16 @@ class TechnicianRequest {
     required this.longitude,
     this.status = JobStatus.pending,
   });
+  final String id;
+  final String customerName;
+  final String customerPhone;
+  final String serviceType;
+  final String vehicleName;
+  final String vehiclePlate;
+  final String description;
+  final double distanceKm;
+  final DateTime requestTime;
+  final double latitude;
+  final double longitude;
+  JobStatus status;
 }

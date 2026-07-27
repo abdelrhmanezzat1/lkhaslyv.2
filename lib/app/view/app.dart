@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_application_1/core/router/app_router.dart';
 import 'package:flutter_application_1/core/theme/app_theme.dart';
 import 'package:flutter_application_1/features/settings/controllers/theme_controller.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class App extends ConsumerWidget {
   const App({super.key});
@@ -15,8 +15,8 @@ class App extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Flutter Application',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       themeMode: themeMode,
       routerConfig: router,
     );

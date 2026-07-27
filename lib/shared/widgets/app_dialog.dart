@@ -25,7 +25,7 @@ class AppDialog {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         return AlertDialog(
           backgroundColor: isDark ? AppColors.surface : AppColors.lightSurface,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.borderRadiusLg),
+          shape: const RoundedRectangleBorder(borderRadius: AppRadius.borderRadiusLg),
           title: Text(
             title,
             style: AppTypography.textTheme.titleLarge?.copyWith(
@@ -78,7 +78,7 @@ class AppDialog {
       builder: (context) {
         return AlertDialog(
           backgroundColor: isDark ? AppColors.surface : AppColors.lightSurface,
-          shape: RoundedRectangleBorder(borderRadius: AppRadius.borderRadiusLg),
+          shape: const RoundedRectangleBorder(borderRadius: AppRadius.borderRadiusLg),
           title: Text(
             title,
             style: AppTypography.textTheme.titleLarge?.copyWith(

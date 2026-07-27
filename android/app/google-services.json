@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "854164328432",
+    "project_id": "phrs-94624",
+    "storage_bucket": "phrs-94624.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854164328432:android:74a286aaf4ef1d78645735",
+        "android_client_info": {
+          "package_name": "com.ikhasly.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZvw5x4lcIEVVVqoVhrrB6DbAVJ_DpRA8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
+import 'package:flutter_application_1/core/theme/app_spacing.dart';
+import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
+import 'package:flutter_application_1/features/home/presentation/widgets/home_greeting_bar.dart';
+import 'package:flutter_application_1/shared/widgets/app_app_bar.dart';
+import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
-import 'package:flutter_application_1/shared/widgets/app_card.dart';
-import 'package:flutter_application_1/shared/widgets/premium_app_bar.dart';
 import 'package:flutter_application_1/shared/widgets/fade_in.dart';
-import 'package:flutter_application_1/features/home/presentation/widgets/home_greeting_bar.dart';
-import 'package:flutter_application_1/core/theme/app_spacing.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -33,34 +33,34 @@ class HomeScreen extends ConsumerWidget {
     final serviceCategories = [
       _ServiceCategory(
         title: 'Mechanical',
-        icon: Icons.build,
+        icon: Icons.build_rounded,
         color: const Color(0xFFFF7043),
         serviceType: 'Mechanical',
       ),
       _ServiceCategory(
         title: 'Electrical',
-        icon: Icons.bolt,
+        icon: Icons.bolt_rounded,
         color: const Color(0xFFFFCA28),
         serviceType: 'Electrical',
       ),
       _ServiceCategory(
         title: 'Diagnostics',
-        icon: Icons.bug_report,
+        icon: Icons.bug_report_rounded,
         color: const Color(0xFF42A5F5),
         serviceType: 'Diagnostics',
       ),
       _ServiceCategory(
         title: 'Spare Parts',
-        icon: Icons.inventory_2,
+        icon: Icons.inventory_2_rounded,
         color: const Color(0xFF66BB6A),
         serviceType: 'Spare Parts',
       ),
     ];
 
     return Scaffold(
-      appBar: PremiumAppBar(
+      appBar: AppAppBar(
         leading: IconButton(
-          icon: const Icon(Icons.person),
+          icon: const Icon(Icons.person_rounded),
           onPressed: () {
             context.push(AppRoutes.profile);
           },
@@ -69,7 +69,7 @@ class HomeScreen extends ConsumerWidget {
         title: const Text('Home'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.receipt_long),
+            icon: const Icon(Icons.receipt_long_rounded),
             onPressed: () {
               context.push(AppRoutes.orders);
             },
@@ -82,7 +82,7 @@ class HomeScreen extends ConsumerWidget {
             )
           else
             IconButton(
-              icon: const Icon(Icons.logout),
+              icon: const Icon(Icons.logout_rounded),
               onPressed: () {
                 ref.read(authControllerProvider.notifier).signOut();
               },
@@ -102,32 +102,54 @@ class HomeScreen extends ConsumerWidget {
           return FadeIn(
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  HomeGreetingBar(
-                    userName: fullName,
-                    onAvatarTap: () {
-                      context.push(AppRoutes.profile);
-                    },
-                    hasUnreadNotifications: true,
-                    onNotificationTap: () {
-                      AppSnackbar.showSuccess(
-                        context,
-                        message: 'Notifications coming soon.',
-                      );
-                    },
-                  ),
+                  // Greeting Section
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
                     ),
-                    child: Text(
-                      'What service do you need?',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    child: HomeGreetingBar(
+                      userName: fullName,
+                      onAvatarTap: () {
+                        context.push(AppRoutes.profile);
+                      },
+                      hasUnreadNotifications: true,
+                      onNotificationTap: () {
+                        AppSnackbar.showSuccess(
+                          context,
+                          message: 'Notifications coming soon.',
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                  // Section Header
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.auto_awesome_rounded,
+                          size: 24,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'What service do you need?',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: -0.5,
+                              ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
+                  // Service Grid
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
@@ -140,67 +162,105 @@ class HomeScreen extends ConsumerWidget {
                             crossAxisCount: 2,
                             mainAxisSpacing: AppSpacing.md,
                             crossAxisSpacing: AppSpacing.md,
-                            childAspectRatio: 1.1,
+                            childAspectRatio: 1.15,
                           ),
                       itemCount: serviceCategories.length,
                       itemBuilder: (context, index) {
                         final category = serviceCategories[index];
-                        return AppCard(
-                          onTap: () {
-                            context.push(
-                              AppRoutes.serviceRequest,
-                              extra: category.serviceType,
-                            );
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 56,
-                                height: 56,
-                                decoration: BoxDecoration(
-                                  color: category.color.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(16),
+                        return AnimatedScale(
+                          scale: 1,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: AppCard(
+                            onTap: () {
+                              context.push(
+                                AppRoutes.serviceRequest,
+                                extra: category.serviceType,
+                              );
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    color: category.color.withValues(
+                                      alpha: 0.15,
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Icon(
+                                    category.icon,
+                                    color: category.color,
+                                    size: 28,
+                                  ),
                                 ),
-                                child: Icon(
-                                  category.icon,
-                                  color: category.color,
-                                  size: 28,
+                                const SizedBox(height: AppSpacing.sm),
+                                Text(
+                                  category.title,
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.w600),
+                                  textAlign: TextAlign.center,
                                 ),
-                              ),
-                              const SizedBox(height: AppSpacing.sm),
-                              Text(
-                                category.title,
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.w600),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       },
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xxl),
+                  // Welcome Section
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.md,
                     ),
-                    child: Text(
-                      'Welcome, $fullName!',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                    ),
-                    child: Text(
-                      email,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Theme.of(context).colorScheme.primaryContainer,
+                            Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.waving_hand_rounded,
+                                size: 28,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                'Welcome, $fullName!',
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            email,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
@@ -217,10 +277,6 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class _ServiceCategory {
-  final String title;
-  final IconData icon;
-  final Color color;
-  final String serviceType;
 
   _ServiceCategory({
     required this.title,
@@ -228,4 +284,8 @@ class _ServiceCategory {
     required this.color,
     required this.serviceType,
   });
+  final String title;
+  final IconData icon;
+  final Color color;
+  final String serviceType;
 }

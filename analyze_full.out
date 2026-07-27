@@ -1,0 +1,404 @@
+Analyzing flutter_application_1...                              
+
+warning - 'invariant_booleans' was removed in Dart '3.0.0' Try removing the reference to 'invariant_booleans' - analysis_options.yaml:50:7 - removed_lint
+warning - 'iterable_contains_unrelated_type' was removed in Dart '3.3.0' Try removing the reference to 'iterable_contains_unrelated_type' - analysis_options.yaml:51:7 - removed_lint
+warning - 'list_remove_unrelated_type' was removed in Dart '3.3.0' Try removing the reference to 'list_remove_unrelated_type' - analysis_options.yaml:55:7 - removed_lint
+warning - 'unnecessary_constructor_parameters' isn't a recognized lint rule. Try using the name of a recognized lint rule - analysis_options.yaml:82:7 - undefined_lint
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\app\view\app.dart:3:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\di\service_locator.dart:3:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\di\service_locator.dart:6:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\di\service_locator.dart:16:1 - directives_ordering
+   info - Closure should be a tearoff. Try using a tearoff rather than a closure - lib\core\di\service_locator.dart:41:49 - unnecessary_lambdas
+   info - Closure should be a tearoff. Try using a tearoff rather than a closure - lib\core\di\service_locator.dart:75:5 - unnecessary_lambdas
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\core\error\app_exception.dart:6:3 - sort_constructors_first
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\notifications\notification_service.dart:8:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\notifications\notification_service.dart:12:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\core\notifications\notification_service.dart:77:11 - sort_constructors_first
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\core\notifications\notification_service.dart:78:3 - sort_constructors_first
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\notifications\notification_service.dart:211:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\notifications\notification_service.dart:216:30 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\notifications\notification_service.dart:359:20 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\notifications\notification_service.dart:365:26 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\notifications\notification_service.dart:677:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\notifications\notification_service.dart:683:24 - prefer_const_constructors
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:5:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:7:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:11:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:14:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:18:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:19:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:23:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:24:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:25:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:27:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:28:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:29:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\router\app_router.dart:31:1 - directives_ordering
+   info - Closure should be a tearoff. Try using a tearoff rather than a closure - lib\core\router\app_router.dart:62:17 - unnecessary_lambdas
+   info - Closure should be a tearoff. Try using a tearoff rather than a closure - lib\core\router\app_router.dart:63:17 - unnecessary_lambdas
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\router\app_router.dart:157:38 - prefer_const_constructors
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\core\theme\app_colors.dart:76:2 - eol_at_end_of_file
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\core\theme\app_dimensions.dart:2:1 - directives_ordering
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:30:38 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:31:40 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:32:37 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:33:38 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:34:41 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:35:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:36:41 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:37:38 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:38:38 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:39:38 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:40:36 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:41:36 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_dimensions.dart:42:36 - prefer_int_literals
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\core\theme\app_dimensions.dart:43:2 - eol_at_end_of_file
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_motion.dart:32:49 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_motion.dart:32:59 - prefer_int_literals
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\core\theme\app_motion.dart:55:2 - eol_at_end_of_file
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:15:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:16:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:17:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:18:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:19:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:20:29 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:21:30 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:25:30 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:28:32 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:31:31 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:34:37 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_radius.dart:37:32 - prefer_int_literals
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\core\theme\app_radius.dart:82:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\core\theme\app_shadows.dart:141:2 - eol_at_end_of_file
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:11:29 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:12:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:13:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:14:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:15:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:16:28 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:17:29 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:18:30 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:19:30 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:20:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:23:32 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:24:32 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:25:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:26:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:27:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:28:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:29:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:30:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:31:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:32:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:35:40 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:36:38 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:84:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:85:33 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\core\theme\app_spacing.dart:86:36 - prefer_int_literals
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\core\theme\app_spacing.dart:87:2 - eol_at_end_of_file
+   info - Use 'const' for final variables initialized to a constant value. Try replacing 'final' with 'const' - lib\core\theme\app_theme.dart:14:5 - prefer_const_declarations
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:76:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:80:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:83:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:92:15 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:93:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:110:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:118:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:121:34 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:128:16 - prefer_const_constructors
+   info - Use 'const' for final variables initialized to a constant value. Try replacing 'final' with 'const' - lib\core\theme\app_theme.dart:163:5 - prefer_const_declarations
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:225:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:242:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:259:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:267:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:270:34 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:277:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:319:15 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:320:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:321:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:322:20 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:323:27 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:324:23 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:345:16 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\core\theme\app_theme.dart:363:16 - prefer_const_constructors
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\core\theme\app_theme.dart:371:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\core\theme\app_typography.dart:132:2 - eol_at_end_of_file
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\_shared\domain\entities\car.dart:63:11 - sort_constructors_first
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\_shared\domain\entities\order.dart:126:11 - sort_constructors_first
+   info - The referenced name isn't visible in scope. Try adding an import for the referenced name - lib\features\_shared\domain\entities\shared_entities.dart:3:57 - comment_references
+   info - The referenced name isn't visible in scope. Try adding an import for the referenced name - lib\features\_shared\domain\entities\shared_entities.dart:4:6 - comment_references
+   info - The referenced name isn't visible in scope. Try adding an import for the referenced name - lib\features\_shared\domain\entities\shared_entities.dart:4:15 - comment_references
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\_shared\domain\entities\user_profile.dart:84:11 - sort_constructors_first
+warning - Unused import: 'package:flutter_application_1/features/auth/domain/repositories/auth_repository.dart'. Try removing the import directive - lib\features\auth\controllers\auth_controller.dart:4:8 - unused_import
+   info - Closure should be a tearoff. Try using a tearoff rather than a closure - lib\features\auth\controllers\auth_controller.dart:56:36 - unnecessary_lambdas
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\add_car_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\add_car_screen.dart:5:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\add_car_screen.dart:7:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\add_car_screen.dart:9:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\add_car_screen.dart:10:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\forgot_password_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\forgot_password_screen.dart:7:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\forgot_password_screen.dart:8:1 - directives_ordering
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\login\forgot_password_screen.dart:96:15 - prefer_const_constructors
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\auth\presentation\login\forgot_password_screen.dart:215:2 - eol_at_end_of_file
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\auth\presentation\login\glass_app_bar.dart:11:9 - sort_constructors_first
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\login_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\login_screen.dart:7:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\login_screen.dart:9:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\login_screen.dart:11:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\login_screen.dart:12:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\auth\presentation\login\login_screen.dart:265:9 - sort_constructors_first
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\register_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\register_screen.dart:7:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\register_screen.dart:8:1 - directives_ordering
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\features\auth\presentation\login\register_screen.dart:329:45 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\login\register_screen.dart:334:37 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\login\register_screen.dart:336:46 - prefer_const_constructors
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\auth\presentation\login\register_screen.dart:468:9 - sort_constructors_first
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\auth\presentation\login\register_screen.dart:537:9 - sort_constructors_first
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\auth\presentation\login\register_screen.dart:602:2 - eol_at_end_of_file
+   info - The referenced name isn't visible in scope. Try adding an import for the referenced name - lib\features\cars\data\repositories\cars_repository_impl.dart:11:13 - comment_references
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\features\cars\data\repositories\cars_repository_impl.dart:32:7 - use_null_aware_elements
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\features\cars\data\repositories\cars_repository_impl.dart:33:7 - use_null_aware_elements
+warning - Unnecessary type check; the result is always 'false'. Try correcting the type check, or removing the type check - lib\features\cars\data\repositories\cars_repository_impl.dart:54:9 - unnecessary_type_check
+warning - Dead code. Try removing the code, or fixing the code before it so that it can be reached - lib\features\cars\data\repositories\cars_repository_impl.dart:54:28 - dead_code
+warning - Unnecessary type check; the result is always 'false'. Try correcting the type check, or removing the type check - lib\features\cars\data\services\supabase_cars_service.dart:42:9 - unnecessary_type_check
+warning - Dead code. Try removing the code, or fixing the code before it so that it can be reached - lib\features\cars\data\services\supabase_cars_service.dart:42:28 - dead_code
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\home_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\home_screen.dart:5:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\home_screen.dart:8:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\home_screen.dart:10:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\home_screen.dart:11:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\home_screen.dart:12:1 - directives_ordering
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\home_screen.dart:171:34 - prefer_int_literals
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\home\presentation\home_screen.dart:285:3 - sort_constructors_first
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\map_screen.dart:11:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\home\presentation\map_screen.dart:24:9 - sort_constructors_first
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:33:30 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:126:61 - prefer_int_literals
+warning - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\features\home\presentation\map_screen.dart:264:24 - avoid_dynamic_calls
+warning - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\features\home\presentation\map_screen.dart:265:31 - avoid_dynamic_calls
+warning - Method invocation or property access on a 'dynamic' target. Try giving the target a type - lib\features\home\presentation\map_screen.dart:266:32 - avoid_dynamic_calls
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:348:47 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:356:41 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:357:20 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:367:43 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:381:37 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:511:34 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:512:30 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:513:30 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:534:27 - prefer_int_literals
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\map_screen.dart:630:38 - prefer_const_constructors
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:661:53 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:661:63 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:753:55 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\home\presentation\map_screen.dart:753:65 - prefer_int_literals
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\map_screen.dart:792:37 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\features\home\presentation\map_screen.dart:795:49 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\map_screen.dart:801:41 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\map_screen.dart:803:50 - prefer_const_constructors
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\home\presentation\order_completion_screen.dart:8:9 - sort_constructors_first
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\order_completion_screen.dart:18:15 - prefer_const_constructors
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\home\presentation\order_rating_screen.dart:8:9 - sort_constructors_first
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\order_rating_screen.dart:27:15 - prefer_const_constructors
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\home\presentation\order_tracking_screen.dart:9:9 - sort_constructors_first
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\order_tracking_screen.dart:19:15 - prefer_const_constructors
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\payment_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\payment_screen.dart:7:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\home\presentation\payment_screen.dart:12:9 - sort_constructors_first
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\payment_screen.dart:366:33 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\payment_screen.dart:405:25 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\features\home\presentation\payment_screen.dart:407:37 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\payment_screen.dart:408:29 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\payment_screen.dart:410:38 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\payment_screen.dart:416:29 - prefer_const_constructors
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\profile_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\profile_screen.dart:6:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\service_request_screen.dart:7:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\service_request_screen.dart:12:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\service_request_screen.dart:14:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\service_request_screen.dart:15:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\home\presentation\service_request_screen.dart:21:9 - sort_constructors_first
+   info - Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' - lib\features\home\presentation\service_request_screen.dart:146:13 - unawaited_futures
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\service_request_screen.dart:327:33 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\service_request_screen.dart:373:37 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\service_request_screen.dart:645:29 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\features\home\presentation\service_request_screen.dart:647:41 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\service_request_screen.dart:648:33 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\service_request_screen.dart:650:42 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\service_request_screen.dart:656:33 - prefer_const_constructors
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\technician_home_screen.dart:5:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\technician_home_screen.dart:7:1 - directives_ordering
+warning - Unused import: 'package:flutter_application_1/features/orders/domain/repositories/orders_repository.dart'. Try removing the import directive - lib\features\home\presentation\technician_home_screen.dart:8:8 - unused_import
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\technician_home_screen.dart:10:1 - directives_ordering
+warning - Unused import: 'package:flutter_application_1/features/technician/domain/repositories/technician_location_repository.dart'. Try removing the import directive - lib\features\home\presentation\technician_home_screen.dart:11:8 - unused_import
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\technician_home_screen.dart:13:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\technician_home_screen.dart:15:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\technician_home_screen.dart:17:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\technician_home_screen.dart:18:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\technician_home_screen.dart:20:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\home\presentation\technician_home_screen.dart:21:1 - directives_ordering
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\home\presentation\technician_home_screen.dart:247:27 - prefer_const_constructors
+   info - Use 'const' for final variables initialized to a constant value. Try replacing 'final' with 'const' - lib\features\home\presentation\widgets\home_greeting_bar.dart:46:5 - prefer_const_declarations
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\onboarding\presentation\onboarding_screen.dart:5:1 - directives_ordering
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\onboarding\presentation\onboarding_screen.dart:35:47 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\onboarding\presentation\onboarding_screen.dart:35:57 - prefer_int_literals
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\onboarding\presentation\onboarding_screen.dart:59:32 - prefer_const_constructors
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\onboarding\presentation\onboarding_screen.dart:71:47 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\onboarding\presentation\onboarding_screen.dart:71:57 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\onboarding\presentation\onboarding_screen.dart:93:47 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\onboarding\presentation\onboarding_screen.dart:93:57 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\onboarding\presentation\onboarding_screen.dart:114:47 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\onboarding\presentation\onboarding_screen.dart:114:57 - prefer_int_literals
+warning - Unnecessary type check; the result is always 'false'. Try correcting the type check, or removing the type check - lib\features\orders\data\repositories\orders_repository_impl.dart:69:9 - unnecessary_type_check
+warning - Dead code. Try removing the code, or fixing the code before it so that it can be reached - lib\features\orders\data\repositories\orders_repository_impl.dart:69:28 - dead_code
+warning - Unnecessary type check; the result is always 'false'. Try correcting the type check, or removing the type check - lib\features\orders\data\repositories\orders_repository_impl.dart:83:9 - unnecessary_type_check
+warning - Dead code. Try removing the code, or fixing the code before it so that it can be reached - lib\features\orders\data\repositories\orders_repository_impl.dart:83:28 - dead_code
+warning - Unnecessary type check; the result is always 'false'. Try correcting the type check, or removing the type check - lib\features\orders\data\services\supabase_orders_service.dart:64:9 - unnecessary_type_check
+warning - Dead code. Try removing the code, or fixing the code before it so that it can be reached - lib\features\orders\data\services\supabase_orders_service.dart:64:28 - dead_code
+warning - Unnecessary type check; the result is always 'false'. Try correcting the type check, or removing the type check - lib\features\orders\data\services\supabase_orders_service.dart:74:9 - unnecessary_type_check
+warning - Dead code. Try removing the code, or fixing the code before it so that it can be reached - lib\features\orders\data\services\supabase_orders_service.dart:74:28 - dead_code
+   info - The referenced name isn't visible in scope. Try adding an import for the referenced name - lib\features\orders\domain\repositories\orders_repository.dart:7:20 - comment_references
+   info - The referenced name isn't visible in scope. Try adding an import for the referenced name - lib\features\profile\data\services\supabase_profile_service.dart:10:10 - comment_references
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\splash\presentation\splash_screen.dart:22:51 - prefer_int_literals
+warning - Unused import: 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart'. Try removing the import directive - lib\features\technician\controllers\job_controller.dart:4:8 - unused_import
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\controllers\job_controller.dart:6:1 - directives_ordering
+   info - Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' - lib\features\technician\controllers\job_controller.dart:40:16 - unawaited_futures
+   info - Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' - lib\features\technician\controllers\job_controller.dart:48:16 - unawaited_futures
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\controllers\job_controller.dart:50:13 - prefer_const_constructors
+warning - Unused import: 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart'. Try removing the import directive - lib\features\technician\controllers\requests_controller.dart:4:8 - unused_import
+   info - Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' - lib\features\technician\controllers\requests_controller.dart:34:16 - unawaited_futures
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\technician\controllers\technician_controller.dart:24:3 - sort_constructors_first
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\data\repositories\technician_repository_impl.dart:6:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\technician\data\repositories\technician_repository_impl.dart:24:3 - sort_constructors_first
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\data\repositories\technician_repository_impl.dart:300:19 - prefer_int_literals
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\domain\repositories\technician_repository.dart:3:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\technician\models\service_progress.dart:13:3 - sort_constructors_first
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\technician\models\technician.dart:11:3 - sort_constructors_first
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\technician\models\technician_request.dart:18:3 - sort_constructors_first
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\accepted_request_detail_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\accepted_request_detail_screen.dart:6:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\accepted_request_detail_screen.dart:8:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\accepted_request_detail_screen.dart:12:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\accepted_request_detail_screen.dart:13:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\technician\presentation\accepted_request_detail_screen.dart:20:9 - sort_constructors_first
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\accepted_request_detail_screen.dart:83:21 - prefer_int_literals
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\accepted_request_detail_screen.dart:435:22 - prefer_const_constructors
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\technician\presentation\accepted_request_detail_screen.dart:481:2 - eol_at_end_of_file
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\accepted_request_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\accepted_request_screen.dart:6:1 - directives_ordering
+warning - Unused import: 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart'. Try removing the import directive - lib\features\technician\presentation\accepted_request_screen.dart:7:8 - unused_import
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\accepted_request_screen.dart:11:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\accepted_request_screen.dart:12:1 - directives_ordering
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\accepted_request_screen.dart:163:35 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\accepted_request_screen.dart:163:45 - prefer_int_literals
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\accepted_request_screen.dart:345:25 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\accepted_request_screen.dart:346:26 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\accepted_request_screen.dart:495:21 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\accepted_request_screen.dart:544:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\accepted_request_screen.dart:571:21 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\accepted_request_screen.dart:572:22 - prefer_const_constructors
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\completed_jobs_screen.dart:5:1 - directives_ordering
+warning - Unused import: 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart'. Try removing the import directive - lib\features\technician\presentation\completed_jobs_screen.dart:6:8 - unused_import
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\completed_jobs_screen.dart:8:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\completed_jobs_screen.dart:11:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\completed_jobs_screen.dart:12:1 - directives_ordering
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\completed_jobs_screen.dart:122:35 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\completed_jobs_screen.dart:122:45 - prefer_int_literals
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\completed_jobs_screen.dart:194:28 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\features\technician\presentation\completed_jobs_screen.dart:196:33 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\completed_jobs_screen.dart:197:25 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\completed_jobs_screen.dart:203:25 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\completed_jobs_screen.dart:205:34 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\completed_jobs_screen.dart:453:21 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\completed_jobs_screen.dart:502:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\completed_jobs_screen.dart:529:21 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\completed_jobs_screen.dart:530:22 - prefer_const_constructors
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\finish_job_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\finish_job_screen.dart:6:1 - directives_ordering
+warning - Unused import: 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart'. Try removing the import directive - lib\features\technician\presentation\finish_job_screen.dart:7:8 - unused_import
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\finish_job_screen.dart:9:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\finish_job_screen.dart:12:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\finish_job_screen.dart:14:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\finish_job_screen.dart:15:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\technician\presentation\finish_job_screen.dart:21:9 - sort_constructors_first
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\finish_job_screen.dart:128:31 - prefer_const_constructors
+   info - Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' - lib\features\technician\presentation\finish_job_screen.dart:169:18 - unawaited_futures
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\incoming_requests_screen.dart:3:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\incoming_requests_screen.dart:8:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\incoming_requests_screen.dart:9:1 - directives_ordering
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\incoming_requests_screen.dart:166:35 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\incoming_requests_screen.dart:166:45 - prefer_int_literals
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\incoming_requests_screen.dart:316:29 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\incoming_requests_screen.dart:317:30 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\incoming_requests_screen.dart:320:31 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\incoming_requests_screen.dart:332:29 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\incoming_requests_screen.dart:333:30 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\incoming_requests_screen.dart:484:21 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\incoming_requests_screen.dart:533:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\incoming_requests_screen.dart:560:21 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\technician\presentation\incoming_requests_screen.dart:561:22 - prefer_const_constructors
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\live_status_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\live_status_screen.dart:6:1 - directives_ordering
+warning - Unused import: 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart'. Try removing the import directive - lib\features\technician\presentation\live_status_screen.dart:7:8 - unused_import
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\live_status_screen.dart:9:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\live_status_screen.dart:12:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\live_status_screen.dart:14:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\live_status_screen.dart:15:1 - directives_ordering
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\features\technician\presentation\live_status_screen.dart:35:9 - sort_constructors_first
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\technician_home_screen.dart:4:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\technician_home_screen.dart:6:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\technician_home_screen.dart:8:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\technician_home_screen.dart:9:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\technician\presentation\technician_home_screen.dart:10:1 - directives_ordering
+   info - Closure should be a tearoff. Try using a tearoff rather than a closure - lib\features\technician\presentation\technician_home_screen.dart:79:29 - unnecessary_lambdas
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\technician_home_screen.dart:402:35 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\technician_home_screen.dart:402:45 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\technician_home_screen.dart:490:35 - prefer_int_literals
+   info - Unnecessary use of a 'double' literal. Try using an 'int' literal - lib\features\technician\presentation\technician_home_screen.dart:490:45 - prefer_int_literals
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\firebase_options.dart:47:2 - eol_at_end_of_file
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\main.dart:8:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\main.dart:15:1 - directives_ordering
+   info - Unnecessary use of double quotes. Try using single quotes unless the string contains single quotes - lib\main.dart:55:16 - prefer_single_quotes
+   info - Unnecessary use of double quotes. Try using single quotes unless the string contains single quotes - lib\main.dart:68:19 - prefer_single_quotes
+   info - Unnecessary use of double quotes. Try using single quotes unless the string contains single quotes - lib\main.dart:81:31 - prefer_single_quotes
+   info - Unnecessary use of double quotes. Try using single quotes unless the string contains single quotes - lib\main.dart:86:21 - prefer_single_quotes
+   info - Unnecessary use of double quotes. Try using single quotes unless the string contains single quotes - lib\main.dart:107:21 - prefer_single_quotes
+   info - Local variables should be final. Try making the variable final - lib\shared\widgets\app_app_bar.dart:66:5 - prefer_final_locals
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\shared\widgets\app_dialog.dart:28:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\shared\widgets\app_dialog.dart:81:18 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\shared\widgets\app_dropdown.dart:48:17 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\shared\widgets\app_dropdown.dart:49:24 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\shared\widgets\app_dropdown.dart:50:24 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\shared\widgets\app_dropdown.dart:51:25 - prefer_const_constructors
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_dropdown.dart:55:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_glass_panel.dart:52:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_map_card.dart:98:2 - eol_at_end_of_file
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\shared\widgets\app_order_card.dart:86:41 - prefer_const_constructors
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_order_card.dart:131:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_segment.dart:70:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_shimmer.dart:78:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_surface.dart:101:2 - eol_at_end_of_file
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\shared\widgets\app_technician_card.dart:105:31 - prefer_const_constructors
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_tile.dart:88:2 - eol_at_end_of_file
+   info - Constructor declarations should be before non-constructor declarations. Try moving the constructor declaration before all other members - lib\shared\widgets\error_screen.dart:5:9 - sort_constructors_first
+   info - Sort directive sections alphabetically. Try sorting the directives - test\features\_shared\entity_mappers_test.dart:3:1 - directives_ordering
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - test\features\_shared\entity_mappers_test.dart:57:19 - prefer_const_constructors
+   info - Sort directive sections alphabetically. Try sorting the directives - test\features\auth\auth_repository_test.dart:10:1 - directives_ordering
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:57:16 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:68:16 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:79:16 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:91:38 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:95:38 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:99:33 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:103:38 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:107:16 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:115:16 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:119:16 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:126:16 - override_on_non_overriding_member
+warning - The method doesn't override an inherited method. Try updating this class to match the superclass, or removing the override annotation - test\features\auth\auth_repository_test.dart:134:16 - override_on_non_overriding_member
+   info - Sort directive sections alphabetically. Try sorting the directives - test\widget_test.dart:10:1 - directives_ordering
+   info - Sort directive sections alphabetically. Try sorting the directives - test\widget_test.dart:13:1 - directives_ordering
+   info - Unnecessary use of double quotes. Try using single quotes unless the string contains single quotes - test\widget_test.dart:23:33 - prefer_single_quotes
+
+400 issues found. (ran in 64.4s)

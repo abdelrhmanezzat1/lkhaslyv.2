@@ -1,0 +1,79 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_application_1/core/theme/app_colors.dart';
+import 'package:flutter_application_1/core/theme/app_radius.dart';
+import 'package:flutter_application_1/core/theme/app_shadows.dart';
+import 'package:flutter_application_1/core/theme/app_spacing.dart';
+
+/// A floating toolbar used above maps and content.
+class AppToolbar extends StatelessWidget {
+  const AppToolbar({
+    super.key,
+    required this.children,
+    this.padding,
+    this.backgroundColor,
+  });
+
+  final List<Widget> children;
+  final EdgeInsetsGeometry? padding;
+  final Color? backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color bgColor = backgroundColor ?? (isDark ? AppColors.surface : AppColors.lightSurface);
+
+    return Container(
+      padding: padding ??
+          const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: AppRadius.buttonRadius,
+        boxShadow: AppShadows.elevatedFor(context),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      ),
+    );
+  }
+}
+
+/// A circular toolbar action button.
+class AppToolbarAction extends StatelessWidget {
+  const AppToolbarAction({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+    this.isSelected = false,
+  });
+
+  final IconData icon;
+  final VoidCallback? onPressed;
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primaryContainer : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Icon(
+          icon,
+          size: 20,
+          color: isSelected
+              ? AppColors.primary
+              : (isDark ? AppColors.onSurface : AppColors.onLightSurface),
+        ),
+      ),
+    );
+  }
+}

@@ -154,21 +154,27 @@ class _FilledButton extends StatelessWidget {
 
     return SizedBox(
       width: isExpanded ? double.infinity : null,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: isDark ? AppColors.onPrimary : Colors.white,
-          disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
-          disabledForegroundColor: (isDark ? AppColors.onPrimary : Colors.white)
-              .withValues(alpha: 0.6),
-          minimumSize: Size(isExpanded ? double.infinity : 0, minimumHeight),
-          padding: padding ?? AppSpacing.paddingHorizontalMd,
-          shape: RoundedRectangleBorder(borderRadius: borderRadius),
-          elevation: 0,
-          textStyle: AppTypography.buttonTextStyle,
+      child: AnimatedScale(
+        scale: onPressed == null ? 1.0 : 0.97,
+        duration: const Duration(milliseconds: 120),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: isDark ? AppColors.onPrimary : Colors.white,
+            disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
+            disabledForegroundColor:
+                (isDark ? AppColors.onPrimary : Colors.white).withValues(
+                  alpha: 0.6,
+                ),
+            minimumSize: Size(isExpanded ? double.infinity : 0, minimumHeight),
+            padding: padding ?? AppSpacing.paddingHorizontalMd,
+            shape: RoundedRectangleBorder(borderRadius: borderRadius),
+            elevation: 0,
+            textStyle: AppTypography.buttonTextStyle,
+          ),
+          child: child,
         ),
-        child: child,
       ),
     );
   }

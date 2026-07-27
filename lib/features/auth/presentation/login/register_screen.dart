@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_application_1/features/auth/controllers/registration_controller.dart';
-import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
-import 'package:flutter_application_1/shared/widgets/app_button.dart';
-import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
+
+import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
-import 'package:flutter_application_1/core/router/app_routes.dart';
+import 'package:flutter_application_1/features/auth/controllers/registration_controller.dart';
+import 'package:flutter_application_1/shared/widgets/app_button.dart';
+import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
+import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -176,31 +177,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: AppSpacing.sm),
-              Row(
-                children: [
-                  Expanded(
-                    child: RadioListTile<String>(
-                      value: 'client',
-                      groupValue: _userType,
-                      onChanged: (value) {
-                        setState(() => _userType = value!);
-                      },
-                      title: const Text('Client'),
-                      activeColor: AppColors.primary,
+              RadioGroup<String>(
+                groupValue: _userType,
+                onChanged: (value) => setState(() => _userType = value!),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RadioListTile<String>(
+                        value: 'client',
+                        title: const Text('Client'),
+                        activeColor: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: RadioListTile<String>(
-                      value: 'technician',
-                      groupValue: _userType,
-                      onChanged: (value) {
-                        setState(() => _userType = value!);
-                      },
-                      title: const Text('Technician'),
-                      activeColor: AppColors.primary,
+                    Expanded(
+                      child: RadioListTile<String>(
+                        value: 'technician',
+                        title: const Text('Technician'),
+                        activeColor: AppColors.primary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: AppSpacing.lg),
               AppButton(

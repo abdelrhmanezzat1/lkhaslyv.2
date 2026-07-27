@@ -60,7 +60,9 @@ class _AppSkeletonState extends State<AppSkeleton>
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
-        final Color animatedColor = baseColor.withValues(alpha: _animation.value);
+        final Color animatedColor = baseColor.withValues(
+          alpha: _animation.value,
+        );
         return Container(
           width: widget.isCircle ? widget.height : widget.width,
           height: widget.height,

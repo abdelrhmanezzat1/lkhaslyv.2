@@ -6,7 +6,7 @@ part of 'auth_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authStateChangesHash() => r'09bac817deec961c8163d1cc64dfc6ee8c62c3e5';
+String _$authStateChangesHash() => r'843eb1a621041def446e0ef856583a025a5a8e47';
 
 /// A provider that streams the authentication state of the current user.
 ///
@@ -25,7 +25,7 @@ final authStateChangesProvider = AutoDisposeStreamProvider<User?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AuthStateChangesRef = AutoDisposeStreamProviderRef<User?>;
-String _$authControllerHash() => r'445d0d3dc6c50f53dff7c9a473a0290aa4e37883';
+String _$authControllerHash() => r'2d130548260de81c50d50f5e09a3a2fcce418b12';
 
 /// Controller responsible for handling authentication actions like signing in.
 ///

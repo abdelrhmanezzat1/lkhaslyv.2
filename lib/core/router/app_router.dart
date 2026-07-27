@@ -1,31 +1,35 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
-import 'package:flutter_application_1/shared/widgets/error_screen.dart';
+import 'package:flutter_application_1/core/storage/storage_keys.dart';
+import 'package:flutter_application_1/core/storage/storage_service.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_application_1/features/auth/presentation/login/forgot_password_screen.dart';
 import 'package:flutter_application_1/features/auth/presentation/login/login_screen.dart';
 import 'package:flutter_application_1/features/auth/presentation/login/register_screen.dart';
-import 'package:flutter_application_1/features/auth/presentation/login/add_car_screen.dart';
+import 'package:flutter_application_1/features/cars/presentation/add_car_screen.dart';
 import 'package:flutter_application_1/features/home/presentation/home_screen.dart';
+import 'package:flutter_application_1/features/home/presentation/map_screen.dart' as map_screen;
 import 'package:flutter_application_1/features/home/presentation/profile_screen.dart';
-import 'package:flutter_application_1/features/home/presentation/map_screen.dart';
-import 'package:flutter_application_1/features/home/presentation/orders_screen.dart';
-import 'package:flutter_application_1/features/home/presentation/service_request_screen.dart';
-import 'package:flutter_application_1/features/home/presentation/payment_screen.dart';
+import 'package:flutter_application_1/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:flutter_application_1/features/orders/presentation/order_completion_screen.dart';
+import 'package:flutter_application_1/features/orders/presentation/order_rating_screen.dart';
+import 'package:flutter_application_1/features/orders/presentation/order_tracking_screen.dart';
+import 'package:flutter_application_1/features/orders/presentation/orders_screen.dart';
+import 'package:flutter_application_1/features/orders/presentation/payment_screen.dart';
+import 'package:flutter_application_1/features/orders/presentation/service_request_screen.dart';
+import 'package:flutter_application_1/features/splash/presentation/splash_screen.dart';
+import 'package:flutter_application_1/features/technician/presentation/accepted_request_detail_screen.dart';
+import 'package:flutter_application_1/features/technician/presentation/accepted_request_screen.dart';
+import 'package:flutter_application_1/features/technician/presentation/completed_jobs_screen.dart';
+import 'package:flutter_application_1/features/technician/presentation/finish_job_screen.dart';
+import 'package:flutter_application_1/features/technician/presentation/incoming_requests_screen.dart';
+import 'package:flutter_application_1/features/technician/presentation/live_status_screen.dart';
 import 'package:flutter_application_1/features/technician/presentation/technician_home_screen.dart'
     as technician;
-import 'package:flutter_application_1/features/technician/presentation/incoming_requests_screen.dart';
-import 'package:flutter_application_1/features/technician/presentation/accepted_request_screen.dart';
-import 'package:flutter_application_1/features/technician/presentation/live_status_screen.dart';
-import 'package:flutter_application_1/features/technician/presentation/finish_job_screen.dart';
-import 'package:flutter_application_1/features/technician/presentation/completed_jobs_screen.dart';
-import 'package:flutter_application_1/features/onboarding/presentation/onboarding_screen.dart';
-import 'package:flutter_application_1/features/splash/presentation/splash_screen.dart';
-import 'package:flutter_application_1/core/storage/storage_keys.dart';
-import 'package:flutter_application_1/core/storage/storage_service.dart';
+import 'package:flutter_application_1/shared/widgets/error_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_router.g.dart';
@@ -55,8 +59,8 @@ GoRouter goRouter(GoRouterRef ref) {
   });
 
   final listenable = GoRouterRefreshStream(authStateController.stream);
-  ref.onDispose(() => listenable.dispose());
-  ref.onDispose(() => authStateController.close());
+  ref.onDispose(listenable.dispose);
+  ref.onDispose(authStateController.close);
 
   return GoRouter(
     refreshListenable: listenable,
@@ -95,33 +99,72 @@ GoRouter goRouter(GoRouterRef ref) {
         builder: (context, state) => const AddCarScreen(),
       ),
       GoRoute(
-        path: AppRoutes.serviceRequest,
+        path: AppRoutes.payment,
         builder: (context, state) {
-          final serviceType = state.extra as String;
-          return ServiceRequestScreen(serviceType: serviceType);
+          final extra = state.extra as PaymentExtra?;
+          if (extra == null) {
+            return const Scaffold(
+              body: Center(child: Text('Invalid payment data.')),
+            );
+          }
+          return PaymentScreen(order: extra.order);
         },
       ),
       GoRoute(
         path: AppRoutes.map,
         builder: (context, state) {
-          final requestData = state.extra as Map<String, dynamic>;
-          return MapScreen(requestData: requestData);
+          final extra = state.extra as MapExtra?;
+          if (extra == null) {
+            return const Scaffold(
+              body: Center(child: Text('Invalid map data.')),
+            );
+          }
+          return map_screen.MapScreen(args: extra.args);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.serviceRequest,
+        builder: (context, state) {
+          final extra = state.extra as ServiceRequestExtra?;
+          if (extra == null) {
+            return const Scaffold(
+              body: Center(child: Text('Invalid service request data.')),
+            );
+          }
+          return ServiceRequestScreen(serviceType: extra.serviceType);
         },
       ),
       GoRoute(
         path: AppRoutes.orders,
         builder: (context, state) => const OrdersScreen(),
       ),
+      // Order tracking route
       GoRoute(
-        path: AppRoutes.payment,
+        path: AppRoutes.orderTracking,
         builder: (context, state) {
-          final orderData = state.extra as Map<String, dynamic>;
-          return PaymentScreen(orderData: orderData);
+          final orderId = state.pathParameters['orderId']!;
+          return OrderTrackingScreen(orderId: orderId);
+        },
+      ),
+      // Order completion route
+      GoRoute(
+        path: AppRoutes.orderCompletion,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId']!;
+          return OrderCompletionScreen(orderId: orderId);
+        },
+      ),
+      // Order rating route
+      GoRoute(
+        path: AppRoutes.orderRating,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId']!;
+          return OrderRatingScreen(orderId: orderId);
         },
       ),
       GoRoute(
         path: AppRoutes.technicianHome,
-        builder: (context, state) => technician.TechnicianHomeScreen(),
+        builder: (context, state) => const technician.TechnicianHomeScreen(),
       ),
       GoRoute(
         path: AppRoutes.incomingRequests,
@@ -131,18 +174,36 @@ GoRouter goRouter(GoRouterRef ref) {
         path: AppRoutes.acceptedRequests,
         builder: (context, state) => const AcceptedRequestsScreen(),
       ),
+      // Technician accepted request detail route - singular for detail
+      GoRoute(
+        path: AppRoutes.acceptedRequestDetail,
+        builder: (context, state) {
+          final orderId = state.pathParameters['orderId']!;
+          return AcceptedRequestDetailScreen(orderId: orderId);
+        },
+      ),
       GoRoute(
         path: AppRoutes.liveStatus,
         builder: (context, state) {
-          final requestId = state.extra as String;
-          return LiveStatusScreen(requestId: requestId);
+          final extra = state.extra as LiveStatusExtra?;
+          if (extra == null) {
+            return const Scaffold(
+              body: Center(child: Text('Invalid live status data.')),
+            );
+          }
+          return LiveStatusScreen(requestId: extra.requestId);
         },
       ),
       GoRoute(
         path: AppRoutes.finishJob,
         builder: (context, state) {
-          final requestId = state.extra as String;
-          return FinishJobScreen(requestId: requestId);
+          final extra = state.extra as FinishJobExtra?;
+          if (extra == null) {
+            return const Scaffold(
+              body: Center(child: Text('Invalid finish job data.')),
+            );
+          }
+          return FinishJobScreen(requestId: extra.requestId);
         },
       ),
       GoRoute(

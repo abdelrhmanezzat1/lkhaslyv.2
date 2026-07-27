@@ -17,7 +17,9 @@ class AppEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final color = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+    final color = Theme.of(
+      context,
+    ).colorScheme.onSurface.withValues(alpha: 0.6);
 
     return Center(
       child: Padding(

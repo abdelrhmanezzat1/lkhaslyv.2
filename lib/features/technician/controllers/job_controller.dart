@@ -1,8 +1,9 @@
-import 'package:flutter_application_1/core/di/service_locator.dart';
-import 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart';
-import 'package:flutter_application_1/features/technician/models/technician_request.dart';
+import 'dart:async';
+
+import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:flutter_application_1/features/technician/models/job_status.dart';
 import 'package:flutter_application_1/features/technician/models/service_progress.dart';
+import 'package:flutter_application_1/features/technician/models/technician_request.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'job_controller.g.dart';
@@ -16,7 +17,7 @@ class JobController extends _$JobController {
   }
 
   Future<TechnicianRequest?> _getJob(String requestId) async {
-    final repository = sl<TechnicianRepository>();
+    final repository = ref.read(technicianRepositoryProvider);
     try {
       return repository.getAcceptedRequests().firstWhere(
         (r) => r.id == requestId,
@@ -34,7 +35,7 @@ class JobController extends _$JobController {
 
   /// Updates the job status.
   Future<void> updateStatus(String requestId, JobStatus newStatus) async {
-    final repository = sl<TechnicianRepository>();
+    final repository = ref.read(technicianRepositoryProvider);
     repository.updateRequestStatus(requestId, newStatus);
     state = const AsyncLoading();
     state = AsyncData(await _getJob(requestId));
@@ -42,10 +43,10 @@ class JobController extends _$JobController {
 
   /// Finishes the job with notes and amount.
   Future<void> finishJob(String requestId, String notes, double amount) async {
-    final repository = sl<TechnicianRepository>();
+    final repository = ref.read(technicianRepositoryProvider);
     repository.finishJob(requestId, notes, amount);
     state = const AsyncLoading();
-    state = AsyncData(null);
+    state = const AsyncData(null);
   }
 }
 
@@ -54,6 +55,6 @@ final progressProvider = Provider.family<ServiceProgress, String>((
   ref,
   requestId,
 ) {
-  final repository = sl<TechnicianRepository>();
+  final repository = ref.watch(technicianRepositoryProvider);
   return repository.getProgress(requestId);
 });

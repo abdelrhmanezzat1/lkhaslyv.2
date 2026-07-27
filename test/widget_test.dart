@@ -6,19 +6,21 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_application_1/app/view/app.dart';
 import 'package:flutter_application_1/core/di/service_locator.dart';
 import 'package:flutter_application_1/core/env/env.dart';
 import 'package:flutter_application_1/core/storage/storage_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() {
   setUp(() async {
     // Ensure a clean state before each test.
-    await dotenv.load(fileName: ".env");
+    SharedPreferences.setMockInitialValues({});
+    await dotenv.load(fileName: '.env');
     await StorageService.init();
     await StorageService.clear(); // Clear storage for test independence
     await Supabase.initialize(
@@ -42,6 +44,6 @@ void main() {
     await tester.pumpAndSettle();
 
     // After navigation, verify that the OnboardingScreen is now visible.
-    expect(find.text('Welcome to Lakhsly'), findsOneWidget);
+    expect(find.text('Welcome to\nLakhsly'), findsOneWidget);
   });
 }

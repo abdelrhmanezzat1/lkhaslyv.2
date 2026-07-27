@@ -1,9 +1,9 @@
 /// Base class for all application-specific exceptions.
 sealed class AppException implements Exception {
-  final String message;
-  final StackTrace? stackTrace;
 
   AppException(this.message, [this.stackTrace]);
+  final String message;
+  final StackTrace? stackTrace;
 
   @override
   String toString() => 'AppException: $message';

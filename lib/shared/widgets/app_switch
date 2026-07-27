@@ -1,0 +1,31 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_application_1/core/theme/app_colors.dart';
+
+/// A themed switch wrapper that uses the design system colors.
+class AppSwitch extends StatelessWidget {
+  const AppSwitch({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final bool value;
+  final ValueChanged<bool>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Switch(
+      value: value,
+      onChanged: onChanged,
+      activeColor: AppColors.primary,
+      activeTrackColor: AppColors.primary.withValues(alpha: 0.5),
+      inactiveThumbColor: Theme.of(context).brightness == Brightness.dark
+          ? AppColors.onSurfaceVariant
+          : AppColors.onLightSurfaceVariant,
+      inactiveTrackColor: Theme.of(context).brightness == Brightness.dark
+          ? AppColors.surfaceVariant
+          : AppColors.lightSurfaceVariant,
+    );
+  }
+}

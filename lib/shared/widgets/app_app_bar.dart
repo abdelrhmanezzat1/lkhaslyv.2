@@ -63,7 +63,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
         foregroundColor ??
         (isDark ? AppColors.onSurface : AppColors.onLightSurface);
 
-    Widget appBar = AppBar(
+    final Widget appBar = AppBar(
       leading: leading,
       title: title,
       actions: actions,

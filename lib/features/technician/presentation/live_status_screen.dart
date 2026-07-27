@@ -1,36 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+// Phase 3.3: repository providers now live in the central DI bridge.
+import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
-import 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart';
-import 'package:flutter_application_1/features/technician/models/technician_request.dart';
+import 'package:flutter_application_1/core/theme/app_colors.dart';
+import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/technician/models/job_status.dart';
 import 'package:flutter_application_1/features/technician/models/service_progress.dart';
-import 'package:flutter_application_1/shared/widgets/app_card.dart';
+import 'package:flutter_application_1/features/technician/models/technician_request.dart';
 import 'package:flutter_application_1/shared/widgets/app_button.dart';
+import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
-import 'package:flutter_application_1/core/theme/app_spacing.dart';
-import 'package:flutter_application_1/core/theme/app_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-final _liveRequestProvider = StreamProvider.family<
-    TechnicianRequest?, String>((ref, requestId) {
+final _liveRequestProvider = StreamProvider.family<TechnicianRequest?, String>((
+  ref,
+  requestId,
+) {
   final repository = ref.watch(technicianRepositoryProvider);
-  return repository.requestsStream.map(
-    (requests) {
-      try {
-        return requests.firstWhere((request) => request.id == requestId);
-      } catch (_) {
-        return null;
-      }
-    },
-  );
+  return repository.requestsStream.map((requests) {
+    try {
+      return requests.firstWhere((request) => request.id == requestId);
+    } catch (_) {
+      return null;
+    }
+  });
 });
 
 /// Screen displaying live status progress of an accepted job.
 class LiveStatusScreen extends ConsumerWidget {
-  final String requestId;
 
   const LiveStatusScreen({super.key, required this.requestId});
+  final String requestId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -131,7 +132,10 @@ class LiveStatusScreen extends ConsumerWidget {
                 if (request.status == JobStatus.accepted)
                   AppButton(
                     onPressed: () {
-                      repository.updateRequestStatus(request.id, JobStatus.driving);
+                      repository.updateRequestStatus(
+                        request.id,
+                        JobStatus.driving,
+                      );
                       AppSnackbar.showSuccess(
                         context,
                         message: 'Status updated to Driving',
@@ -144,7 +148,10 @@ class LiveStatusScreen extends ConsumerWidget {
                 else if (request.status == JobStatus.driving)
                   AppButton(
                     onPressed: () {
-                      repository.updateRequestStatus(request.id, JobStatus.arrived);
+                      repository.updateRequestStatus(
+                        request.id,
+                        JobStatus.arrived,
+                      );
                       AppSnackbar.showSuccess(
                         context,
                         message: 'Status updated to Arrived',
@@ -157,7 +164,10 @@ class LiveStatusScreen extends ConsumerWidget {
                 else if (request.status == JobStatus.arrived)
                   AppButton(
                     onPressed: () {
-                      repository.updateRequestStatus(request.id, JobStatus.working);
+                      repository.updateRequestStatus(
+                        request.id,
+                        JobStatus.working,
+                      );
                       AppSnackbar.showSuccess(
                         context,
                         message: 'Status updated to Working',
@@ -181,7 +191,8 @@ class LiveStatusScreen extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, stack) => Scaffold(
         appBar: AppBar(title: const Text('Live Status')),
         body: Center(child: Text('Error: $error')),
@@ -362,7 +373,9 @@ class _TimelineConnector extends StatelessWidget {
       child: Container(
         width: 2,
         height: 24,
-        color: isActive ? AppColors.success : Colors.grey.withValues(alpha: 0.3),
+        color: isActive
+            ? AppColors.success
+            : Colors.grey.withValues(alpha: 0.3),
       ),
     );
   }

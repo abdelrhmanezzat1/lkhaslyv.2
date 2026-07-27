@@ -1,5 +1,6 @@
-import 'package:flutter_application_1/core/di/service_locator.dart';
-import 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart';
+import 'dart:async';
+
+import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:flutter_application_1/features/technician/models/technician_request.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,13 +15,13 @@ class RequestsController extends _$RequestsController {
   }
 
   Future<List<TechnicianRequest>> _getRequests() async {
-    final repository = sl<TechnicianRepository>();
+    final repository = ref.read(technicianRepositoryProvider);
     return repository.getPendingRequests();
   }
 
   /// Accepts a request by ID.
   Future<void> acceptRequest(String requestId) async {
-    final repository = sl<TechnicianRepository>();
+    final repository = ref.read(technicianRepositoryProvider);
     await Future(() => repository.acceptRequest(requestId));
     state = const AsyncLoading();
     state = AsyncData(repository.getPendingRequests());
@@ -28,7 +29,7 @@ class RequestsController extends _$RequestsController {
 
   /// Rejects a request by ID.
   Future<void> rejectRequest(String requestId) async {
-    final repository = sl<TechnicianRepository>();
+    final repository = ref.read(technicianRepositoryProvider);
     repository.rejectRequest(requestId);
     state = const AsyncLoading(); // Trigger loading state
     state = AsyncData(await _getRequests()); // Refresh the list

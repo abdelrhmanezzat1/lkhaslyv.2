@@ -43,7 +43,7 @@ class HomeGreetingBar extends StatelessWidget {
     final Color secondaryTextColor = isDark
         ? AppColors.secondaryText
         : Colors.grey.shade600;
-    final Color badgeColor = AppColors.error;
+    const Color badgeColor = AppColors.error;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
