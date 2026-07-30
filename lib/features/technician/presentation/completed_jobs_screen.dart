@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
-import 'package:flutter_application_1/features/technician/models/job_status.dart';
-import 'package:flutter_application_1/features/technician/models/technician_request.dart';
+import 'package:flutter_application_1/features/technician/technician.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -31,7 +31,7 @@ class CompletedJobsScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           'Completed Jobs',
           style: TextStyle(

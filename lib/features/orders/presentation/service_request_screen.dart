@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,11 +8,13 @@ import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/_shared/domain/entities/car.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_application_1/features/cars/controllers/cars_controller.dart';
+import 'package:flutter_application_1/features/home/presentation/map_screen.dart';
 import 'package:flutter_application_1/features/orders/controllers/orders_controller.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -42,14 +46,14 @@ class ServiceRequestScreen extends ConsumerWidget {
 
   Scaffold _buildLoadingScaffold(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(serviceType)),
+      appBar: CustomAppBar(title: Text(serviceType)),
       body: const Center(child: AppLoader()),
     );
   }
 
   Scaffold _buildErrorScaffold(BuildContext context, String error) {
     return Scaffold(
-      appBar: AppBar(title: Text(serviceType)),
+      appBar: CustomAppBar(title: Text(serviceType)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -174,13 +178,17 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
     if (!mounted) return;
 
     final selectedCar = _selectedCar!;
-    context.push(
-      AppRoutes.map,
-      extra: MapScreenArgs(
-        car: selectedCar,
-        serviceType: widget.serviceType,
-        description: _descriptionController.text.trim(),
-        imageUrl: _imageUrl,
+    unawaited(
+      context.push(
+        AppRoutes.map,
+        extra: MapExtra(
+          MapScreenArgs(
+            car: selectedCar,
+            serviceType: widget.serviceType,
+            description: _descriptionController.text.trim(),
+            imageUrl: _imageUrl,
+          ),
+        ),
       ),
     );
   }
@@ -223,11 +231,12 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(widget.serviceType),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -650,17 +659,3 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
   }
 }
 
-/// Typed arguments for MapScreen
-class MapScreenArgs {
-  const MapScreenArgs({
-    required this.car,
-    required this.serviceType,
-    required this.description,
-    this.imageUrl,
-  });
-
-  final Car car;
-  final String serviceType;
-  final String description;
-  final String? imageUrl;
-}

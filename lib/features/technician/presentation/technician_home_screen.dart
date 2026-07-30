@@ -6,6 +6,7 @@ import 'package:flutter_application_1/features/auth/controllers/auth_controller.
 import 'package:flutter_application_1/features/technician/controllers/technician_controller.dart';
 import 'package:flutter_application_1/shared/widgets/app_badge.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,7 +24,7 @@ class TechnicianHomeScreen extends ConsumerWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           'Technician',
           style: TextStyle(

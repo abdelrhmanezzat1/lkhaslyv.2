@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -72,7 +73,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final isLoading = authState is AsyncLoading;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Profile')),
+      appBar: const CustomAppBar(title: Text('Edit Profile')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(

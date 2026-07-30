@@ -19,16 +19,16 @@ class UserProfile {
   /// were observed in `auth_service.dart` during the Phase 0.1 migration.
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
-      id: (json['id'] as String?) ?? '',
-      firstName: (json['first_name'] as String?) ?? '',
-      lastName: (json['last_name'] as String?) ?? '',
-      email: (json['email'] as String?) ?? '',
-      phone: (json['phone'] as String?) ?? '',
+      id: json['id']?.toString() ?? '',
+      firstName: json['first_name']?.toString() ?? '',
+      lastName: json['last_name']?.toString() ?? '',
+      email: json['email']?.toString() ?? '',
+      phone: json['phone']?.toString() ?? '',
       role: UserRoleX.parse(
-        (json['role'] as String?) ?? (json['user_type'] as String?),
+        json['role']?.toString() ?? json['user_type']?.toString(),
       ),
-      userType: (json['user_type'] as String?) ??
-          (json['role'] as String?) ??
+      userType: json['user_type']?.toString() ??
+          json['role']?.toString() ??
           'client',
       currentLat: (json['current_lat'] as num?)?.toDouble(),
       currentLng: (json['current_lng'] as num?)?.toDouble(),

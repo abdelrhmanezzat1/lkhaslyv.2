@@ -7,14 +7,14 @@
 class Car {
 
   factory Car.fromJson(Map<String, dynamic> json) => Car(
-        id: (json['id'] as String?) ?? '',
-        userId: (json['user_id'] as String?) ?? '',
-        carType: (json['car_type'] as String?) ?? '',
-        carModel: (json['car_model'] as String?) ?? '',
-        plateNumber: (json['plate_number'] as String?) ?? '',
+        id: json['id']?.toString() ?? '',
+        userId: json['user_id']?.toString() ?? '',
+        carType: json['car_type']?.toString() ?? '',
+        carModel: json['car_model']?.toString() ?? '',
+        plateNumber: json['plate_number']?.toString() ?? '',
         carYear: json['car_year']?.toString(),
-        color: json['color'] as String?,
-        imageUrl: json['image_url'] as String?,
+        color: json['color']?.toString(),
+        imageUrl: json['image_url']?.toString(),
       );
   const Car({
     required this.id,

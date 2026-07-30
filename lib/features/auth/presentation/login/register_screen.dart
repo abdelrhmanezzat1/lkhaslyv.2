@@ -9,6 +9,7 @@ import 'package:flutter_application_1/features/auth/controllers/registration_con
 import 'package:flutter_application_1/shared/widgets/app_button.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -81,7 +82,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final isLoading = regState is AsyncLoading;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Account')),
+      appBar: const CustomAppBar(title: Text('Create Account')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
@@ -180,19 +181,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               RadioGroup<String>(
                 groupValue: _userType,
                 onChanged: (value) => setState(() => _userType = value!),
-                child: Row(
+                child: const Row(
                   children: [
                     Expanded(
                       child: RadioListTile<String>(
                         value: 'client',
-                        title: const Text('Client'),
+                        title: Text('Client'),
                         activeColor: AppColors.primary,
                       ),
                     ),
                     Expanded(
                       child: RadioListTile<String>(
                         value: 'technician',
-                        title: const Text('Technician'),
+                        title: Text('Technician'),
                         activeColor: AppColors.primary,
                       ),
                     ),

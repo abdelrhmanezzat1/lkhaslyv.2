@@ -4,12 +4,12 @@ import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
-import 'package:flutter_application_1/features/technician/models/job_status.dart';
-import 'package:flutter_application_1/features/technician/models/technician_request.dart';
+import 'package:flutter_application_1/features/technician/technician.dart';
 import 'package:flutter_application_1/shared/widgets/app_button.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -57,14 +57,14 @@ class _FinishJobScreenState extends ConsumerState<FinishJobScreen> {
     );
 
     if (request.id.isEmpty) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Finish Job')),
-        body: const Center(child: Text('Job not found')),
+      return const Scaffold(
+        appBar: CustomAppBar(title: Text('Finish Job')),
+        body: Center(child: Text('Job not found')),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Finish Job')),
+      appBar: const CustomAppBar(title: Text('Finish Job')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(

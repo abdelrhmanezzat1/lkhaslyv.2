@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/storage/storage_keys.dart';
 import 'package:flutter_application_1/core/storage/storage_service.dart';
+import 'package:flutter_application_1/features/_shared/domain/entities/car.dart';
+import 'package:flutter_application_1/features/_shared/domain/entities/order.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_application_1/features/auth/presentation/login/forgot_password_screen.dart';
 import 'package:flutter_application_1/features/auth/presentation/login/login_screen.dart';
@@ -101,7 +103,11 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: AppRoutes.payment,
         builder: (context, state) {
-          final extra = state.extra as PaymentExtra?;
+          final extra = state.extra is PaymentExtra
+              ? state.extra as PaymentExtra
+              : (state.extra is Order
+                  ? PaymentExtra(state.extra as Order)
+                  : null);
           if (extra == null) {
             return const Scaffold(
               body: Center(child: Text('Invalid payment data.')),
@@ -113,19 +119,53 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: AppRoutes.map,
         builder: (context, state) {
-          final extra = state.extra as MapExtra?;
-          if (extra == null) {
+          map_screen.MapScreenArgs? args;
+          if (state.extra is MapExtra) {
+            args = (state.extra as MapExtra).args;
+          } else if (state.extra is Map<String, Object?>) {
+            final raw = state.extra as Map<String, Object?>;
+            const dummyCar = Car(
+              id: '',
+              userId: '',
+              carType: '',
+              carModel: '',
+              plateNumber: '',
+            );
+            args = map_screen.MapScreenArgs(
+              car: raw['order'] is Order
+                  ? const Car(
+                      id: '',
+                      userId: '',
+                      carType: '',
+                      carModel: '',
+                      plateNumber: '',
+                    )
+                  : dummyCar,
+              serviceType: raw['serviceType'] as String? ?? '',
+              description: raw['description'] as String? ?? '',
+              tracking: raw['tracking'] as bool? ?? false,
+              navigateCustomer: raw['navigateCustomer'] as bool? ?? false,
+              order: raw['order'] as Order?,
+              latitude: (raw['latitude'] as num?)?.toDouble(),
+              longitude: (raw['longitude'] as num?)?.toDouble(),
+            );
+          }
+          if (args == null) {
             return const Scaffold(
               body: Center(child: Text('Invalid map data.')),
             );
           }
-          return map_screen.MapScreen(args: extra.args);
+          return map_screen.MapScreen(args: args);
         },
       ),
       GoRoute(
         path: AppRoutes.serviceRequest,
         builder: (context, state) {
-          final extra = state.extra as ServiceRequestExtra?;
+          final extra = state.extra is ServiceRequestExtra
+              ? state.extra as ServiceRequestExtra
+              : (state.extra is String
+                  ? ServiceRequestExtra(state.extra as String)
+                  : null);
           if (extra == null) {
             return const Scaffold(
               body: Center(child: Text('Invalid service request data.')),
@@ -185,7 +225,11 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: AppRoutes.liveStatus,
         builder: (context, state) {
-          final extra = state.extra as LiveStatusExtra?;
+          final extra = state.extra is LiveStatusExtra
+              ? state.extra as LiveStatusExtra
+              : (state.extra is String
+                  ? LiveStatusExtra(state.extra as String)
+                  : null);
           if (extra == null) {
             return const Scaffold(
               body: Center(child: Text('Invalid live status data.')),
@@ -197,7 +241,11 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: AppRoutes.finishJob,
         builder: (context, state) {
-          final extra = state.extra as FinishJobExtra?;
+          final extra = state.extra is FinishJobExtra
+              ? state.extra as FinishJobExtra
+              : (state.extra is String
+                  ? FinishJobExtra(state.extra as String)
+                  : null);
           if (extra == null) {
             return const Scaffold(
               body: Center(child: Text('Invalid finish job data.')),

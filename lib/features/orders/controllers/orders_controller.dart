@@ -14,6 +14,7 @@
 import 'dart:async';
 
 import 'package:flutter_application_1/core/di/service_locator_provider.dart';
+import 'package:flutter_application_1/core/logger/app_logger.dart';
 import 'package:flutter_application_1/features/_shared/domain/entities/order.dart';
 import 'package:flutter_application_1/features/orders/domain/repositories/orders_repository.dart';
 import 'package:flutter_application_1/features/orders/domain/usecases/accept_order_use_case.dart';
@@ -68,8 +69,12 @@ class OrdersController extends _$OrdersController {
     required double longitude,
   }) async {
     final OrdersRepository repository = ref.read(ordersRepositoryProvider);
+    // Capture the cached orders before entering AsyncLoading so we can
+    // restore them after the insert without accessing `state.value`
+    // from inside the async gap (which would be null during loading).
+    final previousOrders = state.value ?? const <Order>[];
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+    try {
       await repository.createOrder(
         clientId: clientId,
         carId: carId,
@@ -79,11 +84,11 @@ class OrdersController extends _$OrdersController {
         latitude: latitude,
         longitude: longitude,
       );
-      // Preserve previously-cached orders; the controller's state is a
-      // list cache, not an action result, hence the `?? const <Order>[]`
-      // fall-back for the brief AsyncLoading step.
-      return state.value ?? const <Order>[];
-    });
+      state = AsyncData<List<Order>>(previousOrders);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    }
   }
 
   /// Technician claims a pending order. The contract is locked down via
@@ -94,8 +99,9 @@ class OrdersController extends _$OrdersController {
     required String technicianName,
   }) async {
     final AcceptOrderUseCase acceptOrder = ref.read(acceptOrderUseCaseProvider);
+    final previousOrders = state.value ?? const <Order>[];
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+    try {
       await acceptOrder(
         AcceptOrderCommand(
           orderId: orderId,
@@ -103,20 +109,32 @@ class OrdersController extends _$OrdersController {
           technicianName: technicianName,
         ),
       );
-      return state.value ?? const <Order>[];
-    });
+      state = AsyncData<List<Order>>(previousOrders);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    }
   }
 
   /// Technician marks a job as done — the client is now expected to
   /// confirm + pay.
   Future<void> confirmOrderCompletion({required String orderId}) async {
     final OrdersRepository repository = ref.read(ordersRepositoryProvider);
+    final previousOrders = state.value ?? const <Order>[];
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+    try {
       await repository.confirmOrderCompletion(orderId: orderId);
-      return state.value ?? const <Order>[];
-    });
+      state = AsyncData<List<Order>>(previousOrders);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    }
   }
+
+  /// Guards against re-entrant calls that would trigger Riverpod's
+  /// "Bad state: Future already completed" error when `state` is set
+  /// to `AsyncLoading` while a previous future is still resolving.
+  bool _isProcessingPayment = false;
 
   /// Pays an order. The two-repo orchestration
   /// (`orders.payOrder` + `technician.completeOrderAfterPayment`) is
@@ -126,17 +144,36 @@ class OrdersController extends _$OrdersController {
     required String orderId,
     required String paymentMethod,
   }) async {
+    // Guard: prevent double-invocation from rapid taps or duplicate
+    // call-sites (e.g. optimistic UI + API response handler).
+    if (_isProcessingPayment) {
+      appLogger.w(
+        'OrdersController.payOrder: already processing payment for '
+        'order=$orderId — ignoring duplicate call.',
+      );
+      return;
+    }
+
     final PayOrderUseCase payOrderUseCase = ref.read(payOrderUseCaseProvider);
+    final previousOrders = state.value ?? const <Order>[];
+
+    _isProcessingPayment = true;
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+
+    try {
       await payOrderUseCase(
         PayOrderCommand(
           orderId: orderId,
           paymentMethod: paymentMethod,
         ),
       );
-      return state.value ?? const <Order>[];
-    });
+      state = AsyncData<List<Order>>(previousOrders);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    } finally {
+      _isProcessingPayment = false;
+    }
   }
 }
 

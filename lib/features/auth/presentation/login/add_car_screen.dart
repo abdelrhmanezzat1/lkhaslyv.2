@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
-import 'package:flutter_application_1/features/cars/controllers/cars_controller.dart';
+import 'package:flutter_application_1/features/auth/controllers/registration_controller.dart';
 import 'package:flutter_application_1/shared/widgets/app_button.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
@@ -24,7 +24,6 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
   final _carYearController = TextEditingController();
   final _plateNumberController = TextEditingController();
   final _colorController = TextEditingController();
-  bool _isSaving = false;
 
   @override
   void dispose() {
@@ -37,20 +36,13 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
   }
 
   Future<void> _saveCar() async {
-    if (_isSaving) return;
     if (_formKey.currentState!.validate()) {
-      _isSaving = true;
-      setState(() {});
       final user = ref.read(authStateChangesProvider).valueOrNull;
-      if (user == null) {
-        _isSaving = false;
-        setState(() {});
-        return;
-      }
+      if (user == null) return;
 
-      final result = await AsyncValue.guard(() => ref
-          .read(carsControllerProvider.notifier)
-          .saveCar(
+      await ref
+          .read(registrationControllerProvider.notifier)
+          .saveCarAfterRegistration(
             userId: user.id,
             carType: _carTypeController.text.trim(),
             carModel: _carModelController.text.trim(),
@@ -61,32 +53,36 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
             color: _colorController.text.trim().isEmpty
                 ? null
                 : _colorController.text.trim(),
-          ));
-
-      _isSaving = false;
-      if (mounted) {
-        setState(() {});
-        result.when(
-          data: (_) {
-            AppSnackbar.showSuccess(
-              context,
-              message: 'Car saved successfully!',
-            );
-            context.go(AppRoutes.home);
-          },
-          error: (error, _) {
-            AppSnackbar.showError(context, message: error.toString());
-          },
-          loading: () {},
-        );
-      }
+          );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final carsController = ref.watch(carsControllerProvider);
-    final isLoading = carsController is AsyncLoading;
+    ref.listen<AsyncValue<RegistrationResult?>>(
+      registrationControllerProvider,
+      (_, state) {
+        state.when(
+          data: (result) {
+            if (result != null && mounted) {
+              AppSnackbar.showSuccess(
+                context,
+                message: 'Car saved successfully!',
+              );
+              context.go(AppRoutes.home);
+            }
+          },
+          error: (error, _) {
+            if (!mounted) return;
+            AppSnackbar.showError(context, message: error.toString());
+          },
+          loading: () {},
+        );
+      },
+    );
+
+    final regState = ref.watch(registrationControllerProvider);
+    final isLoading = regState is AsyncLoading;
 
     return Scaffold(
       appBar: const CustomAppBar(title: Text('Add Your Car')),
@@ -155,8 +151,8 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
               AppButton(
-                onPressed: (isLoading || _isSaving) ? null : _saveCar,
-                text: (isLoading || _isSaving) ? 'Saving...' : 'Save & Continue',
+                onPressed: isLoading ? null : _saveCar,
+                text: isLoading ? 'Saving...' : 'Save & Continue',
               ),
             ],
           ),

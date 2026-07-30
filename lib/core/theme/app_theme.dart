@@ -26,6 +26,7 @@ class AppTheme {
       onPrimary: AppColors.onPrimary,
       onSecondary: AppColors.onSecondary,
       onSurface: AppColors.onSurface,
+      outline: AppColors.outline,
     );
 
     return ThemeData(
@@ -51,13 +52,13 @@ class AppTheme {
           fontWeight: FontWeight.w600,
         ),
       ),
-      cardTheme: CardThemeData(
+      cardTheme: const CardThemeData(
         color: AppColors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.cardRadius,
           side: BorderSide(
-            color: AppColors.dividerDark,
+            color: AppColors.divider,
             width: 1,
           ),
         ),
@@ -83,14 +84,14 @@ class AppTheme {
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: AppRadius.buttonRadius,
           ),
         ),
       ),
       inputDecorationTheme: _buildInputDecorationTheme(
         fillColor: AppColors.surfaceVariant,
-        borderColor: AppColors.dividerDark,
+        borderColor: AppColors.divider,
         focusedBorderColor: AppColors.primary,
         errorColor: AppColors.error,
         hintColor: AppColors.onSurfaceVariant,
@@ -113,7 +114,7 @@ class AppTheme {
           fontWeight: FontWeight.w500,
         ),
       ),
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.onPrimary,
         elevation: 0,
@@ -124,8 +125,8 @@ class AppTheme {
           borderRadius: AppRadius.buttonRadius,
         ),
       ),
-      dividerTheme: DividerThemeData(
-        color: AppColors.dividerDark,
+      dividerTheme: const DividerThemeData(
+        color: AppColors.divider,
         thickness: 1,
         space: 1,
       ),
@@ -143,10 +144,10 @@ class AppTheme {
           horizontal: AppSpacing.md,
           vertical: AppSpacing.xs,
         ),
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.buttonRadius,
           side: BorderSide(
-            color: AppColors.dividerDark,
+            color: AppColors.divider,
             width: 1,
           ),
         ),
@@ -155,10 +156,10 @@ class AppTheme {
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surface,
         elevation: 0,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.dialogRadius,
           side: BorderSide(
-            color: AppColors.dividerDark,
+            color: AppColors.divider,
             width: 1,
           ),
         ),
@@ -169,13 +170,13 @@ class AppTheme {
           color: AppColors.onSurfaceVariant,
         ),
       ),
-      bottomSheetTheme: BottomSheetThemeData(
+      bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.bottomSheetRadius,
           side: BorderSide(
-            color: AppColors.dividerDark,
+            color: AppColors.divider,
             width: 1,
           ),
         ),
@@ -190,7 +191,7 @@ class AppTheme {
         ),
         actionTextColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.buttonRadius,
         ),
         elevation: 0,
@@ -230,7 +231,7 @@ class AppTheme {
           if (states.contains(WidgetState.selected)) {
             return AppColors.primary;
           }
-          return AppColors.dividerDark;
+          return AppColors.divider;
         }),
       ),
       checkboxTheme: CheckboxThemeData(
@@ -241,8 +242,8 @@ class AppTheme {
           return Colors.transparent;
         }),
         checkColor: WidgetStateProperty.all(AppColors.onPrimary),
-        side: BorderSide(
-          color: AppColors.dividerDark,
+        side: const BorderSide(
+          color: AppColors.divider,
           width: 2,
         ),
         shape: RoundedRectangleBorder(
@@ -281,14 +282,15 @@ class AppTheme {
       secondary: AppColors.secondary,
       secondaryContainer: AppColors.secondaryContainer,
       onSecondaryContainer: AppColors.onSecondaryContainer,
-      surface: AppColors.lightSurface,
-      surfaceContainerHighest: AppColors.lightSurfaceVariant,
+      surface: AppColors.surface,
+      surfaceContainerHighest: AppColors.surfaceVariant,
       error: AppColors.error,
       errorContainer: AppColors.errorContainer,
       onError: AppColors.onError,
       onPrimary: AppColors.onPrimary,
       onSecondary: AppColors.onSecondary,
-      onSurface: AppColors.onLightSurface,
+      onSurface: AppColors.onSurface,
+      outline: AppColors.outline,
     );
 
     return ThemeData(
@@ -296,15 +298,15 @@ class AppTheme {
       brightness: Brightness.light,
       fontFamily: AppTypography.fontFamily,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: AppColors.lightBackground,
-      canvasColor: AppColors.lightBackground,
+      scaffoldBackgroundColor: AppColors.background,
+      canvasColor: AppColors.background,
       textTheme: AppTypography.textTheme.apply(
-        bodyColor: AppColors.onLightSurface,
-        displayColor: AppColors.onLightSurface,
+        bodyColor: AppColors.onSurface,
+        displayColor: AppColors.onSurface,
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
-        foregroundColor: AppColors.onLightSurface,
+        foregroundColor: AppColors.onSurface,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
@@ -315,12 +317,12 @@ class AppTheme {
         ),
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.light,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
         ),
       ),
-      cardTheme: CardThemeData(
-        color: AppColors.lightSurface,
+      cardTheme: const CardThemeData(
+        color: AppColors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.cardRadius,
@@ -334,14 +336,14 @@ class AppTheme {
       elevatedButtonTheme: _buildElevatedButtonTheme(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.onPrimary,
-        disabledBackgroundColor: AppColors.onLightSurfaceVariant.withValues(alpha: 0.12),
-        disabledForegroundColor: AppColors.onLightSurfaceVariant.withValues(alpha: 0.38),
+        disabledBackgroundColor: AppColors.onSurfaceVariant.withValues(alpha: 0.12),
+        disabledForegroundColor: AppColors.onSurfaceVariant.withValues(alpha: 0.38),
       ),
       outlinedButtonTheme: _buildOutlinedButtonTheme(
         foregroundColor: AppColors.primary,
         sideColor: AppColors.primary,
-        disabledForegroundColor: AppColors.onLightSurfaceVariant.withValues(alpha: 0.38),
-        disabledSideColor: AppColors.onLightSurfaceVariant.withValues(alpha: 0.12),
+        disabledForegroundColor: AppColors.onSurfaceVariant.withValues(alpha: 0.38),
+        disabledSideColor: AppColors.onSurfaceVariant.withValues(alpha: 0.12),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -351,23 +353,23 @@ class AppTheme {
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,
           ),
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: AppRadius.buttonRadius,
           ),
         ),
       ),
       inputDecorationTheme: _buildInputDecorationTheme(
-        fillColor: AppColors.lightSurfaceVariant,
+        fillColor: AppColors.surfaceVariant,
         borderColor: AppColors.divider,
         focusedBorderColor: AppColors.primary,
         errorColor: AppColors.error,
-        hintColor: AppColors.onLightSurfaceVariant,
-        labelColor: AppColors.onLightSurfaceVariant,
+        hintColor: AppColors.onSurfaceVariant,
+        labelColor: AppColors.onSurfaceVariant,
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface,
         selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.onLightSurfaceVariant,
+        unselectedItemColor: AppColors.onSurfaceVariant,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
         selectedLabelStyle: TextStyle(
@@ -381,7 +383,7 @@ class AppTheme {
           fontWeight: FontWeight.w500,
         ),
       ),
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.onPrimary,
         elevation: 0,
@@ -392,7 +394,7 @@ class AppTheme {
           borderRadius: AppRadius.buttonRadius,
         ),
       ),
-      dividerTheme: DividerThemeData(
+      dividerTheme: const DividerThemeData(
         color: AppColors.divider,
         thickness: 1,
         space: 1,
@@ -411,7 +413,7 @@ class AppTheme {
           horizontal: AppSpacing.md,
           vertical: AppSpacing.xs,
         ),
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.buttonRadius,
           side: BorderSide(
             color: AppColors.divider,
@@ -423,7 +425,7 @@ class AppTheme {
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.lightSurface,
         elevation: 0,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.dialogRadius,
           side: BorderSide(
             color: AppColors.divider,
@@ -437,7 +439,7 @@ class AppTheme {
           color: AppColors.onLightSurfaceVariant,
         ),
       ),
-      bottomSheetTheme: BottomSheetThemeData(
+      bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.lightSurface,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -458,7 +460,7 @@ class AppTheme {
         ),
         actionTextColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.buttonRadius,
         ),
         elevation: 0,
@@ -509,7 +511,7 @@ class AppTheme {
           return Colors.transparent;
         }),
         checkColor: WidgetStateProperty.all(AppColors.onPrimary),
-        side: BorderSide(
+        side: const BorderSide(
           color: AppColors.divider,
           width: 2,
         ),
@@ -559,7 +561,7 @@ class AppTheme {
           vertical: AppSpacing.md,
         ),
         minimumSize: const Size(88, 48),
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.buttonRadius,
         ),
         elevation: 0,
@@ -589,7 +591,7 @@ class AppTheme {
           color: sideColor,
           width: 1.5,
         ),
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: AppRadius.buttonRadius,
         ),
       ),

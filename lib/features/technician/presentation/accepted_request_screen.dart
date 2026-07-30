@@ -4,10 +4,10 @@ import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
-import 'package:flutter_application_1/features/technician/models/job_status.dart';
-import 'package:flutter_application_1/features/technician/models/technician_request.dart';
+import 'package:flutter_application_1/features/technician/technician.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -36,7 +36,7 @@ class AcceptedRequestsScreen extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           'Accepted Requests',
           style: TextStyle(
@@ -173,7 +173,7 @@ class _PremiumAcceptedRequestCard extends StatelessWidget {
         child: AppCard(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
-            context.push(AppRoutes.liveStatus, extra: request.id);
+            context.push(AppRoutes.liveStatus, extra: LiveStatusExtra(request.id));
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -339,7 +339,7 @@ class _PremiumAcceptedRequestCard extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    context.push(AppRoutes.liveStatus, extra: request.id);
+                    context.push(AppRoutes.liveStatus, extra: LiveStatusExtra(request.id));
                   },
                   icon: const Icon(Icons.visibility_rounded, size: 18),
                   label: const Text('View Job'),

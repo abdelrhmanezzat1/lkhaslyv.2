@@ -4,12 +4,11 @@ import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
-import 'package:flutter_application_1/features/technician/models/job_status.dart';
-import 'package:flutter_application_1/features/technician/models/service_progress.dart';
-import 'package:flutter_application_1/features/technician/models/technician_request.dart';
+import 'package:flutter_application_1/features/technician/technician.dart';
 import 'package:flutter_application_1/shared/widgets/app_button.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -40,9 +39,9 @@ class LiveStatusScreen extends ConsumerWidget {
     return requestAsync.when(
       data: (request) {
         if (request == null) {
-          return Scaffold(
-            appBar: AppBar(title: const Text('Job Not Found')),
-            body: const Center(child: Text('Job not found')),
+          return const Scaffold(
+            appBar: CustomAppBar(title: Text('Job Not Found')),
+            body: Center(child: Text('Job not found')),
           );
         }
 
@@ -50,7 +49,7 @@ class LiveStatusScreen extends ConsumerWidget {
         final progress = repository.getProgress(request.id);
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Live Status')),
+          appBar: const CustomAppBar(title: Text('Live Status')),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
@@ -180,7 +179,7 @@ class LiveStatusScreen extends ConsumerWidget {
                 else if (request.status == JobStatus.working)
                   AppButton(
                     onPressed: () {
-                      context.push(AppRoutes.finishJob, extra: request.id);
+                      context.push(AppRoutes.finishJob, extra: FinishJobExtra(request.id));
                     },
                     text: 'Finish Job',
                     variant: AppButtonVariant.filled,
@@ -194,7 +193,7 @@ class LiveStatusScreen extends ConsumerWidget {
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, stack) => Scaffold(
-        appBar: AppBar(title: const Text('Live Status')),
+        appBar: const CustomAppBar(title: Text('Live Status')),
         body: Center(child: Text('Error: $error')),
       ),
     );

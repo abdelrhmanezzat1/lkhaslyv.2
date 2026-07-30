@@ -7,9 +7,10 @@ import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/_shared/data/mappers/entity_mappers.dart';
 import 'package:flutter_application_1/features/_shared/domain/entities/order.dart';
 import 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart';
-import 'package:flutter_application_1/features/technician/models/job_status.dart';
-import 'package:flutter_application_1/features/technician/models/technician_request.dart';
+
+import 'package:flutter_application_1/features/technician/technician.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,8 +25,8 @@ class AcceptedRequestDetailScreen extends ConsumerWidget {
     final repository = ref.watch(technicianRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Job Details'),
+      appBar: const CustomAppBar(
+        title: Text('Job Details'),
         elevation: 0,
       ),
       body: FutureBuilder<TechnicianRequest?>(
@@ -67,15 +68,15 @@ class AcceptedRequestDetailScreen extends ConsumerWidget {
 
       // Map order to TechnicianRequest
       final carInfo = order.carInfo;
-      final carType = carInfo?['car_type'] as String? ?? '';
-      final carModel = carInfo?['car_model'] as String? ?? '';
-      final plateNumber = carInfo?['plate_number'] as String? ?? '';
+      final carType = carInfo?['car_type']?.toString() ?? '';
+      final carModel = carInfo?['car_model']?.toString() ?? '';
+      final plateNumber = carInfo?['plate_number']?.toString() ?? '';
       final vehicleName = '$carType $carModel'.trim();
 
       return TechnicianRequest(
         id: order.id,
-        customerName: carInfo?['customer_name'] as String? ?? 'Unknown',
-        customerPhone: carInfo?['customer_phone'] as String? ?? '',
+        customerName: carInfo?['customer_name']?.toString() ?? 'Unknown',
+        customerPhone: carInfo?['customer_phone']?.toString() ?? '',
         serviceType: order.serviceType.isEmpty ? 'Unknown' : order.serviceType,
         vehicleName: vehicleName.isEmpty ? 'N/A' : vehicleName,
         vehiclePlate: plateNumber,
@@ -258,7 +259,7 @@ class AcceptedRequestDetailScreen extends ConsumerWidget {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
-                context.push(AppRoutes.liveStatus, extra: request.id);
+                context.push(AppRoutes.liveStatus, extra: LiveStatusExtra(request.id));
               },
               icon: const Icon(Icons.visibility_rounded, size: 18),
               label: const Text('View Live Status'),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/shared/widgets/app_app_bar.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
-import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 
 /// Screen for tracking order status in real-time
 class OrderTrackingScreen extends StatefulWidget {
@@ -16,7 +16,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: Text('Track Order')),
+      appBar: const AppAppBar(title: Text('Track Order')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

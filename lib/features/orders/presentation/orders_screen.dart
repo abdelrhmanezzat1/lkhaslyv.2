@@ -9,6 +9,7 @@ import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/fade_in.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -102,7 +103,7 @@ class OrdersScreen extends ConsumerWidget {
   }) {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           title,
           style: TextStyle(
@@ -244,8 +245,8 @@ class _OrderCard extends StatelessWidget {
     final statusColor = _getStatusColor(statusDb);
     final statusIcon = _getStatusIcon(statusDb);
     final carInfo = order.carInfo;
-    final carType = carInfo?['car_type'] as String? ?? '';
-    final carModel = carInfo?['car_model'] as String? ?? '';
+    final carType = carInfo?['car_type']?.toString() ?? '';
+    final carModel = carInfo?['car_model']?.toString() ?? '';
     final vehicleName =
         [carType, carModel].where((part) => part.isNotEmpty).join(' ');
     final serviceType = order.serviceType;
@@ -411,7 +412,7 @@ class _OrderCard extends StatelessWidget {
       AppSnackbar.showError(context, message: 'Invalid order data.');
       return;
     }
-    context.push(AppRoutes.payment, extra: order);
+    context.push(AppRoutes.payment, extra: PaymentExtra(order));
   }
 
   void _onTrackPressed(BuildContext context) {

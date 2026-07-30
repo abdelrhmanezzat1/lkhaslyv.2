@@ -11,6 +11,7 @@ import 'package:flutter_application_1/features/auth/controllers/auth_controller.
 import 'package:flutter_application_1/features/orders/controllers/orders_controller.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -385,6 +386,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _confirmLocation() async {
+    if (_isSubmitting) return;
     if (_destination == null) {
       AppSnackbar.showError(
         context,
@@ -430,8 +432,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _isSubmitting = false);
         AppSnackbar.showError(context, message: 'Failed to create order: $e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
       }
     }
   }
@@ -442,7 +447,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Text(
           _mapMode == MapMode.selectLocation
               ? 'Select Location'
@@ -458,6 +463,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           icon: Icon(Icons.arrow_back_rounded, color: colorScheme.onSurface),
           onPressed: () => context.pop(),
         ),
+        automaticallyImplyLeading: false,
       ),
       body: _isLoading
           ? Center(

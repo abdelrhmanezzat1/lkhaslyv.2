@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/custom_app_bar.dart';
+import 'package:flutter_application_1/shared/widgets/app_app_bar.dart';
 
 /// Screen for rating completed order
 class OrderRatingScreen extends StatefulWidget {
@@ -24,7 +24,7 @@ class _OrderRatingScreenState extends State<OrderRatingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: Text('Rate Your Experience')),
+      appBar: const AppAppBar(title: Text('Rate Your Experience')),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(

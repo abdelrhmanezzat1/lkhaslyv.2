@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_motion.dart';
@@ -54,7 +54,9 @@ class AppOrderCard extends StatelessWidget {
               children: [
                 if (imageUrl != null)
                   ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.card)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(AppRadius.card),
+                    ),
                     child: Image.network(
                       imageUrl!,
                       height: 140,
@@ -82,7 +84,10 @@ class AppOrderCard extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.sm,
+                              vertical: AppSpacing.xxs,
+                            ),
                             decoration: const BoxDecoration(
                               color: AppColors.primaryContainer,
                               borderRadius: AppRadius.buttonRadius,
@@ -128,4 +133,4 @@ class AppOrderCard extends StatelessWidget {
       ),
     );
   }
-}"" 
+}

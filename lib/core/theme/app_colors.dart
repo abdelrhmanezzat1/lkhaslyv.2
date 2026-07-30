@@ -1,76 +1,74 @@
 import 'package:flutter/material.dart';
 
-/// A class that holds the color palette for the application.
+/// A class that holds the monochrome/metallic silver color palette for the application.
 ///
 /// Conforms to the premium design system specification:
-/// - Primary:   #2563EB
-/// - Accent:    #14B8A6
-/// - Success:   #22C55E
-/// - Warning:   #F59E0B
-/// - Danger:    #EF4444
-/// - Background:#F8FAFC (light) / #020617 (dark)
-/// - Surface:   #FFFFFF (light) / #0F172A (dark)
+/// - Background:      #141414
+/// - Surface:         #282828
+/// - Border:          #646464
+/// - Silver medium:   #A0A0A0
+/// - Silver light:    #C8C8C8
+/// - Near-white:      #F0F0F0
+/// - No accent colors (monochrome palette)
 class AppColors {
   AppColors._();
 
-  // ── Brand / Primary Palette ───────────────────────────────────────────────
-  static const Color primary = Color(0xFF2563EB);
-  static const Color primaryVariant = Color(0xFF1D4ED8);
-  static const Color primaryContainer = Color(0xFFDBEAFE);
-  static const Color onPrimary = Colors.white;
-  static const Color onPrimaryContainer = Color(0xFF1E3A8A);
+  // ── Monochrome / Metallic Silver Palette ─────────────────────────────────────
+  static const Color background = Color(0xFF141414);
+  static const Color surface = Color(0xFF282828);
+  static const Color surfaceVariant = Color(0xFF3A3A3A);
+  static const Color border = Color(0xFF646464);
+  static const Color silverMedium = Color(0xFFA0A0A0);
+  static const Color silverLight = Color(0xFFC8C8C8);
+  static const Color nearWhite = Color(0xFFF0F0F0);
 
-  // ── Accent / Secondary Palette ────────────────────────────────────────────
-  static const Color secondary = Color(0xFF14B8A6);
-  static const Color secondaryVariant = Color(0xFF0F766E);
-  static const Color secondaryContainer = Color(0xFFCCFBF1);
-  static const Color onSecondary = Colors.white;
-  static const Color onSecondaryContainer = Color(0xFF134E4A);
+  // ── Semantic Color Aliases (mapped to monochrome palette) ────────────────────
+  static const Color primary = silverMedium;
+  static const Color primaryContainer = silverLight;
+  static const Color onPrimary = background;
+  static const Color onPrimaryContainer = background;
 
-  // ── Status Colors ─────────────────────────────────────────────────────────
+  static const Color secondary = silverMedium;
+  static const Color secondaryContainer = silverLight;
+  static const Color onSecondary = background;
+  static const Color onSecondaryContainer = background;
+
+  // ── Surface & Background ─────────────────────────────────────────────────────
+  static const Color onSurface = nearWhite;
+  static const Color onSurfaceVariant = silverMedium;
+  static const Color onBackground = nearWhite;
+
+  // ── Status Colors (kept for semantic meaning, mapped to monochrome where appropriate) ─────
   static const Color success = Color(0xFF22C55E);
-  static const Color onSuccess = Colors.white;
-  static const Color successContainer = Color(0xFFDCFCE7);
+  static const Color onSuccess = Color(0xFF141414);
+  static const Color successContainer = Color(0xFF1A3A2A);
 
   static const Color warning = Color(0xFFF59E0B);
-  static const Color onWarning = Colors.white;
-  static const Color warningContainer = Color(0xFFFEF3C7);
+  static const Color onWarning = Color(0xFF141414);
+  static const Color warningContainer = Color(0xFF3A2E1A);
 
   static const Color danger = Color(0xFFEF4444);
   static const Color error = Color(0xFFEF4444);
-  static const Color onError = Colors.white;
-  static const Color errorContainer = Color(0xFFFEE2E2);
+  static const Color onError = nearWhite;
+  static const Color errorContainer = Color(0xFF3A1A1A);
 
-  // ── Neutral Palette (Light Theme) ─────────────────────────────────────────
-  static const Color lightBackground = Color(0xFFF8FAFC);
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightSurfaceVariant = Color(0xFFF1F5F9);
-  static const Color onLightBackground = Color(0xFF0F172A);
-  static const Color onLightSurface = Color(0xFF0F172A);
-  static const Color onLightSurfaceVariant = Color(0xFF475569);
+  // ── Divider / Outline ────────────────────────────────────────────────────────
+  static const Color divider = border;
+  static const Color dividerDark = border;
+  static const Color outline = border;
 
-  // ── Neutral Palette (Dark Theme) ──────────────────────────────────────────
-  static const Color background = Color(0xFF020617);
-  static const Color surface = Color(0xFF0F172A);
-  static const Color surfaceVariant = Color(0xFF1E293B);
-  static const Color onBackground = Color(0xFFF8FAFC);
-  static const Color onSurface = Color(0xFFF8FAFC);
-  static const Color onSurfaceVariant = Color(0xFF94A3B8);
-
-  // ── Outline / Divider ─────────────────────────────────────────────────────
-  static const Color outline = Color(0xFFE2E8F0);
-  static const Color outlineDark = Color(0xFF334155);
-  static const Color divider = Color(0xFFE2E8F0);
-  static const Color dividerDark = Color(0xFF1E293B);
-
-  // ── Glass / Overlay ────────────────────────────────────────────────────────
-  static const Color glassLight = Color(0x66FFFFFF);
-  static const Color glassDark = Color(0x660F172A);
+  // ── Glass / Overlay ──────────────────────────────────────────────────────────
+  static const Color glassLight = Color(0x33FFFFFF);
+  static const Color glassDark = Color(0x33141414);
   static const Color scrim = Color(0x99000000);
 
-  // ── Legacy / Backward-compatible aliases ───────────────────────────────────
-  static const Color accent = primary;
-  static const Color text = onSurface;
+  // ── Legacy aliases for backward compatibility ────────────────────────────────
+  static const Color lightBackground = background;
+  static const Color lightSurface = surface;
+  static const Color lightSurfaceVariant = surfaceVariant;
+  static const Color onLightSurface = onSurface;
+  static const Color onLightSurfaceVariant = onSurfaceVariant;
+  static const Color onLightBackground = onBackground;
   static const Color secondaryText = onSurfaceVariant;
-  static const Color lightSecondaryText = onLightSurfaceVariant;
+  static const Color lightSecondaryText = onSurfaceVariant;
 }

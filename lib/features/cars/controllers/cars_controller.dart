@@ -54,15 +54,26 @@ class CarsController extends _$CarsController {
     String? carYear,
     String? color,
   }) async {
-    final CarsRepository carsRepository = ref.read(carsRepositoryProvider);
-    return carsRepository.saveCar(
-      userId: userId,
-      carType: carType,
-      carModel: carModel,
-      plateNumber: plateNumber,
-      carYear: carYear,
-      color: color,
-    );
+    state = const AsyncLoading();
+    try {
+      final CarsRepository carsRepository = ref.read(carsRepositoryProvider);
+      final car = await carsRepository.saveCar(
+        userId: userId,
+        carType: carType,
+        carModel: carModel,
+        plateNumber: plateNumber,
+        carYear: carYear,
+        color: color,
+      );
+      // Reload the full list after insert so the provider state is in sync.
+      state = await AsyncValue.guard(
+        () => carsRepository.getCars(userId: userId),
+      );
+      return car;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    }
   }
 }
 

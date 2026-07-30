@@ -15,21 +15,21 @@ class Order {
         ? Map<String, dynamic>.from(carInfoRaw)
         : null;
     return Order(
-      id: (json['id'] as String?) ?? '',
-      clientId: (json['customer_id'] as String?) ?? '',
-      carId: (json['car_id'] as String?) ?? '',
-      serviceType: (json['service_type'] as String?) ?? '',
-      description: (json['description'] as String?) ?? '',
+      id: json['id']?.toString() ?? '',
+      clientId: json['customer_id']?.toString() ?? '',
+      carId: json['car_id']?.toString() ?? '',
+      serviceType: json['service_type']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
       latitude: _parseDouble(json['latitude']) ?? 0,
       longitude: _parseDouble(json['longitude']) ?? 0,
-      imageUrl: json['image_url'] as String?,
-      status: OrderStatusX.parse(json['status'] as String?),
+      imageUrl: json['image_url']?.toString(),
+      status: OrderStatusX.parse(json['status']?.toString()),
       paymentStatus:
-          PaymentStatusX.parse(json['payment_status'] as String?),
+          PaymentStatusX.parse(json['payment_status']?.toString()),
       paymentMethod:
-          PaymentMethodX.parse(json['payment_method'] as String?),
-      technicianId: json['technician_id'] as String?,
-      technicianName: json['technician_name'] as String?,
+          PaymentMethodX.parse(json['payment_method']?.toString()),
+      technicianId: json['technician_id']?.toString(),
+      technicianName: json['technician_name']?.toString(),
       carInfo: carInfo,
       createdAt:
           _parseDate(json['created_at']) ?? DateTime.fromMillisecondsSinceEpoch(0),
@@ -39,7 +39,7 @@ class Order {
       workingAt: _parseDate(json['working_at']),
       finishedAt: _parseDate(json['finished_at']),
       completedAt: _parseDate(json['completed_at']),
-      notes: json['notes'] as String?,
+      notes: json['notes']?.toString(),
       totalAmount: _parseDouble(json['total_amount']),
     );
   }

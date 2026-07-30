@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/widgets/custom_app_bar.dart';
+import 'package:flutter_application_1/shared/widgets/app_app_bar.dart';
 
 /// Screen for order completion confirmation
 class OrderCompletionScreen extends StatefulWidget {
@@ -15,7 +15,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: Text('Order Completed')),
+      appBar: const AppAppBar(title: Text('Order Completed')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),

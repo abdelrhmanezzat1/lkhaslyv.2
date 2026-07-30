@@ -4,19 +4,30 @@ import 'package:flutter_application_1/features/_shared/domain/entities/order.dar
 import 'package:flutter_application_1/features/orders/controllers/orders_controller.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class PaymentScreen extends ConsumerWidget {
+class PaymentScreen extends ConsumerStatefulWidget {
 
   const PaymentScreen({super.key, required this.order});
   final Order order;
+
+  @override
+  ConsumerState<PaymentScreen> createState() => _PaymentScreenState();
+}
+
+class _PaymentScreenState extends ConsumerState<PaymentScreen> {
+  bool _isSubmitting = false;
 
   Future<void> _submitPayment(
     BuildContext context,
     WidgetRef ref,
     String? paymentMethod,
   ) async {
+    // Guard against double-tap while a payment is already in flight.
+    if (_isSubmitting) return;
+
     final paymentMethodValue = paymentMethod;
 
     if (paymentMethodValue == null) {
@@ -27,12 +38,14 @@ class PaymentScreen extends ConsumerWidget {
       return;
     }
 
+    setState(() => _isSubmitting = true);
+
     try {
       await ref.read(ordersControllerProvider.notifier).payOrder(
-            orderId: order.id,
+            orderId: widget.order.id,
             paymentMethod: paymentMethodValue,
           );
-      if (context.mounted) {
+      if (mounted) {
         AppSnackbar.showSuccess(
           context,
           message: 'Payment successful. Your order is now paid.',
@@ -40,30 +53,34 @@ class PaymentScreen extends ConsumerWidget {
         context.go('/orders');
       }
     } catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         AppSnackbar.showError(
           context,
           message: 'Failed to process payment: $e',
         );
       }
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final vehicleName = _getVehicleName(order.carInfo);
-    final totalAmount = order.totalAmount ?? 0;
-    final technicianName = order.technicianName;
+  Widget build(BuildContext context) {
+    final vehicleName = _getVehicleName(widget.order.carInfo);
+    final totalAmount = widget.order.totalAmount ?? 0;
+    final technicianName = widget.order.technicianName;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Consumer(
       builder: (context, ref, child) {
-        // We use a stateprovider for the selected payment method to keep the screen 
+        // We use a stateprovider for the selected payment method to keep the screen
         // a ConsumerWidget while allowing UI updates for the selection.
         final selectedMethod = ref.watch(paymentMethodProvider);
 
         return Scaffold(
-          appBar: AppBar(
+          appBar: CustomAppBar(
             title: Text(
               'Payment',
               style: TextStyle(
@@ -130,7 +147,7 @@ class PaymentScreen extends ConsumerWidget {
                           _PremiumInfoRow(
                             icon: Icons.build_rounded,
                             label: 'Service',
-                            value: order.serviceType,
+                            value: widget.order.serviceType,
                           ),
                           _PremiumInfoRow(
                             icon: Icons.directions_car_rounded,
@@ -345,7 +362,7 @@ class PaymentScreen extends ConsumerWidget {
                 SizedBox(
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: () => _submitPayment(context, ref, selectedMethod),
+                    onPressed: _isSubmitting ? null : () => _submitPayment(context, ref, selectedMethod),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colorScheme.primary,
                       foregroundColor: colorScheme.onPrimary,
@@ -355,20 +372,29 @@ class PaymentScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Pay Now',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
+                    child: _isSubmitting
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Pay Now',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Icon(Icons.arrow_forward_rounded, size: 20),
+                            ],
                           ),
-                        ),
-                        SizedBox(width: 8),
-                        Icon(Icons.arrow_forward_rounded, size: 20),
-                      ],
-                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -382,8 +408,8 @@ class PaymentScreen extends ConsumerWidget {
 
   String _getVehicleName(Map<String, dynamic>? carInfo) {
     if (carInfo == null) return '';
-    final type = carInfo['car_type'] as String? ?? '';
-    final model = carInfo['car_model'] as String? ?? '';
+    final type = carInfo['car_type']?.toString() ?? '';
+    final model = carInfo['car_model']?.toString() ?? '';
     return [type, model].where((p) => p.isNotEmpty).join(' ');
   }
 }

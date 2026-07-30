@@ -46,10 +46,10 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
           .maybeSingle();
       if (response != null) {
         _technician = Technician(
-          id: response['id'] as String,
-          name: response['name'] as String? ?? '',
-          email: response['email'] as String? ?? '',
-          phone: response['phone'] as String? ?? '',
+          id: response['id']?.toString() ?? '',
+          name: response['name']?.toString() ?? '',
+          email: response['email']?.toString() ?? '',
+          phone: response['phone']?.toString() ?? '',
           rating: (response['rating'] as num?)?.toDouble() ?? 4.5,
           completedJobs: (response['completed_jobs'] as int?) ?? 0,
           isOnline: response['is_online'] as bool? ?? true,
@@ -282,29 +282,29 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
 
   TechnicianRequest _mapOrderToRequest(Map<String, dynamic> order) {
     final carInfo = order['car_info'] as Map<String, dynamic>?;
-    final carType = carInfo?['car_type'] as String? ?? '';
-    final carModel = carInfo?['car_model'] as String? ?? '';
-    final plateNumber = carInfo?['plate_number'] as String? ?? '';
+    final carType = carInfo?['car_type']?.toString() ?? '';
+    final carModel = carInfo?['car_model']?.toString() ?? '';
+    final plateNumber = carInfo?['plate_number']?.toString() ?? '';
     final vehicleName = '$carType $carModel'.trim();
     final latitude = (order['latitude'] as num?)?.toDouble() ?? 0.0;
     final longitude = (order['longitude'] as num?)?.toDouble() ?? 0.0;
 
     return TechnicianRequest(
-      id: order['id'] as String,
-      customerName: order['customer_name'] as String? ?? 'Unknown',
-      customerPhone: order['customer_phone'] as String? ?? '',
-      serviceType: order['service_type'] as String? ?? 'Unknown',
+      id: order['id']?.toString() ?? '',
+      customerName: order['customer_name']?.toString() ?? 'Unknown',
+      customerPhone: order['customer_phone']?.toString() ?? '',
+      serviceType: order['service_type']?.toString() ?? 'Unknown',
       vehicleName: vehicleName.isEmpty ? 'N/A' : vehicleName,
       vehiclePlate: plateNumber,
-      description: order['description'] as String? ?? '',
+      description: order['description']?.toString() ?? '',
       distanceKm: 0,
       requestTime:
-          DateTime.tryParse(order['created_at'] as String? ?? '') ??
+          DateTime.tryParse(order['created_at']?.toString() ?? '') ??
           DateTime.now(),
       latitude: latitude,
       longitude: longitude,
       status: JobStatusExtension.fromString(
-        order['status'] as String? ?? 'pending',
+        order['status']?.toString() ?? 'pending',
       ),
     );
   }

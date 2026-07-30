@@ -3,11 +3,11 @@ import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_application_1/features/home/presentation/widgets/home_greeting_bar.dart';
-import 'package:flutter_application_1/shared/widgets/app_app_bar.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/fade_in.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -58,7 +58,8 @@ class HomeScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
-      appBar: AppAppBar(
+      appBar: CustomAppBar(
+        title: const Text('Home'),
         leading: IconButton(
           icon: const Icon(Icons.person_rounded),
           onPressed: () {
@@ -66,7 +67,6 @@ class HomeScreen extends ConsumerWidget {
           },
           tooltip: 'Profile',
         ),
-        title: const Text('Home'),
         actions: [
           IconButton(
             icon: const Icon(Icons.receipt_long_rounded),
@@ -89,6 +89,7 @@ class HomeScreen extends ConsumerWidget {
               tooltip: 'Logout',
             ),
         ],
+        automaticallyImplyLeading: false,
       ),
       body: userAsyncValue.when(
         data: (user) {
@@ -175,7 +176,7 @@ class HomeScreen extends ConsumerWidget {
                             onTap: () {
                               context.push(
                                 AppRoutes.serviceRequest,
-                                extra: category.serviceType,
+                                extra: ServiceRequestExtra(category.serviceType),
                               );
                             },
                             child: Column(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
+import 'package:flutter_application_1/shared/widgets/app_loader.dart';
+import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
+import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
-import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
-import 'package:flutter_application_1/shared/widgets/app_loader.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
@@ -61,7 +62,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     final isLoading = authState is AsyncLoading;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Forgot Password')),
+      appBar: const CustomAppBar(title: Text('Forgot Password')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
