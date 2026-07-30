@@ -1,5 +1,4 @@
 name: Build iOS IPA (Unsigned)
-
 # يتم تشغيل هذا السكريبت تلقائياً بمجرد عمل Push للكود على فرع main أو master
 on:
   push:
@@ -12,7 +11,6 @@ jobs:
   build:
     name: Build iOS IPA
     runs-on: macos-latest # استخدام سيرفر ماك سحابي من جيت هاب
-
     steps:
       # 1. سحب كود المشروع من مستودعك
       - name: Checkout repository
@@ -25,23 +23,47 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      # 3. تثبيت بيئة عمل Flutter
+      # 3. تثبيت بيئة عمل Flutter (مع تفعيل الكاش الخاص بـ Flutter SDK نفسه)
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          # يمكنك تحديد إصدار معين من فلاتر هنا إذا أردت، أو سيقوم بتثبيت أحدث إصدار مستقر تلقائياً
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:'
+          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
 
-      # 4. تحميل مكاتب وحزم المشروع (Packages)
+      # 4. كاش خاص بحزم pub (packages) بناءً على محتوى pubspec.lock
+      #    لو pubspec.lock ماتغيرش، هياخد الحزم من الكاش بدل ما ينزلها تاني
+      - name: Cache pub packages
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      # 5. كاش خاص بمكتبات CocoaPods (ios/Pods) عشان pod install يبقى أسرع
+      - name: Cache CocoaPods
+        uses: actions/cache@v5
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      # 6. تحميل مكاتب وحزم المشروع (Packages)
       - name: Install dependencies
         run: flutter pub get
 
-      # 5. بناء تطبيق الـ iOS بدون توقيع رقمي (لأنه لا يمتلك حساب مطور حالياً)
+      # 7. بناء تطبيق الـ iOS بدون توقيع رقمي (لأنه لا يمتلك حساب مطور حالياً)
       - name: Build iOS IPA (Unsigned)
         run: |
           flutter build ipa --no-codesign
 
-      # 6. ضغط وتجهيز الملف الناتج بصيغة .zip ليكون جاهزاً للتحميل
+      # 8. ضغط وتجهيز الملف الناتج بصيغة .zip ليكون جاهزاً للتحميل
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
