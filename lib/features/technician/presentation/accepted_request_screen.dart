@@ -12,18 +12,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 final _acceptedRequestsProvider =
-    StreamProvider.autoDispose<List<TechnicianRequest>>((ref) {
+    FutureProvider.autoDispose<List<TechnicianRequest>>((ref) async {
       final repository = ref.watch(technicianRepositoryProvider);
-
-      return repository.requestsStream.map(
-        (requests) => requests
-            .where(
-              (request) =>
-                  request.status.isActive &&
-                  request.status != JobStatus.pending,
-            )
-            .toList(),
-      );
+      // Fetch fresh accepted requests from Supabase.
+      await repository.fetchAcceptedRequests();
+      // Return the locally cached accepted + active requests.
+      return [
+        ...repository.getAcceptedRequests(),
+        ...repository.getActiveRequests(),
+      ];
     });
 
 /// Screen displaying accepted service requests for technicians.

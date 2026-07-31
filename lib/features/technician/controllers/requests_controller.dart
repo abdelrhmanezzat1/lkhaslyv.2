@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:flutter_application_1/features/technician/models/technician_request.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,6 +14,8 @@ class RequestsController extends _$RequestsController {
 
   Future<List<TechnicianRequest>> _getRequests() async {
     final repository = ref.read(technicianRepositoryProvider);
+    // Fetch fresh pending orders from Supabase, then return the local list.
+    await repository.fetchPendingRequests();
     return repository.getPendingRequests();
   }
 
@@ -30,7 +30,7 @@ class RequestsController extends _$RequestsController {
   /// Rejects a request by ID.
   Future<void> rejectRequest(String requestId) async {
     final repository = ref.read(technicianRepositoryProvider);
-    repository.rejectRequest(requestId);
+    await repository.rejectRequest(requestId);
     state = const AsyncLoading(); // Trigger loading state
     state = AsyncData(await _getRequests()); // Refresh the list
   }

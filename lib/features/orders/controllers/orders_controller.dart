@@ -149,9 +149,11 @@ class OrdersController extends _$OrdersController {
     if (_isProcessingPayment) {
       appLogger.w(
         'OrdersController.payOrder: already processing payment for '
-        'order=$orderId — ignoring duplicate call.',
+        'order=$orderId — throwing to prevent silent success.',
       );
-      return;
+      throw StateError(
+        'Payment for order $orderId is already being processed.',
+      );
     }
 
     final PayOrderUseCase payOrderUseCase = ref.read(payOrderUseCaseProvider);

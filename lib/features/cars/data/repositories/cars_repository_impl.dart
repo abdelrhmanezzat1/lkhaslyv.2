@@ -5,10 +5,6 @@ import 'package:flutter_application_1/features/cars/domain/repositories/cars_rep
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Supabase-backed implementation of [CarsRepository].
-///
-/// `saveCar` writes the row and immediately re-reads it so callers get
-/// back the persisted primary key, matching the contract used by the
-/// legacy [AuthService].
 class CarsRepositoryImpl implements CarsRepository {
   CarsRepositoryImpl(this._supabase);
 
@@ -29,8 +25,8 @@ class CarsRepositoryImpl implements CarsRepository {
       'car_type': carType,
       'car_model': carModel,
       'plate_number': plateNumber,
-      'car_year': ?carYear,
-      'color': ?color,
+      if (carYear != null) 'car_year': carYear,
+      if (color != null) 'color': color,
       'created_at': DateTime.now().toIso8601String(),
     };
 
@@ -54,5 +50,51 @@ class CarsRepositoryImpl implements CarsRepository {
     return EntityMappers.carsFromJson(
       response.cast<Map<String, dynamic>>(),
     );
+  }
+
+  @override
+  Future<Car> updateCar({
+    required String carId,
+    String? carType,
+    String? carModel,
+    String? plateNumber,
+    String? carYear,
+    String? color,
+  }) async {
+    appLogger.i('CarsRepository.updateCar carId=$carId');
+    final payload = <String, dynamic>{
+      'car_type': carType,
+      'car_model': carModel,
+      'plate_number': plateNumber,
+      'car_year': carYear,
+      'color': color,
+      'updated_at': DateTime.now().toIso8601String(),
+    }..removeWhere((key, value) => value == null);
+
+    final updated = await _supabase
+        .from('cars')
+        .update(payload)
+        .eq('id', carId)
+        .select()
+        .single();
+
+    return EntityMappers.carFromJson(Map<String, dynamic>.from(updated));
+  }
+
+  @override
+  Future<void> deleteCar(String carId) async {
+    appLogger.i('CarsRepository.deleteCar carId=$carId');
+    await _supabase.from('cars').delete().eq('id', carId);
+  }
+
+  @override
+  Future<bool> carHasOrders(String carId) async {
+    appLogger.i('CarsRepository.carHasOrders carId=$carId');
+    final response = await _supabase
+        .from('orders')
+        .select('id')
+        .eq('car_id', carId)
+        .limit(1);
+    return response.isNotEmpty;
   }
 }

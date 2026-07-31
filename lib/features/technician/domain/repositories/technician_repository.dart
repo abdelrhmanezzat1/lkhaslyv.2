@@ -16,11 +16,23 @@ abstract class TechnicianRepository {
   void setTechnicianProfile(Technician technician);
   void toggleOnline();
 
+  /// Fetches pending (unassigned) orders from Supabase and populates the
+  /// local pending-requests list. Returns the fetched list.
+  Future<List<TechnicianRequest>> fetchPendingRequests();
+
+  /// Fetches accepted orders assigned to the current technician from Supabase
+  /// and populates the local accepted/active lists. Returns the fetched list.
+  Future<List<TechnicianRequest>> fetchAcceptedRequests();
+
   List<TechnicianRequest> getPendingRequests();
   List<TechnicianRequest> getAcceptedRequests();
   List<TechnicianRequest> getActiveRequests();
   List<TechnicianRequest> getCompletedRequests();
   Stream<List<TechnicianRequest>> get requestsStream;
+
+  /// Looks up a request by [id] from the in-memory cached lists
+  /// (accepted, active, pending, completed). Returns null if not found.
+  TechnicianRequest? getRequestById(String id);
 
   Future<void> acceptRequest(String requestId);
   Future<void> rejectRequest(String requestId);

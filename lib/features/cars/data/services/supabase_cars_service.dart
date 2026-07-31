@@ -39,6 +39,6 @@ class SupabaseCarsService {
         .from(_table)
         .select()
         .eq('user_id', userId);
-    return response.cast<Map<String, dynamic>>();
+    return (response as List).cast<Map<String, dynamic>>();
   }
 }

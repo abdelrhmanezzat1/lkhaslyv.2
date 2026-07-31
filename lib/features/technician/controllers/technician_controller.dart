@@ -42,6 +42,11 @@ class TechnicianController extends StateNotifier<Technician> {
       if (profile.id.isNotEmpty) {
         state = profile;
       }
+      // After loading the profile, fetch pending and accepted orders from Supabase.
+      await Future.wait([
+        _repository.fetchPendingRequests(),
+        _repository.fetchAcceptedRequests(),
+      ]);
     } on Exception {
       // keep state as-is
     }

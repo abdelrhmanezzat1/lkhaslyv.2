@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/shared/widgets/app_brand_logo.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -25,8 +26,19 @@ class SplashScreen extends StatelessWidget {
             builder: (context, value, child) {
               return Transform.scale(
                 scale: value,
-                child: Container(
-                  padding: const EdgeInsets.all(24),
+                child: child,
+              );
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const AppBrandLogoBadge(
+                  size: 120,
+                  borderRadius: 32,
+                ),
+                const SizedBox(height: 32),
+                Container(
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(24),
@@ -34,21 +46,14 @@ class SplashScreen extends StatelessWidget {
                       color: Colors.white.withValues(alpha: 0.3),
                       width: 1.5,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
                   ),
                   child: const CircularProgressIndicator(
                     strokeWidth: 3,
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ),
       ),

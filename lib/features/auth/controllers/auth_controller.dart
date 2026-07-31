@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

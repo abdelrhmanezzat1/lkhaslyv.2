@@ -8,4 +8,5 @@ class StorageKeys {
   static const String fcmToken = 'fcm_token';
   static const String pendingNotificationPayload =
       'pending_notification_payload';
+  static const String locale = 'app_locale';
 }

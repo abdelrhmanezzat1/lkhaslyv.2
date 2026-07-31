@@ -90,6 +90,14 @@ class _FakeTechnicianRepository implements TechnicianRepository {
   Technician getTechnicianProfile() => throw UnimplementedError();
 
   @override
+  Future<List<TechnicianRequest>> fetchPendingRequests() async =>
+      throw UnimplementedError();
+
+  @override
+  Future<List<TechnicianRequest>> fetchAcceptedRequests() async =>
+      throw UnimplementedError();
+
+  @override
   Future<void> loadTechnicianProfile(String userId) async =>
       throw UnimplementedError();
 
@@ -144,6 +152,9 @@ class _FakeTechnicianRepository implements TechnicianRepository {
   @override
   Future<Map<String, dynamic>?> getOrderById(String orderId) async =>
       throw UnimplementedError();
+
+  @override
+  TechnicianRequest? getRequestById(String id) => throw UnimplementedError();
 
   @override
   int get pendingCount => 0;

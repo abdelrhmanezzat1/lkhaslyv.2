@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 // Phase 3.3: repository providers now live in the central DI bridge.
 import 'package:flutter_application_1/core/di/service_locator_provider.dart';
+import 'package:flutter_application_1/core/logger/app_logger.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
@@ -12,18 +15,66 @@ import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+/// Provider that first checks the repository's in-memory cache for the
+/// request, then continues listening to the broadcast stream for live updates.
+///
+/// This avoids the infinite-spinner problem caused by `StreamController.broadcast()`
+/// which has no replay — if the stream already emitted before this provider
+/// started listening, the old `StreamProvider.family` would hang forever.
+///
+/// Approach: create a single-subscription `StreamController` that:
+///   1. Immediately emits the cached value (if found in memory).
+///   2. Subscribes to the broadcast stream and forwards all future events.
+///   3. The `StreamProvider` watches this controller's stream.
 final _liveRequestProvider = StreamProvider.family<TechnicianRequest?, String>((
   ref,
   requestId,
 ) {
+  appLogger.d('LiveStatusScreen._liveRequestProvider — CREATED for requestId=$requestId');
   final repository = ref.watch(technicianRepositoryProvider);
-  return repository.requestsStream.map((requests) {
+
+  // Create a controller whose stream the provider will expose.
+  // The [onCancel] callback disposes the broadcast subscription when the
+  // provider is disposed (e.g. screen pops).
+  StreamController<TechnicianRequest?>? controller;
+  StreamSubscription<List<TechnicianRequest>>? broadcastSub;
+
+  controller = StreamController<TechnicianRequest?>(
+    onCancel: () {
+      appLogger.d('LiveStatusScreen._liveRequestProvider — onCancel for $requestId');
+      broadcastSub?.cancel();
+      controller?.close();
+    },
+  );
+
+  // 1. Emit the cached value immediately (if available) so the screen
+  //    never hangs on a loading spinner.
+  final cached = repository.getRequestById(requestId);
+  if (cached != null) {
+    appLogger.d('LiveStatusScreen._liveRequestProvider — emitting cached: id=${cached.id} status=${cached.status}');
+    controller.add(cached);
+  } else {
+    appLogger.d('LiveStatusScreen._liveRequestProvider — not in cache, will emit from stream');
+  }
+
+  // 2. Subscribe to the broadcast stream for live updates.
+  broadcastSub = repository.requestsStream.listen((requests) {
+    appLogger.d('LiveStatusScreen._liveRequestProvider — stream emitted ${requests.length} requests');
     try {
-      return requests.firstWhere((request) => request.id == requestId);
+      final found = requests.firstWhere((request) => request.id == requestId);
+      appLogger.d('LiveStatusScreen._liveRequestProvider — found in stream: id=${found.id} status=${found.status}');
+      if (!controller!.isClosed) controller.add(found);
     } catch (_) {
-      return null;
+      appLogger.w('LiveStatusScreen._liveRequestProvider — request $requestId NOT FOUND in stream data');
+      // Fall back to cache in case the stream doesn't include it yet.
+      final fallback = repository.getRequestById(requestId);
+      if (fallback != null && !controller!.isClosed) {
+        controller.add(fallback);
+      }
     }
   });
+
+  return controller.stream;
 });
 
 /// Screen displaying live status progress of an accepted job.
@@ -34,11 +85,15 @@ class LiveStatusScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    appLogger.d('LiveStatusScreen.build() — requestId=$requestId, watching provider...');
     final requestAsync = ref.watch(_liveRequestProvider(requestId));
+    appLogger.d('LiveStatusScreen.build() — provider state: ${requestAsync.isLoading ? "loading" : requestAsync.hasError ? "error: ${requestAsync.error}" : "data"}');
 
     return requestAsync.when(
       data: (request) {
+        appLogger.d('LiveStatusScreen.build() — DATA branch, request=${request?.id} status=${request?.status}');
         if (request == null) {
+          appLogger.w('LiveStatusScreen.build() — request is null (not found in stream)');
           return const Scaffold(
             appBar: CustomAppBar(title: Text('Job Not Found')),
             body: Center(child: Text('Job not found')),
@@ -46,7 +101,14 @@ class LiveStatusScreen extends ConsumerWidget {
         }
 
         final repository = ref.watch(technicianRepositoryProvider);
-        final progress = repository.getProgress(request.id);
+        ServiceProgress progress;
+        try {
+          progress = repository.getProgress(request.id);
+          appLogger.d('LiveStatusScreen.build() — progress found for ${request.id}');
+        } catch (e) {
+          appLogger.w('LiveStatusScreen.build() — getProgress failed: $e');
+          progress = ServiceProgress(requestId: request.id, acceptedAt: DateTime.now());
+        }
 
         return Scaffold(
           appBar: const CustomAppBar(title: Text('Live Status')),
@@ -111,6 +173,7 @@ class LiveStatusScreen extends ConsumerWidget {
                 // Navigation Button
                 AppButton(
                   onPressed: () {
+                    appLogger.d('LiveStatusScreen — Navigate button pressed, pushing to map with lat=${request.latitude} lng=${request.longitude}');
                     context.push(
                       AppRoutes.map,
                       extra: {
@@ -131,6 +194,7 @@ class LiveStatusScreen extends ConsumerWidget {
                 if (request.status == JobStatus.accepted)
                   AppButton(
                     onPressed: () {
+                      appLogger.d('LiveStatusScreen — Start Driving pressed for ${request.id}');
                       repository.updateRequestStatus(
                         request.id,
                         JobStatus.driving,
@@ -147,6 +211,7 @@ class LiveStatusScreen extends ConsumerWidget {
                 else if (request.status == JobStatus.driving)
                   AppButton(
                     onPressed: () {
+                      appLogger.d('LiveStatusScreen — Mark Arrived pressed for ${request.id}');
                       repository.updateRequestStatus(
                         request.id,
                         JobStatus.arrived,
@@ -163,6 +228,7 @@ class LiveStatusScreen extends ConsumerWidget {
                 else if (request.status == JobStatus.arrived)
                   AppButton(
                     onPressed: () {
+                      appLogger.d('LiveStatusScreen — Start Working pressed for ${request.id}');
                       repository.updateRequestStatus(
                         request.id,
                         JobStatus.working,
@@ -179,6 +245,7 @@ class LiveStatusScreen extends ConsumerWidget {
                 else if (request.status == JobStatus.working)
                   AppButton(
                     onPressed: () {
+                      appLogger.d('LiveStatusScreen — Finish Job pressed for ${request.id}');
                       context.push(AppRoutes.finishJob, extra: FinishJobExtra(request.id));
                     },
                     text: 'Finish Job',
@@ -190,12 +257,17 @@ class LiveStatusScreen extends ConsumerWidget {
           ),
         );
       },
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (error, stack) => Scaffold(
-        appBar: const CustomAppBar(title: Text('Live Status')),
-        body: Center(child: Text('Error: $error')),
-      ),
+      loading: () {
+        appLogger.d('LiveStatusScreen.build() — LOADING branch (spinner shown)');
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      },
+      error: (error, stack) {
+        appLogger.e('LiveStatusScreen.build() — ERROR branch: $error');
+        return Scaffold(
+          appBar: const CustomAppBar(title: Text('Live Status')),
+          body: Center(child: Text('Error: $error')),
+        );
+      },
     );
   }
 }

@@ -1,16 +1,9 @@
-// @ts-nocheck
-/// <reference lib="deno.ns" />
-
-import { serve } from "std/http/server.ts"
-import { createClient } from "@supabase/supabase-js"
-
-declare global {
-  const Deno: {
-    env: {
-      get(key: string): string | undefined
-    }
-  }
-}
+// @ts-nocheck: This file runs in the Deno runtime (Supabase Edge Functions).
+// Deno globals (Deno.env, etc.) and bare specifiers are resolved at runtime.
+// @ts-ignore: Deno std module resolved at runtime
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+// @ts-ignore: npm module resolved at runtime via esm.sh
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -107,10 +100,10 @@ serve(async (req: Request) => {
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in send-push-notification:', error)
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: error.message }),
+      JSON.stringify({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
@@ -152,7 +145,7 @@ async function resolveUserTokens(supabaseClient: ReturnType<typeof createClient>
     throw new Error('Failed to resolve user tokens')
   }
 
-  return profiles.map(p => p.fcm_token).filter(Boolean) as string[]
+  return profiles.map((p: { fcm_token: string | null }) => p.fcm_token).filter(Boolean) as string[]
 }
 
 async function resolveUserTokensByRole(supabaseClient: ReturnType<typeof createClient>, role: 'client' | 'technician' | 'all'): Promise<string[]> {
@@ -172,7 +165,7 @@ async function resolveUserTokensByRole(supabaseClient: ReturnType<typeof createC
     throw new Error('Failed to resolve tokens by role')
   }
 
-  return profiles.map(p => p.fcm_token).filter(Boolean) as string[]
+  return profiles.map((p: { fcm_token: string | null }) => p.fcm_token).filter(Boolean) as string[]
 }
 
 async function sendToTokens(tokens: string[], payload: NotificationPayload): Promise<SendResult> {
@@ -376,17 +369,17 @@ async function sendToTopic(payload: NotificationPayload): Promise<Response> {
 }
 
 async function getAccessToken(): Promise<string> {
-  const serviceAccount = {
-    client_email: Deno.env.get('FIREBASE_CLIENT_EMAIL'),
-    private_key: Deno.env.get('FIREBASE_PRIVATE_KEY')?.replace(/\\n/g, '\n'),
-    project_id: Deno.env.get('FIREBASE_PROJECT_ID'),
+  const clientEmail = Deno.env.get('FIREBASE_CLIENT_EMAIL');
+  const privateKey = Deno.env.get('FIREBASE_PRIVATE_KEY')?.replace(/\\n/g, '\n');
+  const projectId = Deno.env.get('FIREBASE_PROJECT_ID');
+
+  if (!clientEmail || !privateKey || !projectId) {
+    throw new Error('Missing Firebase service account configuration');
   }
 
-  if (!serviceAccount.client_email || !serviceAccount.private_key || !serviceAccount.project_id) {
-    throw new Error('Missing Firebase service account configuration')
-  }
+  const serviceAccount = { client_email: clientEmail, private_key: privateKey, project_id: projectId };
 
-  const jwt = await createJWT(serviceAccount)
+  const jwt = await createJWT(serviceAccount);
   const response = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

@@ -4,6 +4,7 @@ import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_application_1/features/home/presentation/widgets/home_greeting_bar.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
+import 'package:flutter_application_1/shared/widgets/app_language_switcher.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/fade_in.dart';
@@ -68,6 +69,8 @@ class HomeScreen extends ConsumerWidget {
           tooltip: 'Profile',
         ),
         actions: [
+          // Language switcher
+          const LanguageSwitcher(compact: true),
           IconButton(
             icon: const Icon(Icons.receipt_long_rounded),
             onPressed: () {

@@ -13,6 +13,8 @@ class AppRoutes {
   static const String home = '/home';
   static const String profile = '/profile';
   static const String addCar = '/add-car';
+  static const String editCar = '/edit-car';
+  static const String myCars = '/my-cars';
   static const String map = '/map';
   static const String serviceRequest = '/service-request';
   static const String orders = '/orders';

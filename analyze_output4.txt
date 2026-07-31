@@ -1,0 +1,33 @@
+Analyzing flutter_application_1...                              
+
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal - lib\app\view\app.dart:27:31 - prefer_const_literals_to_create_immutables
+   info - Closure should be a tearoff. Try using a tearoff rather than a closure - lib\features\auth\controllers\auth_controller.dart:53:36 - unnecessary_lambdas
+   info - Sort directive sections alphabetically. Try sorting the directives - lib\features\auth\presentation\login\register_screen.dart:5:1 - directives_ordering
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\auth\presentation\login\register_screen.dart:179:24 - prefer_const_constructors
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\features\cars\data\repositories\cars_repository_impl.dart:28:7 - use_null_aware_elements
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\features\cars\data\repositories\cars_repository_impl.dart:29:7 - use_null_aware_elements
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\features\cars\data\repositories\cars_repository_impl.dart:66:7 - use_null_aware_elements
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\features\cars\data\repositories\cars_repository_impl.dart:67:7 - use_null_aware_elements
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\features\cars\data\repositories\cars_repository_impl.dart:68:7 - use_null_aware_elements
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\features\cars\data\repositories\cars_repository_impl.dart:69:7 - use_null_aware_elements
+   info - Use the null-aware marker '?' rather than a null check via an 'if'. Try using '?' - lib\features\cars\data\repositories\cars_repository_impl.dart:70:7 - use_null_aware_elements
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\cars\presentation\edit_car_screen.dart:173:2 - eol_at_end_of_file
+   info - Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation - lib\features\cars\presentation\my_cars_screen.dart:31:14 - prefer_const_constructors
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext - lib\features\cars\presentation\my_cars_screen.dart:148:33 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext - lib\features\cars\presentation\my_cars_screen.dart:152:31 - use_build_context_synchronously
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\cars\presentation\my_cars_screen.dart:376:2 - eol_at_end_of_file
+   info - Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' - lib\features\home\presentation\map_screen.dart:168:7 - unawaited_futures
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\home\presentation\profile_screen.dart:247:2 - eol_at_end_of_file
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext - lib\features\orders\presentation\payment_screen.dart:257:11 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext - lib\features\orders\presentation\payment_screen.dart:260:9 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check. Guard a 'State.context' use with a 'mounted' check on the State, and other BuildContext use with a 'mounted' check on the BuildContext - lib\features\orders\presentation\payment_screen.dart:265:11 - use_build_context_synchronously
+warning - The value of the local variable 'colorScheme' isn't used. Try removing the variable or using it - lib\features\orders\presentation\payment_screen.dart:291:11 - unused_local_variable
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\orders\presentation\payment_screen.dart:768:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\orders\presentation\service_request_screen.dart:660:2 - eol_at_end_of_file
+   info - The referenced name isn't visible in scope. Try adding an import for the referenced name - lib\features\profile\data\services\supabase_profile_service.dart:10:10 - comment_references
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\settings\controllers\locale_controller.dart:39:2 - eol_at_end_of_file
+   info - Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' - lib\features\technician\presentation\finish_job_screen.dart:168:18 - unawaited_futures
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\features\technician\technician.dart:7:41 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_language_switcher.dart:212:2 - eol_at_end_of_file
+   info - Missing a newline at the end of the file. Try adding a newline at the end of the file - lib\shared\widgets\app_order_card.dart:136:2 - eol_at_end_of_file
+

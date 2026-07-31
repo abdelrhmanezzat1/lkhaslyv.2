@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_application_1/core/di/service_locator_provider.dart';
 import 'package:flutter_application_1/features/technician/models/job_status.dart';
 import 'package:flutter_application_1/features/technician/models/service_progress.dart';
@@ -36,7 +34,7 @@ class JobController extends _$JobController {
   /// Updates the job status.
   Future<void> updateStatus(String requestId, JobStatus newStatus) async {
     final repository = ref.read(technicianRepositoryProvider);
-    repository.updateRequestStatus(requestId, newStatus);
+    await repository.updateRequestStatus(requestId, newStatus);
     state = const AsyncLoading();
     state = AsyncData(await _getJob(requestId));
   }
@@ -44,7 +42,7 @@ class JobController extends _$JobController {
   /// Finishes the job with notes and amount.
   Future<void> finishJob(String requestId, String notes, double amount) async {
     final repository = ref.read(technicianRepositoryProvider);
-    repository.finishJob(requestId, notes, amount);
+    await repository.finishJob(requestId, notes, amount);
     state = const AsyncLoading();
     state = const AsyncData(null);
   }

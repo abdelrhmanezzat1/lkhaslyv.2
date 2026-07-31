@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_typography.dart';
+import 'package:flutter_application_1/shared/widgets/app_brand_logo.dart';
 
 /// A custom AppBar widget that displays the app logo and supports
 /// optional title and actions for each screen.
@@ -16,7 +17,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.elevation = 0,
-    this.logoHeight = 36,
+    this.logoHeight = 48,
   });
 
   /// The primary content displayed in the app bar, typically a [Text] widget.
@@ -55,12 +56,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final Color fgColor =
         foregroundColor ?? (isDark ? AppColors.onSurface : AppColors.onLightSurface);
 
-    // Build the logo widget
-    final Widget logo = Image.asset(
-      'assets/logo.png',
-      height: logoHeight,
-      fit: BoxFit.contain,
-      color: fgColor,
+    // Build the logo widget — full-color asset, padded to fit within AppBar height.
+    final Widget logo = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: AppBrandLogo(height: logoHeight),
     );
 
     // Determine what goes in the leading slot

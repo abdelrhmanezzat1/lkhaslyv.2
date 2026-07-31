@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_application_1/core/logger/app_logger.dart';
 import 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart';
 import 'package:flutter_application_1/features/technician/models/job_status.dart';
 import 'package:flutter_application_1/features/technician/models/service_progress.dart';
@@ -66,6 +67,89 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
   }
 
   @override
+  Future<List<TechnicianRequest>> fetchPendingRequests() async {
+    appLogger.i('TechnicianRepositoryImpl: fetching pending orders from Supabase');
+    try {
+      final response = await _supabase
+          .from('orders')
+          .select('*, car_info:cars(*)')
+          .eq('status', 'pending')
+          .order('created_at', ascending: false);
+
+      appLogger.i(
+        'TechnicianRepositoryImpl: fetched ${response.length} pending orders',
+      );
+
+      _pendingRequests.clear();
+      for (final row in response) {
+        final order = Map<String, dynamic>.from(row);
+        _pendingRequests.add(_mapOrderToRequest(order));
+      }
+      _notifyStream();
+    } catch (e) {
+      appLogger.e(
+        'TechnicianRepositoryImpl: failed to fetch pending orders',
+        error: e,
+      );
+      // Keep existing list on failure — don't clear it.
+    }
+    return List.unmodifiable(_pendingRequests);
+  }
+
+  @override
+  Future<List<TechnicianRequest>> fetchAcceptedRequests() async {
+    final technicianId = _technician?.id;
+    if (technicianId == null || technicianId.isEmpty) {
+      appLogger.w(
+        'TechnicianRepositoryImpl: cannot fetch accepted requests — '
+        'technician profile not loaded.',
+      );
+      return List.unmodifiable(_acceptedRequests);
+    }
+
+    appLogger.i(
+      'TechnicianRepositoryImpl: fetching accepted orders for '
+      'technician=$technicianId',
+    );
+    try {
+      final response = await _supabase
+          .from('orders')
+          .select('*, car_info:cars(*)')
+          .eq('status', 'accepted')
+          .eq('technician_id', technicianId)
+          .order('created_at', ascending: false);
+
+      appLogger.i(
+        'TechnicianRepositoryImpl: fetched ${response.length} accepted orders',
+      );
+
+      _acceptedRequests.clear();
+      _activeRequests.clear();
+      for (final row in response) {
+        final order = Map<String, dynamic>.from(row);
+        final request = _mapOrderToRequest(order);
+        _acceptedRequests.add(request);
+        // Also populate progress map for each accepted request.
+        _progressMap[request.id] = ServiceProgress(
+          requestId: request.id,
+          acceptedAt: DateTime.tryParse(
+                order['accepted_at']?.toString() ?? '',
+              ) ??
+              DateTime.now(),
+        );
+      }
+      _notifyStream();
+    } catch (e) {
+      appLogger.e(
+        'TechnicianRepositoryImpl: failed to fetch accepted orders',
+        error: e,
+      );
+      // Keep existing list on failure.
+    }
+    return List.unmodifiable(_acceptedRequests);
+  }
+
+  @override
   List<TechnicianRequest> getPendingRequests() {
     return List.unmodifiable(_pendingRequests);
   }
@@ -86,6 +170,24 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
   }
 
   @override
+  TechnicianRequest? getRequestById(String id) {
+    // Search all in-memory lists for the request.
+    try {
+      return _acceptedRequests.firstWhere((r) => r.id == id);
+    } catch (_) {}
+    try {
+      return _activeRequests.firstWhere((r) => r.id == id);
+    } catch (_) {}
+    try {
+      return _pendingRequests.firstWhere((r) => r.id == id);
+    } catch (_) {}
+    try {
+      return _completedRequests.firstWhere((r) => r.id == id);
+    } catch (_) {}
+    return null;
+  }
+
+  @override
   Stream<List<TechnicianRequest>> get requestsStream =>
       _requestsController.stream;
 
@@ -96,6 +198,12 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
       throw Exception('Order $requestId not found.');
     }
 
+    final technicianId = _technician?.id;
+    final technicianName = _technician?.name;
+    if (technicianId == null || technicianId.isEmpty) {
+      throw Exception('Technician profile not loaded — cannot accept request.');
+    }
+
     final request = _mapOrderToRequest(order);
     _pendingRequests.removeWhere((r) => r.id == requestId);
     _acceptedRequests.add(request);
@@ -104,7 +212,13 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
       acceptedAt: DateTime.now(),
     );
 
-    await _updateOrderStatus(requestId, 'accepted');
+    // Update Supabase: set status, technician_id, and technician_name.
+    await _supabase.from('orders').update(<String, dynamic>{
+      'status': 'accepted',
+      'technician_id': technicianId,
+      'technician_name': technicianName,
+      'accepted_at': DateTime.now().toIso8601String(),
+    }).eq('id', requestId);
     _notifyStream();
   }
 
@@ -212,6 +326,17 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
 
   @override
   Future<void> completeOrderAfterPayment(String requestId) async {
+    // Guard: if the order has no technician assigned (not in our local
+    // lists), there is nothing to mirror — log and return early.
+    if (_activeRequests.every((r) => r.id != requestId) &&
+        _acceptedRequests.every((r) => r.id != requestId)) {
+      appLogger.i(
+        'completeOrderAfterPayment: order $requestId has no technician '
+        'assigned — skipping mirror update.',
+      );
+      return;
+    }
+
     final request = _activeRequests.firstWhere(
       (r) => r.id == requestId,
       orElse: () => _acceptedRequests.firstWhere(
@@ -316,6 +441,9 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
       ..._activeRequests,
       ..._completedRequests,
     ];
+    appLogger.d('TechnicianRepositoryImpl._notifyStream() — emitting ${all.length} requests '
+        '(pending=${_pendingRequests.length} accepted=${_acceptedRequests.length} '
+        'active=${_activeRequests.length} completed=${_completedRequests.length})');
     _requestsController.add(List.unmodifiable(all));
   }
 }

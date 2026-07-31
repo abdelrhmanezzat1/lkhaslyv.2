@@ -4,6 +4,8 @@ import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/core/theme/app_typography.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
+import 'package:flutter_application_1/l10n/app_localizations.dart';
+import 'package:flutter_application_1/shared/widgets/app_brand_logo.dart';
 import 'package:flutter_application_1/shared/widgets/app_button.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
@@ -81,7 +83,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           if (!mounted) return;
           final errorMessage = error is AuthException
               ? error.message
-              : 'An unknown error occurred.';
+              : AppLocalizations.of(context)!.unknownError;
           AppSnackbar.showError(context, message: errorMessage);
         },
         loading: () {},
@@ -131,7 +133,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             const SizedBox(height: AppSpacing.xl),
                             // Title
                             Text(
-                              'Welcome back',
+                              AppLocalizations.of(context)!.welcomeBack,
                               textAlign: TextAlign.center,
                               style: AppTypography.textTheme.headlineMedium?.copyWith(
                                     color: onPrimaryColor,
@@ -140,7 +142,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             ),
                             const SizedBox(height: AppSpacing.sm),
                             Text(
-                              'Sign in to continue to your account',
+                              AppLocalizations.of(context)!.signInSubtitle,
                               textAlign: TextAlign.center,
                               style: AppTypography.textTheme.bodyLarge?.copyWith(
                                     color: onPrimaryColor.withValues(alpha: 0.8),
@@ -159,17 +161,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                     AppTextField(
                                       controller: _emailController,
                                       focusNode: _emailFocusNode,
-                                      labelText: 'Email',
-                                      hintText: 'you@example.com',
+                                      labelText: AppLocalizations.of(context)!.email,
+                                      hintText: AppLocalizations.of(context)!.emailHint,
                                       keyboardType: TextInputType.emailAddress,
                                       prefixIcon: const Icon(Icons.email_outlined),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                          return 'Please enter your email';
+                                          return AppLocalizations.of(context)!.pleaseEnterEmail;
                                         }
                                         if (!RegExp(r'\S+@\S+\.\S+')
                                             .hasMatch(value)) {
-                                          return 'Please enter a valid email address';
+                                          return AppLocalizations.of(context)!.pleaseEnterValidEmail;
                                         }
                                         return null;
                                       },
@@ -179,13 +181,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                     AppTextField(
                                       controller: _passwordController,
                                       focusNode: _passwordFocusNode,
-                                      labelText: 'Password',
-                                      hintText: 'Enter your password',
+                                      labelText: AppLocalizations.of(context)!.password,
+                                      hintText: AppLocalizations.of(context)!.passwordHint,
                                       obscureText: true,
                                       prefixIcon: const Icon(Icons.lock_outlined),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                          return 'Please enter your password';
+                                          return AppLocalizations.of(context)!.pleaseEnterPassword;
                                         }
                                         return null;
                                       },
@@ -199,7 +201,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                           AppRoutes.forgotPassword,
                                         ),
                                         child: Text(
-                                          'Forgot password?',
+                                          AppLocalizations.of(context)!.forgotPassword,
                                           style: AppTypography.textTheme.bodySmall?.copyWith(
                                                 color: primaryColor,
                                                 fontWeight: FontWeight.w600,
@@ -210,7 +212,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                     const SizedBox(height: AppSpacing.md),
                                     // Login button
                                     AppButton(
-                                      text: 'Sign In',
+                                      text: AppLocalizations.of(context)!.signIn,
                                       isLoading: isLoading,
                                       onPressed: _signIn,
                                       icon: const Icon(Icons.arrow_forward_rounded),
@@ -230,12 +232,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                                         color: onPrimaryColor.withValues(alpha: 0.8),
                                       ),
                                   children: [
-                                    const TextSpan(
+                                    TextSpan(
                                       text:
-                                          "Don't have an account? ",
+                                          AppLocalizations.of(context)!.dontHaveAccount,
                                     ),
                                     TextSpan(
-                                      text: 'Create one',
+                                      text: AppLocalizations.of(context)!.createOne,
                                       style: AppTypography.textTheme.bodyMedium?.copyWith(
                                         fontWeight: FontWeight.w700,
                                         color: onPrimaryColor,
@@ -297,30 +299,7 @@ class _AnimatedLogoState extends State<_AnimatedLogo>
   Widget build(BuildContext context) {
     return ScaleTransition(
       scale: _scaleAnimation,
-      child: Container(
-        width: widget.size,
-        height: widget.size,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.25),
-            width: 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 30,
-              offset: const Offset(0, 15),
-            ),
-          ],
-        ),
-        child: Icon(
-          Icons.directions_car_rounded,
-          size: widget.size * 0.5,
-          color: Colors.white,
-        ),
-      ),
+      child: AppBrandLogoBadge(size: widget.size),
     );
   }
 }

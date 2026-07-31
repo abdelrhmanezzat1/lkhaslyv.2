@@ -75,6 +75,70 @@ class CarsController extends _$CarsController {
       rethrow;
     }
   }
+
+  /// Updates an existing car. Reloads the list afterward.
+  Future<Car> updateCar({
+    required String carId,
+    String? carType,
+    String? carModel,
+    String? plateNumber,
+    String? carYear,
+    String? color,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      final CarsRepository carsRepository = ref.read(carsRepositoryProvider);
+      final car = await carsRepository.updateCar(
+        carId: carId,
+        carType: carType,
+        carModel: carModel,
+        plateNumber: plateNumber,
+        carYear: carYear,
+        color: color,
+      );
+      // Reload the full list after update.
+      final userId = car.userId;
+      if (userId.isNotEmpty) {
+        state = await AsyncValue.guard(
+          () => carsRepository.getCars(userId: userId),
+        );
+      }
+      return car;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    }
+  }
+
+  /// Deletes a car by [carId]. First checks for order references.
+  /// Throws with a user-friendly message if orders exist.
+  Future<void> deleteCar(String carId) async {
+    state = const AsyncLoading();
+    try {
+      final CarsRepository carsRepository = ref.read(carsRepositoryProvider);
+      // Check for order references before deleting.
+      final hasOrders = await carsRepository.carHasOrders(carId);
+      if (hasOrders) {
+        throw Exception(
+          'This car has order history and cannot be deleted.',
+        );
+      }
+      await carsRepository.deleteCar(carId);
+      // Reload the list — we need the userId from the current state.
+      final currentList = state.valueOrNull ?? [];
+      if (currentList.isNotEmpty) {
+        final userId = currentList.first.userId;
+        state = await AsyncValue.guard(
+          () => carsRepository.getCars(userId: userId),
+        );
+      } else {
+        state = const AsyncData(<Car>[]);
+      }
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    }
+  }
 }
 
 /// Future provider variant — `ref.watch(carsForUserProvider(userId))` returns

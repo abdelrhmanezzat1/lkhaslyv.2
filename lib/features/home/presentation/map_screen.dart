@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/env/env.dart';
+import 'package:flutter_application_1/core/logger/app_logger.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/_shared/domain/entities/car.dart';
@@ -73,30 +74,77 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _initialize() async {
+    appLogger.d('MapScreen._initialize() — START | '
+        'navigateCustomer=${widget.args.navigateCustomer} '
+        'tracking=${widget.args.tracking} '
+        'lat=${widget.args.latitude} lng=${widget.args.longitude}');
     if (!mounted) return;
     setState(() => _isLoading = true);
 
-    final permissionGranted = await _ensureLocationPermission();
+    appLogger.d('MapScreen._initialize() — calling _ensureLocationPermission...');
+    // Guard: wrap location permission check with a timeout so it never
+    // hangs indefinitely (e.g. on desktop/web where Geolocator may not
+    // resolve). If it times out, proceed without the technician's live
+    // position — the map will still show the customer's destination.
+    final permissionGranted = await _ensureLocationPermission()
+        .timeout(const Duration(seconds: 8), onTimeout: () {
+      appLogger.w('MapScreen: location permission check timed out — '
+          'proceeding without live position.');
+      return false;
+    });
+    appLogger.d('MapScreen._initialize() — _ensureLocationPermission returned: $permissionGranted');
+
     if (!permissionGranted) {
+      appLogger.d('MapScreen._initialize() — permission NOT granted, checking fallback...');
+      // Permission denied or timed out — still show the map if we have
+      // a destination (navigateCustomer or tracking mode).
+      if (widget.args.navigateCustomer == true ||
+          widget.args.tracking == true) {
+        appLogger.d('MapScreen._initialize() — calling _proceedWithoutLocation (fallback)');
+        _proceedWithoutLocation();
+        if (mounted) {
+          appLogger.d('MapScreen._initialize() — setting _isLoading=false (fallback path)');
+          setState(() => _isLoading = false);
+        }
+        return;
+      }
+      appLogger.d('MapScreen._initialize() — no fallback needed, setting _isLoading=false');
       if (mounted) setState(() => _isLoading = false);
       return;
     }
 
+    appLogger.d('MapScreen._initialize() — permission granted, calling _getCurrentPosition...');
     final position = await _getCurrentPosition();
+    appLogger.d('MapScreen._initialize() — _getCurrentPosition returned: ${position != null ? "(${position.latitude}, ${position.longitude})" : "null"}');
     if (position == null) {
+      // Could not get position — still show the map if we have a destination.
+      if (widget.args.navigateCustomer == true ||
+          widget.args.tracking == true) {
+        appLogger.d('MapScreen._initialize() — position null, calling _proceedWithoutLocation');
+        _proceedWithoutLocation();
+        if (mounted) {
+          appLogger.d('MapScreen._initialize() — setting _isLoading=false (null position fallback)');
+          setState(() => _isLoading = false);
+        }
+        return;
+      }
+      appLogger.d('MapScreen._initialize() — position null, no fallback, setting _isLoading=false');
       if (mounted) setState(() => _isLoading = false);
       return;
     }
 
     if (!mounted) return;
     _userPosition = ll.LatLng(position.latitude, position.longitude);
+    appLogger.d('MapScreen._initialize() — userPosition set to (${position.latitude}, ${position.longitude})');
 
     if (widget.args.tracking == true) {
       _mapMode = MapMode.trackTechnician;
+      appLogger.d('MapScreen._initialize() — MODE=trackTechnician');
       final order = widget.args.order;
       if (order != null) {
         _destination = ll.LatLng(order.latitude, order.longitude);
         final techId = order.technicianId ?? '';
+        appLogger.d('MapScreen._initialize() — subscribing to technician updates, techId=$techId');
         await _subscribeToTechnicianUpdates(techId);
         _routeRefreshTimer = Timer.periodic(
           const Duration(seconds: 12),
@@ -105,6 +153,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             destination: _destination,
           ),
         );
+      } else {
+        appLogger.w('MapScreen._initialize() — tracking mode but order is null!');
       }
     } else if (widget.args.navigateCustomer == true) {
       _mapMode = MapMode.navigateToCustomer;
@@ -112,7 +162,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         (widget.args.latitude as num?)?.toDouble() ?? 0.0,
         (widget.args.longitude as num?)?.toDouble() ?? 0.0,
       );
-      await _subscribeToUserPosition();
+      appLogger.d('MapScreen._initialize() — MODE=navigateToCustomer, destination=(${_destination!.latitude}, ${_destination!.longitude})');
+      // Fire-and-forget the position stream subscription — it may never
+      // resolve on desktop, and the map works fine with just the destination.
+      _subscribeToUserPosition();
       _routeRefreshTimer = Timer.periodic(
         const Duration(seconds: 12),
         (_) => _refreshRoute(origin: _userPosition, destination: _destination),
@@ -120,20 +173,53 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     } else {
       _mapMode = MapMode.selectLocation;
       _destination = _userPosition;
+      appLogger.d('MapScreen._initialize() — MODE=selectLocation');
     }
 
     if (mounted) {
+      appLogger.d('MapScreen._initialize() — setting _isLoading=false (final path)');
       setState(() => _isLoading = false);
       if (_isMapReady) {
+        appLogger.d('MapScreen._initialize() — map ready, moving to destination');
         _mapController.move(_destination ?? _userPosition!, 14);
+      } else {
+        appLogger.d('MapScreen._initialize() — map NOT ready yet, will move on onMapReady');
       }
     }
   }
 
+  /// Sets up the map in navigate-to-customer mode without a live technician
+  /// position. Used as a fallback when location services are unavailable.
+  void _proceedWithoutLocation() {
+    appLogger.d('MapScreen._proceedWithoutLocation() — called');
+    if (widget.args.navigateCustomer == true) {
+      _mapMode = MapMode.navigateToCustomer;
+      _destination = ll.LatLng(
+        (widget.args.latitude as num?)?.toDouble() ?? 0.0,
+        (widget.args.longitude as num?)?.toDouble() ?? 0.0,
+      );
+      appLogger.d('MapScreen._proceedWithoutLocation() — navigateCustomer mode, destination=(${_destination!.latitude}, ${_destination!.longitude})');
+    } else if (widget.args.tracking == true) {
+      _mapMode = MapMode.trackTechnician;
+      final order = widget.args.order;
+      if (order != null) {
+        _destination = ll.LatLng(order.latitude, order.longitude);
+        appLogger.d('MapScreen._proceedWithoutLocation() — tracking mode, destination=(${_destination!.latitude}, ${_destination!.longitude})');
+      } else {
+        appLogger.w('MapScreen._proceedWithoutLocation() — tracking mode but order is null');
+      }
+    } else {
+      appLogger.w('MapScreen._proceedWithoutLocation() — neither navigateCustomer nor tracking is true');
+    }
+  }
+
   Future<bool> _ensureLocationPermission() async {
+    appLogger.d('MapScreen._ensureLocationPermission() — START');
     if (!mounted) return false;
 
+    appLogger.d('MapScreen._ensureLocationPermission() — checking isLocationServiceEnabled...');
     if (!await Geolocator.isLocationServiceEnabled()) {
+      appLogger.w('MapScreen._ensureLocationPermission() — location services DISABLED');
       if (!mounted) return false;
       AppSnackbar.showError(
         context,
@@ -141,10 +227,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       );
       return false;
     }
+    appLogger.d('MapScreen._ensureLocationPermission() — location services enabled');
 
+    appLogger.d('MapScreen._ensureLocationPermission() — checking permission...');
     LocationPermission permission = await Geolocator.checkPermission();
+    appLogger.d('MapScreen._ensureLocationPermission() — checkPermission returned: $permission');
     if (permission == LocationPermission.denied) {
+      appLogger.d('MapScreen._ensureLocationPermission() — denied, requesting...');
       permission = await Geolocator.requestPermission();
+      appLogger.d('MapScreen._ensureLocationPermission() — requestPermission returned: $permission');
       if (permission == LocationPermission.denied) {
         if (!mounted) return false;
         AppSnackbar.showError(
@@ -156,6 +247,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     }
 
     if (permission == LocationPermission.deniedForever) {
+      appLogger.w('MapScreen._ensureLocationPermission() — permission DENIED FOREVER');
       if (!mounted) return false;
       AppSnackbar.showError(
         context,
@@ -165,16 +257,21 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       return false;
     }
 
+    appLogger.d('MapScreen._ensureLocationPermission() — returning true (permission granted)');
     return true;
   }
 
   Future<Position?> _getCurrentPosition() async {
+    appLogger.d('MapScreen._getCurrentPosition() — calling Geolocator.getCurrentPosition...');
     try {
-      return await Geolocator.getCurrentPosition(
+      final pos = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best,
         timeLimit: const Duration(seconds: 10),
       );
-    } catch (_) {
+      appLogger.d('MapScreen._getCurrentPosition() — SUCCESS: (${pos.latitude}, ${pos.longitude})');
+      return pos;
+    } catch (e) {
+      appLogger.e('MapScreen._getCurrentPosition() — FAILED: $e');
       if (mounted) {
         AppSnackbar.showError(
           context,
@@ -215,6 +312,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 
   Future<void> _subscribeToUserPosition() async {
+    appLogger.d('MapScreen._subscribeToUserPosition() — subscribing to position stream...');
     await _positionSubscription?.cancel();
     _positionSubscription =
         Geolocator.getPositionStream(
@@ -223,12 +321,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             distanceFilter: 10,
           ),
         ).listen((position) {
+          appLogger.d('MapScreen._subscribeToUserPosition() — position update: (${position.latitude}, ${position.longitude})');
           if (!mounted) return;
           setState(() {
             _userPosition = ll.LatLng(position.latitude, position.longitude);
           });
           _refreshRoute(origin: _userPosition, destination: _destination);
+        }, onError: (e) {
+          appLogger.e('MapScreen._subscribeToUserPosition() — stream error: $e');
+        }, onDone: () {
+          appLogger.d('MapScreen._subscribeToUserPosition() — stream DONE');
         });
+    appLogger.d('MapScreen._subscribeToUserPosition() — subscription created');
   }
 
   Future<void> _refreshRoute({
@@ -444,6 +548,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    appLogger.d('MapScreen.build() — _isLoading=$_isLoading _isMapReady=$_isMapReady '
+        '_mapMode=$_mapMode _destination=$_destination _userPosition=$_userPosition');
 
     return Scaffold(
       extendBodyBehindAppBar: true,

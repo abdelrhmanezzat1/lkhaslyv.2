@@ -6,6 +6,7 @@ import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/auth/controllers/registration_controller.dart';
+import 'package:flutter_application_1/l10n/app_localizations.dart';
 import 'package:flutter_application_1/shared/widgets/app_button.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
@@ -82,7 +83,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final isLoading = regState is AsyncLoading;
 
     return Scaffold(
-      appBar: const CustomAppBar(title: Text('Create Account')),
+      appBar: CustomAppBar(title: Text(AppLocalizations.of(context)!.createAccount)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
@@ -92,17 +93,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             children: [
               const SizedBox(height: 20),
               Text(
-                'Join Us!',
+                AppLocalizations.of(context)!.joinUs,
                 style: Theme.of(context).textTheme.displaySmall,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
               AppTextField(
                 controller: _firstNameController,
-                hintText: 'First Name',
+                hintText: AppLocalizations.of(context)!.firstName,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your first name';
+                    return AppLocalizations.of(context)!.pleaseEnterFirstName;
                   }
                   return null;
                 },
@@ -110,10 +111,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               const SizedBox(height: AppSpacing.md),
               AppTextField(
                 controller: _lastNameController,
-                hintText: 'Last Name',
+                hintText: AppLocalizations.of(context)!.lastName,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your last name';
+                    return AppLocalizations.of(context)!.pleaseEnterLastName;
                   }
                   return null;
                 },
@@ -121,14 +122,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               const SizedBox(height: AppSpacing.md),
               AppTextField(
                 controller: _emailController,
-                hintText: 'Email',
+                hintText: AppLocalizations.of(context)!.email,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
+                    return AppLocalizations.of(context)!.pleaseEnterEmail;
                   }
                   if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-                    return 'Please enter a valid email address';
+                    return AppLocalizations.of(context)!.pleaseEnterValidEmail;
                   }
                   return null;
                 },
@@ -136,11 +137,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               const SizedBox(height: AppSpacing.md),
               AppTextField(
                 controller: _phoneController,
-                hintText: 'Phone Number',
+                hintText: AppLocalizations.of(context)!.phoneNumber,
                 keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
+                    return AppLocalizations.of(context)!.pleaseEnterPhoneNumber;
                   }
                   return null;
                 },
@@ -148,14 +149,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               const SizedBox(height: AppSpacing.md),
               AppTextField(
                 controller: _passwordController,
-                hintText: 'Password',
+                hintText: AppLocalizations.of(context)!.password,
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
+                    return AppLocalizations.of(context)!.pleaseEnterAPassword;
                   }
                   if (value.length < 6) {
-                    return 'Password must be at least 6 characters long';
+                    return AppLocalizations.of(context)!.passwordMinLength;
                   }
                   return null;
                 },
@@ -163,37 +164,37 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               const SizedBox(height: AppSpacing.md),
               AppTextField(
                 controller: _confirmPasswordController,
-                hintText: 'Confirm Password',
+                hintText: AppLocalizations.of(context)!.confirmPassword,
                 obscureText: true,
                 validator: (value) {
                   if (value != _passwordController.text) {
-                    return 'Passwords do not match';
+                    return AppLocalizations.of(context)!.passwordsDoNotMatch;
                   }
                   return null;
                 },
               ),
               const SizedBox(height: AppSpacing.lg),
-              const Text(
-                'I am a:',
+              Text(
+                AppLocalizations.of(context)!.iAmA,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: AppSpacing.sm),
               RadioGroup<String>(
                 groupValue: _userType,
                 onChanged: (value) => setState(() => _userType = value!),
-                child: const Row(
+                child: Row(
                   children: [
                     Expanded(
                       child: RadioListTile<String>(
                         value: 'client',
-                        title: Text('Client'),
+                        title: Text(AppLocalizations.of(context)!.client),
                         activeColor: AppColors.primary,
                       ),
                     ),
                     Expanded(
                       child: RadioListTile<String>(
                         value: 'technician',
-                        title: Text('Technician'),
+                        title: Text(AppLocalizations.of(context)!.technician),
                         activeColor: AppColors.primary,
                       ),
                     ),
@@ -203,7 +204,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               const SizedBox(height: AppSpacing.lg),
               AppButton(
                 onPressed: isLoading ? null : _signUp,
-                text: isLoading ? 'Creating Account...' : 'Create Account',
+                text: isLoading ? AppLocalizations.of(context)!.creatingAccount : AppLocalizations.of(context)!.createAccount,
               ),
             ],
           ),

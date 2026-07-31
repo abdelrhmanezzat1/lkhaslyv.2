@@ -11,6 +11,8 @@ import 'package:flutter_application_1/features/auth/presentation/login/forgot_pa
 import 'package:flutter_application_1/features/auth/presentation/login/login_screen.dart';
 import 'package:flutter_application_1/features/auth/presentation/login/register_screen.dart';
 import 'package:flutter_application_1/features/cars/presentation/add_car_screen.dart';
+import 'package:flutter_application_1/features/cars/presentation/edit_car_screen.dart';
+import 'package:flutter_application_1/features/cars/presentation/my_cars_screen.dart';
 import 'package:flutter_application_1/features/home/presentation/home_screen.dart';
 import 'package:flutter_application_1/features/home/presentation/map_screen.dart' as map_screen;
 import 'package:flutter_application_1/features/home/presentation/profile_screen.dart';
@@ -99,6 +101,24 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: AppRoutes.addCar,
         builder: (context, state) => const AddCarScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.myCars,
+        builder: (context, state) => const MyCarsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.editCar,
+        builder: (context, state) {
+          final car = state.extra is Car
+              ? state.extra as Car
+              : null;
+          if (car == null) {
+            return const Scaffold(
+              body: Center(child: Text('Invalid car data.')),
+            );
+          }
+          return EditCarScreen(car: car);
+        },
       ),
       GoRoute(
         path: AppRoutes.payment,

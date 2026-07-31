@@ -1,6 +1,5 @@
-// @ts-nocheck
-/// <reference lib="deno.ns" />
-
+// @ts-nocheck: This file runs in the Deno runtime (Supabase Edge Functions).
+// Deno globals (Deno.env, etc.) and bare specifiers are resolved at runtime.
 // @ts-ignore: Deno std module resolved at runtime
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 // @ts-ignore: npm module resolved at runtime via esm.sh
@@ -34,7 +33,7 @@ interface ListenerResult {
   errors?: string[]
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -99,10 +98,10 @@ serve(async (req) => {
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in push-notification-listener:', error)
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: error.message }),
+      JSON.stringify({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
@@ -144,7 +143,7 @@ async function resolveUserTokens(supabaseClient: ReturnType<typeof createClient>
     throw new Error('Failed to resolve user tokens')
   }
 
-  return profiles.map(p => p.fcm_token).filter(Boolean) as string[]
+  return profiles.map((p: { fcm_token: string | null }) => p.fcm_token).filter(Boolean) as string[]
 }
 
 async function resolveUserTokensByRole(supabaseClient: ReturnType<typeof createClient>, role: 'client' | 'technician' | 'all'): Promise<string[]> {
@@ -164,7 +163,7 @@ async function resolveUserTokensByRole(supabaseClient: ReturnType<typeof createC
     throw new Error('Failed to resolve tokens by role')
   }
 
-  return profiles.map(p => p.fcm_token).filter(Boolean) as string[]
+  return profiles.map((p: { fcm_token: string | null }) => p.fcm_token).filter(Boolean) as string[]
 }
 
 async function sendToTokensWithRetry(tokens: string[], payload: NotificationPayload): Promise<ListenerResult> {

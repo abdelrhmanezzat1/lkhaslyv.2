@@ -19,4 +19,21 @@ abstract class CarsRepository {
 
   /// Lists all cars owned by [userId]. Returns an empty list when none.
   Future<List<Car>> getCars({required String userId});
+
+  /// Updates an existing car identified by [carId] with the given fields.
+  /// Returns the updated [Car].
+  Future<Car> updateCar({
+    required String carId,
+    String? carType,
+    String? carModel,
+    String? plateNumber,
+    String? carYear,
+    String? color,
+  });
+
+  /// Deletes a car by [carId]. Throws if the car has order references.
+  Future<void> deleteCar(String carId);
+
+  /// Returns true if any order references [carId].
+  Future<bool> carHasOrders(String carId);
 }
