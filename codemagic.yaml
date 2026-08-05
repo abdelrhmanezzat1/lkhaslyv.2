@@ -21,10 +21,10 @@ workflows:
         script: |
           flutter pub get
           cd ios && pod install && cd ..
-      - name: بناء التطبيق وتجهيز IPA لـ Sideloadly
-      script: |
+      -  name: بناء التطبيق وتجهيز IPA لـ Sideloadly
+         script: |
           # كتابة إعدادات التوقيع والـ Team في ملف Release.xcconfig قبل البناء
-          echo "DEVELOPMENT_TEAM=9ab23309-a1d0-4a2e-985a-4285dff2a830" >> ios/Flutter/Release.xcconfig
+          echo "DEVELOPMENT_TEAM=1234567890" >> ios/Flutter/Release.xcconfig
           echo "CODE_SIGNING_ALLOWED=NO" >> ios/Flutter/Release.xcconfig
           echo "CODE_SIGNING_REQUIRED=NO" >> ios/Flutter/Release.xcconfig
 
