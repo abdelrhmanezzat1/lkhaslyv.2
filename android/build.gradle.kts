@@ -1,3 +1,8 @@
+plugins {
+    // إتاحة الكوتلن لجميع المكتبات والمشاريع الفرعية مثل Mapbox
+    id("org.jetbrains.kotlin.android") version "2.2.20" apply false
+}
+
 buildscript {
     repositories {
         google()
@@ -5,6 +10,7 @@ buildscript {
     }
     dependencies {
         classpath("com.google.gms:google-services:4.4.2")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.20")
     }
 }
 

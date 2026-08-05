@@ -176,7 +176,7 @@ class _CarsForUserProviderElement
   String get userId => (origin as CarsForUserProvider).userId;
 }
 
-String _$carsControllerHash() => r'59e34f549bba6ccc7e8227f776b13c9d175c024a';
+String _$carsControllerHash() => r'025a08a6cb7863fa80bd867d39a25c2baa577b4f';
 
 /// Controller for the Cars feature.
 ///

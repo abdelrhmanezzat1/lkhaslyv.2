@@ -193,7 +193,7 @@ final pendingOrdersFeedProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef PendingOrdersFeedRef = AutoDisposeFutureProviderRef<List<Order>>;
-String _$ordersControllerHash() => r'8fc6ff27152b18c2aaf8bcc4b0eedd1eacd44b13';
+String _$ordersControllerHash() => r'68b448b483195656f08f16f2ab380a3814915d05';
 
 /// See also [OrdersController].
 @ProviderFor(OrdersController)

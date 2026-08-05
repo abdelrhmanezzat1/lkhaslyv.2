@@ -7,6 +7,9 @@ import 'package:flutter_application_1/features/auth/domain/repositories/auth_rep
 import 'package:flutter_application_1/features/cars/data/repositories/cars_repository_impl.dart';
 import 'package:flutter_application_1/features/cars/data/services/supabase_cars_service.dart';
 import 'package:flutter_application_1/features/cars/domain/repositories/cars_repository.dart';
+import 'package:flutter_application_1/features/mechanical/data/repositories/mechanical_catalog_repository_impl.dart';
+import 'package:flutter_application_1/features/mechanical/data/services/supabase_mechanical_catalog_service.dart';
+import 'package:flutter_application_1/features/mechanical/domain/repositories/mechanical_catalog_repository.dart';
 import 'package:flutter_application_1/features/orders/data/repositories/orders_repository_impl.dart';
 import 'package:flutter_application_1/features/orders/data/services/supabase_orders_service.dart';
 import 'package:flutter_application_1/features/orders/domain/repositories/orders_repository.dart';
@@ -49,6 +52,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<SupabaseOrdersService>(
     () => SupabaseOrdersService(sl()),
   );
+  sl.registerLazySingleton<SupabaseMechanicalCatalogService>(
+    () => SupabaseMechanicalCatalogService(sl()),
+  );
 
   // ──────────────────────────────────────────────────────────────────────────
   // Feature repositories (Phase 2.1–2.5 / Phase 3.1 wiring)
@@ -64,6 +70,9 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerLazySingleton<OrdersRepository>(
     () => OrdersRepositoryImpl(sl<SupabaseClient>()),
+  );
+  sl.registerLazySingleton<MechanicalCatalogRepository>(
+    () => MechanicalCatalogRepositoryImpl(sl<SupabaseMechanicalCatalogService>()),
   );
   sl.registerLazySingleton<TechnicianRepository>(
     TechnicianRepositoryImpl.new,

@@ -28,9 +28,9 @@ class _MyCarsScreenState extends ConsumerState<MyCarsScreen> {
     final colorScheme = Theme.of(context).colorScheme;
 
     if (user == null) {
-      return Scaffold(
-        appBar: const CustomAppBar(title: Text('My Cars')),
-        body: const Center(child: Text('Not logged in.')),
+      return const Scaffold(
+        appBar: CustomAppBar(title: Text('My Cars')),
+        body: Center(child: Text('Not logged in.')),
       );
     }
 

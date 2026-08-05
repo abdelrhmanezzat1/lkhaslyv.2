@@ -24,7 +24,7 @@ class App extends ConsumerWidget {
       themeMode: themeMode,
       locale: locale,
       supportedLocales: const [Locale('en'), Locale('ar')],
-      localizationsDelegates: [
+      localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

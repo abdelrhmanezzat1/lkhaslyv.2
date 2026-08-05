@@ -176,7 +176,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               const SizedBox(height: AppSpacing.lg),
               Text(
                 AppLocalizations.of(context)!.iAmA,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: AppSpacing.sm),
               RadioGroup<String>(

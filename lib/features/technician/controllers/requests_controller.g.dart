@@ -7,7 +7,7 @@ part of 'requests_controller.dart';
 // **************************************************************************
 
 String _$requestsControllerHash() =>
-    r'db49eed6b46cf5c23498434f9252ab1ebf338f1c';
+    r'628c956838ccf7908d042b20ce04afc1f1306dbc';
 
 /// Controller for managing incoming and active requests.
 ///

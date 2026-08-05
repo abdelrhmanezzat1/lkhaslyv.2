@@ -93,8 +93,10 @@ class NotificationService {
     if (_isInitialized) return;
 
     try {
-      // Initialize Firebase
-      await Firebase.initializeApp();
+      // Initialize Firebase if not already initialized
+      if (Firebase.apps.isEmpty) {
+        await Firebase.initializeApp();
+      }
 
       // Request permissions
       await _requestPermissions();
@@ -642,7 +644,9 @@ class NotificationService {
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Initialize Firebase if not already initialized
-  await Firebase.initializeApp();
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp();
+  }
 
   // Handle background message
   appLogger.i('Background message received: ${message.messageId}');

@@ -6,7 +6,7 @@ part of 'job_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$jobControllerHash() => r'aa456904c376860975d3724a207aa49b5b730023';
+String _$jobControllerHash() => r'724c5c6909a1d3bcfcc42067f7eb86e23f46f6c2';
 
 /// Copied from Dart SDK
 class _SystemHash {
