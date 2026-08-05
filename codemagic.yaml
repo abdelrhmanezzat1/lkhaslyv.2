@@ -23,13 +23,14 @@ workflows:
           cd ios && pod install && cd ..
       - name: بناء التطبيق وتجهيز IPA لـ Sideloadly
         script: |
-          # بناء التطبيق للأجهزة الحقيقية (iphoneos) بدون توقيع رقمي
+          # بناء التطبيق مع إجبار Xcode على تجاوز قيود التوقيع والـ Team
           flutter build ios --release --no-codesign \
+            --extra-build-args="CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO DEVELOPMENT_TEAM=1234567890" \
             --dart-define=API_BASE_URL=$API_BASE_URL \
             --obfuscate \
             --split-debug-info=build/debug-info
 
-          # تحويل Runner.app إلى ملف app-unsigned.ipa لتثبيته بـ Sideloadly
+          # تحويل Runner.app إلى ملف app-unsigned.ipa
           cd build/ios/iphoneos
           mkdir -p Payload
           cp -r Runner.app Payload/
