@@ -7,26 +7,36 @@ workflows:
       flutter: stable
       xcode: latest
       vars:
-        # ⚠️ لن نضع الرابط هنا، بل سنقرأه من متغيرات البيئة الآمنة في Codemagic
-        # (ستضبطه يدوياً في واجهة Codemagic)
         API_BASE_URL: "https://dummy.ngrok-free.app"
     scripts:
+      - name: إعداد توكن Mapbox
+        script: |
+          if [ -n "$MAPBOX_DOWNLOADS_TOKEN" ]; then
+            echo "machine api.mapbox.com login macos password $MAPBOX_DOWNLOADS_TOKEN" > ~/.netrc
+            chmod 0600 ~/.netrc
+          fi
       - name: تنظيف المشروع
         script: flutter clean
-      - name: تحميل الحزم
-        script: flutter pub get
-      - name: بناء التطبيق (IPA)
+      - name: تحميل الحزم و CocoaPods
         script: |
-          # بناء التطبيق للمحاكي وتخطي التوقيع الرقمي لتفادي الأخطاء
-          flutter build ios --no-codesign --simulator \
+          flutter pub get
+          cd ios && pod install && cd ..
+      - name: بناء التطبيق وتجهيز IPA لـ Sideloadly
+        script: |
+          # بناء التطبيق للأجهزة الحقيقية (iphoneos) بدون توقيع رقمي
+          flutter build ios --release --no-codesign \
             --dart-define=API_BASE_URL=$API_BASE_URL \
             --obfuscate \
             --split-debug-info=build/debug-info
+
+          # تحويل Runner.app إلى ملف app-unsigned.ipa لتثبيته بـ Sideloadly
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r app-unsigned.ipa Payload
     artifacts:
-      # تحديد مجلد التطبيق الناتج ليكون جاهزاً للتحميل مباشرة من منصة Codemagic
-      - build/ios/iphonesimulator/*.app
+      - build/ios/iphoneos/*.ipa
     publishing:
-      # إشعار عبر البريد الإلكتروني بنتيجة البناء
       email:
         recipients:
           - abdelrahmansoliman101@gmail.com
