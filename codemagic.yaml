@@ -21,20 +21,24 @@ workflows:
         script: |
           flutter pub get
           cd ios && pod install && cd ..
-      -  name: بناء التطبيق وتجهيز IPA لـ Sideloadly
-         script: |
-          # كتابة إعدادات التوقيع والـ Team في ملف Release.xcconfig قبل البناء
+      - name: إنشاء البيئة وبناء IPA
+        script: |
+          # 1. إنشاء ملف .env في المسار الرئيسي تلقائياً
+          touch .env
+          echo "API_BASE_URL=$API_BASE_URL" > .env
+
+          # 2. إعدادات تخطي التوقيع الرقمي في Xcode
           echo "DEVELOPMENT_TEAM=1234567890" >> ios/Flutter/Release.xcconfig
           echo "CODE_SIGNING_ALLOWED=NO" >> ios/Flutter/Release.xcconfig
           echo "CODE_SIGNING_REQUIRED=NO" >> ios/Flutter/Release.xcconfig
 
-          # بناء التطبيق للأجهزة الحقيقية بدون توقيع رقمي
+          # 3. بناء التطبيق
           flutter build ios --release --no-codesign \
             --dart-define=API_BASE_URL=$API_BASE_URL \
             --obfuscate \
             --split-debug-info=build/debug-info
 
-          # تحويل Runner.app إلى ملف app-unsigned.ipa
+          # 4. تجميع الـ IPA
           cd build/ios/iphoneos
           mkdir -p Payload
           cp -r Runner.app Payload/
