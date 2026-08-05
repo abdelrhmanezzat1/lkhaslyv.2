@@ -22,10 +22,14 @@ workflows:
           flutter pub get
           cd ios && pod install && cd ..
       - name: بناء التطبيق وتجهيز IPA لـ Sideloadly
-        script: |
-          # بناء التطبيق مع إجبار Xcode على تجاوز قيود التوقيع والـ Team
+      script: |
+          # كتابة إعدادات التوقيع والـ Team في ملف Release.xcconfig قبل البناء
+          echo "DEVELOPMENT_TEAM=9ab23309-a1d0-4a2e-985a-4285dff2a830" >> ios/Flutter/Release.xcconfig
+          echo "CODE_SIGNING_ALLOWED=NO" >> ios/Flutter/Release.xcconfig
+          echo "CODE_SIGNING_REQUIRED=NO" >> ios/Flutter/Release.xcconfig
+
+          # بناء التطبيق للأجهزة الحقيقية بدون توقيع رقمي
           flutter build ios --release --no-codesign \
-            --extra-build-args="CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO DEVELOPMENT_TEAM=1234567890" \
             --dart-define=API_BASE_URL=$API_BASE_URL \
             --obfuscate \
             --split-debug-info=build/debug-info
