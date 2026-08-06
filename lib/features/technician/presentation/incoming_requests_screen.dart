@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/technician/controllers/requests_controller.dart';
+import 'package:flutter_application_1/features/technician/controllers/technician_controller.dart';
 import 'package:flutter_application_1/features/technician/technician.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
@@ -17,7 +18,18 @@ class IncomingRequestsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final requestsAsync = ref.watch(requestsControllerProvider);
+    // Watch the provider VALUE so this widget rebuilds whenever the
+    // technician state changes (including the forced rebuilds emitted by
+    // _notifyListeners when only the loading/error fields change).
+    ref.watch(technicianControllerProvider);
+    final technicianController = ref.read(technicianControllerProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
+
+    // Disable Accept/Reject until the technician profile is loaded so the
+    // user can't tap Accept while the profile is still loading (race).
+    final profileReady = technicianController.isProfileLoaded;
+    final profileLoading = technicianController.isProfileLoading;
+    final profileError = technicianController.profileLoadError;
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -46,11 +58,26 @@ class IncomingRequestsScreen extends ConsumerWidget {
             color: colorScheme.primary,
             child: ListView.builder(
               padding: const EdgeInsets.all(AppSpacing.md),
-              itemCount: requests.length,
+              itemCount: requests.length + (profileReady ? 0 : 1),
               itemBuilder: (context, index) {
+                // Show a profile-loading banner first when the technician
+                // profile isn't ready yet.
+                if (!profileReady) {
+                  if (index == 0) {
+                    return _ProfileLoadingBanner(
+                      isLoading: profileLoading,
+                      error: profileError,
+                      onRetry: () =>
+                          ref.read(technicianControllerProvider.notifier)
+                              .retryLoadProfile(),
+                    );
+                  }
+                  index -= 1;
+                }
                 final request = requests[index];
                 return _PremiumRequestCard(
                   request: request,
+                  isEnabled: profileReady,
                   onAccept: () => _acceptRequest(context, ref, request.id),
                   onReject: () => _rejectRequest(context, ref, request.id),
                 );
@@ -106,11 +133,13 @@ class _PremiumRequestCard extends StatelessWidget {
     required this.request,
     required this.onAccept,
     required this.onReject,
+    this.isEnabled = true,
   });
 
   final TechnicianRequest request;
   final VoidCallback onAccept;
   final VoidCallback onReject;
+  final bool isEnabled;
 
   String _formatRequestTime(DateTime time) {
     final now = DateTime.now();
@@ -308,12 +337,12 @@ class _PremiumRequestCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Action buttons
+              // Action buttons — disabled until the technician profile is loaded
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: onReject,
+                      onPressed: isEnabled ? onReject : null,
                       icon: const Icon(Icons.close_rounded, size: 18),
                       label: const Text('Reject'),
                       style: OutlinedButton.styleFrom(
@@ -329,7 +358,7 @@ class _PremiumRequestCard extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: onAccept,
+                      onPressed: isEnabled ? onAccept : null,
                       icon: const Icon(Icons.check_rounded, size: 18),
                       label: const Text('Accept'),
                       style: ElevatedButton.styleFrom(
@@ -346,6 +375,80 @@ class _PremiumRequestCard extends StatelessWidget {
                   ),
                 ],
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileLoadingBanner extends StatelessWidget {
+  const _ProfileLoadingBanner({
+    required this.isLoading,
+    required this.error,
+    required this.onRetry,
+  });
+
+  final bool isLoading;
+  final String? error;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+      child: AppCard(
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              if (isLoading)
+                const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                )
+              else
+                const Icon(
+                  Icons.error_outline_rounded,
+                  color: AppColors.error,
+                ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      isLoading
+                          ? 'Loading technician profile…'
+                          : 'Technician profile not loaded',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    if (!isLoading && error != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        error!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (!isLoading)
+                TextButton(
+                  onPressed: onRetry,
+                  child: const Text('Retry'),
+                ),
             ],
           ),
         ),

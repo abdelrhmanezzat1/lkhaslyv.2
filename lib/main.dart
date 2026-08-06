@@ -8,6 +8,7 @@ import 'package:flutter_application_1/app/view/app.dart';
 import 'package:flutter_application_1/core/di/service_locator.dart';
 import 'package:flutter_application_1/core/env/env.dart';
 import 'package:flutter_application_1/core/network/supabase_service.dart';
+import 'package:flutter_application_1/core/notifications/firebase_debug.dart';
 import 'package:flutter_application_1/core/notifications/notification_service.dart';
 import 'package:flutter_application_1/core/storage/storage_service.dart';
 import 'package:flutter_application_1/firebase_options.dart';
@@ -75,10 +76,23 @@ Future<void> _bootstrap() async {
     throw Exception('Supabase configuration is missing. Check .env file.');
   }
 
-  // Initialize Firebase with platform-specific options
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Initialize Firebase with platform-specific options.
+  // Guarded: on Android, the native SDK auto-initializes a default
+  // FirebaseApp via FirebaseInitProvider (before any Dart code runs), so
+  // calling initializeApp(options:) unguarded with DIFFERENT options throws
+  // [core/duplicate-app]. Prefer reusing the already-initialized app.
+  debugLogFirebaseApps('main._bootstrap BEFORE Firebase.initializeApp()');
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else {
+    debugPrint(
+      '🔥 [FirebaseDebug] Reusing already-initialized native default app; '
+      'skipping Firebase.initializeApp(options:).',
+    );
+  }
+  debugLogFirebaseApps('main._bootstrap AFTER Firebase.initializeApp()');
 
   // Set background message handler
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);

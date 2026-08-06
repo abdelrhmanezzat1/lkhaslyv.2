@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_application_1/core/di/service_locator.dart';
 import 'package:flutter_application_1/core/logger/app_logger.dart';
+import 'package:flutter_application_1/core/notifications/firebase_debug.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/storage/storage_keys.dart';
 import 'package:flutter_application_1/core/storage/storage_service.dart';
@@ -94,9 +95,20 @@ class NotificationService {
 
     try {
       // Initialize Firebase if not already initialized
+      debugLogFirebaseApps(
+        'NotificationService.initialize BEFORE Firebase.initializeApp()',
+      );
       if (Firebase.apps.isEmpty) {
         await Firebase.initializeApp();
+      } else {
+        debugPrint(
+          '🔥 [FirebaseDebug] Reusing already-initialized app in '
+          'NotificationService.initialize.',
+        );
       }
+      debugLogFirebaseApps(
+        'NotificationService.initialize AFTER Firebase.initializeApp()',
+      );
 
       // Request permissions
       await _requestPermissions();
@@ -644,9 +656,20 @@ class NotificationService {
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Initialize Firebase if not already initialized
+  debugLogFirebaseApps(
+    'firebaseMessagingBackgroundHandler BEFORE Firebase.initializeApp()',
+  );
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp();
+  } else {
+    debugPrint(
+      '🔥 [FirebaseDebug] Reusing already-initialized app in background '
+      'handler.',
+    );
   }
+  debugLogFirebaseApps(
+    'firebaseMessagingBackgroundHandler AFTER Firebase.initializeApp()',
+  );
 
   // Handle background message
   appLogger.i('Background message received: ${message.messageId}');
