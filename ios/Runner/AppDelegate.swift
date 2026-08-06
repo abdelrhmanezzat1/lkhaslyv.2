@@ -1,67 +1,34 @@
 import Flutter
 import UIKit
-import FirebaseCore
-import FirebaseMessaging
 import UserNotifications
 
 @main
-@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate, MessagingDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    // Configure Firebase
-    FirebaseApp.configure()
+    // 1. تسجيل جميع بلحينات Flutter تلقائياً
+    GeneratedPluginRegistrant.register(with: self)
     
-    // Set messaging delegate
-    Messaging.messaging().delegate = self
-    
-    // Set notification center delegate
-    UNUserNotificationCenter.current().delegate = self
-    
-    // Request notification permissions
-    let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-    UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
-      if let error = error {
-        print("Notification permission error: \(error)")
-      }
-      print("Notification permission granted: \(granted)")
+    // 2. تعيين تفويض الإشعارات بأمان بدون طلب APNs المباشر
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self
     }
-    
-    application.registerForRemoteNotifications()
-    
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-  
-  // Handle APNs token
-  override func application(
-    _ application: UIApplication,
-    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
-  ) {
-    Messaging.messaging().apnsToken = deviceToken
-    super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
-  }
-  
-  // Handle APNs registration failure
-  override func application(
-    _ application: UIApplication,
-    didFailToRegisterForRemoteNotificationsWithError error: Error
-  ) {
-    print("Failed to register for remote notifications: \(error)")
-    super.application(application, didFailToRegisterForRemoteNotificationsWithError: error)
-  }
-  
-  // Handle notification when app is in foreground
+
+  // معالجة إظهار الإشعارات والتطبيق يعمل في المقدمة
   override func userNotificationCenter(
     _ center: UNUserNotificationCenter,
     willPresent notification: UNNotification,
     withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
   ) {
-    // Show notification even when app is in foreground
     completionHandler([.banner, .badge, .sound])
   }
-  
-  // Handle notification tap
+
+  // معالجة الضغط على الإشعار
   override func userNotificationCenter(
     _ center: UNUserNotificationCenter,
     didReceive response: UNNotificationResponse,
@@ -71,12 +38,7 @@ import UserNotifications
     print("Notification tapped: \(userInfo)")
     completionHandler()
   }
-  
-  // Handle FCM token refresh
-  func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-    print("FCM token refreshed: \(fcmToken ?? "nil")")
-  }
-  
+
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
   }
