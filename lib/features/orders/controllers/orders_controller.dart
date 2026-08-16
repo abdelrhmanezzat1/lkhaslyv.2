@@ -131,6 +131,39 @@ class OrdersController extends _$OrdersController {
     }
   }
 
+  /// Stores the client's rating and refreshes the orders feed so the
+  /// rating shows up on the "My Orders" list.
+  Future<void> rateOrder({
+    required String orderId,
+    required int rating,
+    String? comment,
+    String? clientId,
+  }) async {
+    final OrdersRepository repository = ref.read(ordersRepositoryProvider);
+    final previousOrders = state.value ?? const <Order>[];
+    state = const AsyncLoading();
+    try {
+      await repository.submitRating(
+        orderId: orderId,
+        rating: rating,
+        comment: comment,
+      );
+      state = AsyncData<List<Order>>(previousOrders);
+      if (clientId != null && clientId.isNotEmpty) {
+        ref.invalidate(clientOrdersForUserProvider(clientId));
+      }
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    }
+  }
+
+  /// Forces the watched [clientOrdersForUserProvider] feed to re-fetch.
+  /// Screens render from that provider, not from this controller's state.
+  void refreshClientOrders(String clientId) {
+    ref.invalidate(clientOrdersForUserProvider(clientId));
+  }
+
   /// Guards against re-entrant calls that would trigger Riverpod's
   /// "Bad state: Future already completed" error when `state` is set
   /// to `AsyncLoading` while a previous future is still resolving.

@@ -62,8 +62,37 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
   }
 
   @override
-  void toggleOnline() {
+  Future<void> toggleOnline() async {
+    final technicianId = _technician?.id;
+    if (technicianId == null || technicianId.isEmpty) {
+      appLogger.w(
+        'TechnicianRepositoryImpl: cannot persist online status — '
+        'technician profile not loaded.',
+      );
+      return;
+    }
     _isOnline = !_isOnline;
+    await _supabase
+        .from('profiles')
+        .update(<String, dynamic>{
+          'is_online': _isOnline,
+          'updated_at': DateTime.now().toIso8601String(),
+        })
+        .eq('id', technicianId);
+    final current = _technician;
+    if (current != null) {
+      setTechnicianProfile(
+        Technician(
+          id: current.id,
+          name: current.name,
+          email: current.email,
+          phone: current.phone,
+          rating: current.rating,
+          completedJobs: current.completedJobs,
+          isOnline: _isOnline,
+        ),
+      );
+    }
   }
 
   @override
@@ -262,44 +291,22 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
 
     await _updateOrderStatus(requestId, dbStatus);
 
-    // Move between lists
+    // Move between lists — capture the request object BEFORE removing it,
+    // otherwise the firstWhere lookups below find nothing and throw.
+    final request = getRequestById(requestId);
+    if (request == null) {
+      throw Exception('Request not found for $requestId');
+    }
+
     _acceptedRequests.removeWhere((r) => r.id == requestId);
     _activeRequests.removeWhere((r) => r.id == requestId);
     _completedRequests.removeWhere((r) => r.id == requestId);
 
+    request.status = newStatus;
     if (newStatus == JobStatus.completed || newStatus == JobStatus.rejected) {
-      _completedRequests.add(
-        _progressMap[requestId]!.requestId == requestId
-            ? _acceptedRequests.firstWhere(
-                (r) => r.id == requestId,
-                orElse: () => _pendingRequests.firstWhere(
-                  (r) => r.id == requestId,
-                  orElse: () => throw Exception('Request not found'),
-                ),
-              )
-            : _activeRequests.firstWhere(
-                (r) => r.id == requestId,
-                orElse: () => _pendingRequests.firstWhere(
-                  (r) => r.id == requestId,
-                  orElse: () => throw Exception('Request not found'),
-                ),
-              ),
-      );
-      _completedRequests.last.status = newStatus;
+      _completedRequests.add(request);
     } else {
-      _activeRequests.add(
-        _acceptedRequests.firstWhere(
-          (r) => r.id == requestId,
-          orElse: () => _activeRequests.firstWhere(
-            (r) => r.id == requestId,
-            orElse: () => _pendingRequests.firstWhere(
-              (r) => r.id == requestId,
-              orElse: () => throw Exception('Request not found'),
-            ),
-          ),
-        ),
-      );
-      _activeRequests.last.status = newStatus;
+      _activeRequests.add(request);
     }
 
     _notifyStream();
@@ -321,6 +328,17 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
       progress.notes = notes;
       progress.totalAmount = amount;
     }
+    // Keep the local request's amount in sync so the completed-jobs list
+    // shows the real earnings.
+    for (final request in _activeRequests.where((r) => r.id == requestId)) {
+      request.totalAmount = amount;
+    }
+    // Persist the job amount + notes so the client can pay and the tech's
+    // earnings can be computed from the DB (not just in-memory).
+    await _supabase.from('orders').update(<String, dynamic>{
+      'notes': notes,
+      'total_amount': amount,
+    }).eq('id', requestId);
     await updateRequestStatus(requestId, JobStatus.finished);
   }
 
@@ -395,8 +413,11 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
         payload['working_at'] = DateTime.now().toIso8601String();
         break;
       case 'finished':
+        payload['finished_at'] = DateTime.now().toIso8601String();
+        break;
       case 'completed':
         payload['finished_at'] = DateTime.now().toIso8601String();
+        payload['completed_at'] = DateTime.now().toIso8601String();
         break;
       default:
         break;
@@ -431,6 +452,7 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
       status: JobStatusExtension.fromString(
         order['status']?.toString() ?? 'pending',
       ),
+      totalAmount: (order['total_amount'] as num?)?.toDouble() ?? 0,
     );
   }
 

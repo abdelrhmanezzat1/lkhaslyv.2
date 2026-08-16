@@ -64,6 +64,14 @@ class _FakeOrdersRepository implements OrdersRepository {
       throw UnimplementedError();
 
   @override
+  Future<void> submitRating({
+    required String orderId,
+    required int rating,
+    String? comment,
+  }) async =>
+      throw UnimplementedError();
+
+  @override
   Future<bool> hasAcceptedOrders({required String technicianId}) async =>
       throw UnimplementedError();
 }
@@ -106,7 +114,7 @@ class _FakeTechnicianRepository implements TechnicianRepository {
       throw UnimplementedError();
 
   @override
-  void toggleOnline() => throw UnimplementedError();
+  Future<void> toggleOnline() async => throw UnimplementedError();
 
   @override
   List<TechnicianRequest> getPendingRequests() => throw UnimplementedError();

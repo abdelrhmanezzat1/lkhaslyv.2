@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/core/di/service_locator.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/storage/storage_keys.dart';
 import 'package:flutter_application_1/core/storage/storage_service.dart';
@@ -66,7 +67,7 @@ GoRouter goRouter(GoRouterRef ref) {
   ref.onDispose(listenable.dispose);
   ref.onDispose(authStateController.close);
 
-  return GoRouter(
+  final router = GoRouter(
     refreshListenable: listenable,
     initialLocation: AppRoutes.splash,
     routes: [
@@ -144,30 +145,29 @@ GoRouter goRouter(GoRouterRef ref) {
             args = (state.extra as MapExtra).args;
           } else if (state.extra is Map<String, Object?>) {
             final raw = state.extra as Map<String, Object?>;
-            const dummyCar = Car(
-              id: '',
-              userId: '',
-              carType: '',
-              carModel: '',
-              plateNumber: '',
-            );
+            final order = raw['order'] as Order?;
+            final carInfo = order?.carInfo;
             args = map_screen.MapScreenArgs(
-              car: raw['order'] is Order
-                  ? const Car(
+              car: carInfo != null
+                  ? Car.fromJson(carInfo)
+                  : const Car(
                       id: '',
                       userId: '',
                       carType: '',
                       carModel: '',
                       plateNumber: '',
-                    )
-                  : dummyCar,
-              serviceType: raw['serviceType'] as String? ?? '',
-              description: raw['description'] as String? ?? '',
+                    ),
+              serviceType:
+                  raw['serviceType'] as String? ?? order?.serviceType ?? '',
+              description:
+                  raw['description'] as String? ?? order?.description ?? '',
               tracking: raw['tracking'] as bool? ?? false,
               navigateCustomer: raw['navigateCustomer'] as bool? ?? false,
-              order: raw['order'] as Order?,
-              latitude: (raw['latitude'] as num?)?.toDouble(),
-              longitude: (raw['longitude'] as num?)?.toDouble(),
+              order: order,
+              latitude: (raw['latitude'] as num?)?.toDouble() ??
+                  order?.latitude,
+              longitude: (raw['longitude'] as num?)?.toDouble() ??
+                  order?.longitude,
             );
           }
           if (args == null) {
@@ -338,4 +338,11 @@ GoRouter goRouter(GoRouterRef ref) {
       return null;
     },
   );
+
+  // Make the router available to non-widget services (e.g. notification tap
+  // navigation) that only know about GetIt.
+  if (!sl.isRegistered<GoRouter>()) {
+    sl.registerSingleton<GoRouter>(router);
+  }
+  return router;
 }

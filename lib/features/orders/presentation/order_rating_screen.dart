@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/core/router/app_routes.dart';
+import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
+import 'package:flutter_application_1/features/orders/controllers/orders_controller.dart';
+import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/widgets/custom_app_bar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-/// Screen for rating completed order
-class OrderRatingScreen extends StatefulWidget {
-
+/// Screen for rating a completed order.
+///
+/// Persists the rating to the `orders` table (`rating`, `rating_comment`,
+/// `rated_at`) and refreshes the client orders feed.
+class OrderRatingScreen extends ConsumerStatefulWidget {
   const OrderRatingScreen({super.key, required this.orderId});
   final String orderId;
 
   @override
-  State<OrderRatingScreen> createState() => _OrderRatingScreenState();
+  ConsumerState<OrderRatingScreen> createState() =>
+      _OrderRatingScreenState();
 }
 
-class _OrderRatingScreenState extends State<OrderRatingScreen> {
+class _OrderRatingScreenState extends ConsumerState<OrderRatingScreen> {
   double _rating = 0;
+  bool _isSubmitting = false;
   final _commentController = TextEditingController();
 
   @override
@@ -69,8 +79,14 @@ class _OrderRatingScreenState extends State<OrderRatingScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _rating > 0 ? _submitRating : null,
-                child: const Text('Submit Rating'),
+                onPressed: _rating > 0 && !_isSubmitting ? _submitRating : null,
+                child: _isSubmitting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Submit Rating'),
               ),
             ),
           ],
@@ -79,11 +95,27 @@ class _OrderRatingScreenState extends State<OrderRatingScreen> {
     );
   }
 
-  void _submitRating() {
-    // TODO: Submit rating to backend
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Thank you for your rating!')));
-    Navigator.pop(context);
+  Future<void> _submitRating() async {
+    setState(() => _isSubmitting = true);
+    try {
+      final userId = ref.read(authStateChangesProvider).valueOrNull?.id;
+      final comment = _commentController.text.trim();
+      await ref.read(ordersControllerProvider.notifier).rateOrder(
+            orderId: widget.orderId,
+            rating: _rating.round(),
+            comment: comment.isEmpty ? null : comment,
+            clientId: userId,
+          );
+      if (!mounted) return;
+      AppSnackbar.showSuccess(context, message: 'Thank you for your rating!');
+      context.go(AppRoutes.home);
+    } catch (e) {
+      if (!mounted) return;
+      AppSnackbar.showError(context, message: 'Failed to submit rating: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isSubmitting = false);
+      }
+    }
   }
 }

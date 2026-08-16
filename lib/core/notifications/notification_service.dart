@@ -88,6 +88,8 @@ class NotificationService {
 
   bool _isInitialized = false;
   String? _currentToken;
+  String? _subscribedUserId;
+  String? _subscribedUserType;
 
   /// Initialize the notification service
   Future<void> initialize() async {
@@ -358,20 +360,25 @@ class NotificationService {
 
       // Determine channel based on notification type
       final type = data[NotificationPayloadKeys.type] as String?;
-      _getChannelForType(type);
+      final channel = _getChannelForType(type);
+      final isCritical = channel == NotificationChannels.highImportance;
 
       final androidDetails = AndroidNotificationDetails(
-        NotificationChannels.highImportance,
-        'High Importance Notifications',
-        channelDescription: 'Critical notifications for order updates',
-        importance: Importance.high,
-        priority: Priority.high,
-        enableVibration: true,
-        enableLights: true,
+        channel,
+        isCritical ? 'High Importance Notifications' : 'Default Notifications',
+        channelDescription: isCritical
+            ? 'Critical notifications for order updates'
+            : 'General notifications',
+        importance: isCritical ? Importance.high : Importance.defaultImportance,
+        priority: isCritical ? Priority.high : Priority.defaultPriority,
+        enableVibration: isCritical,
+        enableLights: isCritical,
         playSound: true,
         icon: '@mipmap/ic_launcher',
         largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
-        vibrationPattern: Int64List.fromList([0, 250, 250, 250]),
+        vibrationPattern: isCritical
+            ? Int64List.fromList([0, 250, 250, 250])
+            : null,
         category: AndroidNotificationCategory.message,
         visibility: NotificationVisibility.public,
       );
@@ -473,6 +480,16 @@ class NotificationService {
       final orderId = data[NotificationPayloadKeys.orderId] as String?;
 
       appLogger.i('Handling notification tap: type=$type, orderId=$orderId');
+
+      // Router may not be registered yet on cold start — defer so the
+      // post-frame `handlePendingNotification` retry can navigate.
+      if (!sl.isRegistered<GoRouter>()) {
+        await StorageService.setString(
+          StorageKeys.pendingNotificationPayload,
+          jsonEncode(data),
+        );
+        return;
+      }
 
       final router = sl<GoRouter>();
 
@@ -586,6 +603,9 @@ class NotificationService {
       // Subscribe to all users topic for broadcasts
       await subscribeToTopic('all_users');
 
+      _subscribedUserId = userId;
+      _subscribedUserType = userType;
+
       appLogger.i(
         'Subscribed to role topics for user: $userId, type: $userType',
       );
@@ -598,12 +618,20 @@ class NotificationService {
     }
   }
 
-  /// Unsubscribe user from role-based topics
-  Future<void> unsubscribeFromRoleTopics(String userId, String userType) async {
+  /// Unsubscribe the currently-subscribed user from role-based topics.
+  Future<void> unsubscribeFromRoleTopics() async {
+    final userId = _subscribedUserId;
+    final userType = _subscribedUserType;
     try {
-      await unsubscribeFromTopic('user_$userId');
-      await unsubscribeFromTopic('role_$userType');
+      if (userId != null && userId.isNotEmpty) {
+        await unsubscribeFromTopic('user_$userId');
+      }
+      if (userType != null && userType.isNotEmpty) {
+        await unsubscribeFromTopic('role_$userType');
+      }
       await unsubscribeFromTopic('all_users');
+      _subscribedUserId = null;
+      _subscribedUserType = null;
       appLogger.i('Unsubscribed from role topics for user: $userId');
     } catch (e, stackTrace) {
       appLogger.e(

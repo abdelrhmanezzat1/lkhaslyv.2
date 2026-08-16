@@ -14,7 +14,7 @@ abstract class TechnicianRepository {
   Technician getTechnicianProfile();
   Future<void> loadTechnicianProfile(String userId);
   void setTechnicianProfile(Technician technician);
-  void toggleOnline();
+  Future<void> toggleOnline();
 
   /// Fetches pending (unassigned) orders from Supabase and populates the
   /// local pending-requests list. Returns the fetched list.

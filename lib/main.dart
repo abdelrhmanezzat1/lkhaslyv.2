@@ -116,8 +116,14 @@ Future<void> _bootstrap() async {
   final notificationService = sl<NotificationService>();
   await notificationService.initialize();
 
-  // Handle pending notification from background tap
-  await notificationService.handlePendingNotification();
+  runApp(const ProviderScope(child: App()));
+
+  // Handle pending notification from background tap AFTER the router has been
+  // built (the router is registered into GetIt when `goRouterProvider` first
+  // resolves, during the first frame build).
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    notificationService.handlePendingNotification();
+  });
 
   // Subscribe to role-based topics after auth
   _subscribeToRoleTopics();
@@ -141,9 +147,9 @@ void _subscribeToRoleTopics() {
       final notificationService = NotificationService();
       notificationService.subscribeToRoleTopics(user.id, userType);
     } else {
-      // User signed out - unsubscribe from topics
+      // User signed out - unsubscribe from the topics we subscribed to
       final notificationService = NotificationService();
-      notificationService.unsubscribeFromRoleTopics('', '');
+      notificationService.unsubscribeFromRoleTopics();
     }
   });
 }

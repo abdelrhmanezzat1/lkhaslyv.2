@@ -79,9 +79,10 @@ class OrdersScreen extends ConsumerWidget {
 
           return FadeIn(
             child: RefreshIndicator(
-              onRefresh: () => ref
-                  .read(ordersControllerProvider.notifier)
-                  .loadClientOrders(user.id),
+              onRefresh: () async {
+                ref.invalidate(clientOrdersForUserProvider(user.id));
+                await ref.read(clientOrdersForUserProvider(user.id).future);
+              },
               color: colorScheme.primary,
               child: ListView.builder(
                 padding: const EdgeInsets.all(AppSpacing.md),

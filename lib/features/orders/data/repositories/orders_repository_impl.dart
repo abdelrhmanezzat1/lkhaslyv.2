@@ -123,6 +123,20 @@ class OrdersRepositoryImpl implements OrdersRepository {
   }
 
   @override
+  Future<void> submitRating({
+    required String orderId,
+    required int rating,
+    String? comment,
+  }) async {
+    appLogger.i('OrdersRepository.submitRating id=$orderId rating=$rating');
+    await _supabase.from(_table).update(<String, dynamic>{
+      'rating': rating,
+      'rating_comment': comment,
+      'rated_at': DateTime.now().toIso8601String(),
+    }).eq('id', orderId);
+  }
+
+  @override
   Future<bool> hasAcceptedOrders({required String technicianId}) async {
     final response = await _supabase
         .from(_table)

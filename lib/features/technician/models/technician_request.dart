@@ -16,6 +16,7 @@ class TechnicianRequest {
     required this.latitude,
     required this.longitude,
     this.status = JobStatus.pending,
+    this.totalAmount = 0,
   });
   final String id;
   final String customerName;
@@ -29,4 +30,5 @@ class TechnicianRequest {
   final double latitude;
   final double longitude;
   JobStatus status;
+  double totalAmount;
 }

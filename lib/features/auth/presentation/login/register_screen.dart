@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_colors.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
@@ -11,6 +8,8 @@ import 'package:flutter_application_1/shared/widgets/app_button.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/shared/widgets/app_text_field.dart';
 import 'package:flutter_application_1/widgets/custom_app_bar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -65,7 +64,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             if (result == null) return;
             if (!mounted) return;
             if (result.isTechnician) {
-              context.go(AppRoutes.home);
+              context.go(AppRoutes.technicianHome);
             } else {
               context.go(AppRoutes.addCar);
             }

@@ -67,7 +67,10 @@ class _MyCarsScreenState extends ConsumerState<MyCarsScreen> {
         ),
         data: (cars) {
           if (cars.isEmpty) {
-            return _EmptyState(colorScheme: colorScheme);
+            return _EmptyState(
+              colorScheme: colorScheme,
+              onAdd: () => _addCar(context),
+            );
           }
 
           return RefreshIndicator(
@@ -146,6 +149,10 @@ class _MyCarsScreenState extends ConsumerState<MyCarsScreen> {
       await ref.read(carsControllerProvider.notifier).deleteCar(car.id);
       if (mounted) {
         AppSnackbar.showSuccess(context, message: 'Car deleted successfully.');
+        final user = ref.read(authStateChangesProvider).valueOrNull;
+        if (user != null) {
+          ref.invalidate(carsForUserProvider(user.id));
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -326,9 +333,10 @@ class _CarCard extends StatelessWidget {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.colorScheme});
+  const _EmptyState({required this.colorScheme, required this.onAdd});
 
   final ColorScheme colorScheme;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -359,9 +367,7 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
-            onPressed: () {
-              // Navigate to add car — handled by parent via FAB
-            },
+            onPressed: onAdd,
             icon: const Icon(Icons.add_rounded, size: 20),
             label: const Text('Add Car'),
             style: ElevatedButton.styleFrom(

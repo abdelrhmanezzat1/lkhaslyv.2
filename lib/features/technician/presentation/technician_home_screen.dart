@@ -6,6 +6,7 @@ import 'package:flutter_application_1/features/auth/controllers/auth_controller.
 import 'package:flutter_application_1/features/technician/controllers/technician_controller.dart';
 import 'package:flutter_application_1/shared/widgets/app_badge.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
+import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -182,7 +183,7 @@ class _PremiumStatusCard extends StatelessWidget {
   const _PremiumStatusCard({required this.isOnline, required this.onToggle});
 
   final bool isOnline;
-  final VoidCallback onToggle;
+  final Future<void> Function() onToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -275,7 +276,15 @@ class _PremiumStatusCard extends StatelessWidget {
               scale: 1.2,
               child: Switch.adaptive(
                 value: isOnline,
-                onChanged: (_) => onToggle(),
+                onChanged: (_) async {
+                  try {
+                    await onToggle();
+                  } catch (e) {
+                    if (context.mounted) {
+                      AppSnackbar.showError(context, message: e.toString());
+                    }
+                  }
+                },
                 activeTrackColor: statusColor.withValues(alpha: 0.5),
                 activeThumbColor: statusColor,
                 inactiveTrackColor: colorScheme.outline.withValues(alpha: 0.3),

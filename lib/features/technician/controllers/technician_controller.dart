@@ -128,12 +128,13 @@ class TechnicianController extends StateNotifier<Technician> {
   /// the Supabase session becomes available).
   Future<void> retryLoadProfile() => _loadProfileIfNeeded();
 
-  void toggleOnline() {
-    _repository.toggleOnline();
+  Future<void> toggleOnline() async {
     try {
+      await _repository.toggleOnline();
       state = _repository.getTechnicianProfile();
-    } on Exception {
-      // Keep current state if profile isn't loaded yet
+    } on Exception catch (e) {
+      debugPrint('🔧 [TechnicianController] toggleOnline() FAILED: $e');
+      rethrow;
     }
   }
 

@@ -305,7 +305,7 @@ class _PremiumCompletedJobCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '\$${job.distanceKm.toStringAsFixed(2)}',
+                    '\$${job.totalAmount.toStringAsFixed(2)}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w800,
                       color: AppColors.success,

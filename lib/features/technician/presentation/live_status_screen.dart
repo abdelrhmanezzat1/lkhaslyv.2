@@ -13,7 +13,9 @@ import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_snackbar.dart';
 import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Provider that first checks the repository's in-memory cache for the
 /// request, then continues listening to the broadcast stream for live updates.
@@ -78,13 +80,69 @@ final _liveRequestProvider = StreamProvider.family<TechnicianRequest?, String>((
 });
 
 /// Screen displaying live status progress of an accepted job.
-class LiveStatusScreen extends ConsumerWidget {
-
+///
+/// While a job is active, the technician's live location is written to
+/// `profiles.current_lat/current_lng` every few seconds so the client's
+/// tracking map can show a moving marker.
+class LiveStatusScreen extends ConsumerStatefulWidget {
   const LiveStatusScreen({super.key, required this.requestId});
   final String requestId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LiveStatusScreen> createState() => _LiveStatusScreenState();
+}
+
+class _LiveStatusScreenState extends ConsumerState<LiveStatusScreen> {
+  String get requestId => widget.requestId;
+  Timer? _locationTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startLocationSharing();
+  }
+
+  @override
+  void dispose() {
+    _locationTimer?.cancel();
+    super.dispose();
+  }
+
+  /// Shares the technician's live position while a job is in progress.
+  void _startLocationSharing() {
+    _locationTimer = Timer.periodic(const Duration(seconds: 10), (_) async {
+      try {
+        final repository = ref.read(technicianRepositoryProvider);
+        final request = repository.getRequestById(requestId);
+        if (request == null) return;
+        if (request.status == JobStatus.finished ||
+            request.status == JobStatus.completed ||
+            request.status == JobStatus.rejected) {
+          return;
+        }
+        final user = Supabase.instance.client.auth.currentUser;
+        if (user == null) return;
+
+        final position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        if (!mounted) return;
+        await ref
+            .read(technicianLocationRepositoryProvider)
+            .updateLocation(
+              technicianId: user.id,
+              latitude: position.latitude,
+              longitude: position.longitude,
+            );
+      } catch (e) {
+        // Location disabled or permission denied — non-fatal.
+        appLogger.w('Failed to share live location: $e');
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     appLogger.d('LiveStatusScreen.build() — requestId=$requestId, watching provider...');
     final requestAsync = ref.watch(_liveRequestProvider(requestId));
     appLogger.d('LiveStatusScreen.build() — provider state: ${requestAsync.isLoading ? "loading" : requestAsync.hasError ? "error: ${requestAsync.error}" : "data"}');

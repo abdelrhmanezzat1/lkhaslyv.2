@@ -72,7 +72,14 @@ class _AddCarScreenState extends ConsumerState<AddCarScreen> {
               context,
               message: 'Car saved successfully!',
             );
-            context.go(AppRoutes.home);
+            ref.invalidate(carsForUserProvider(user.id));
+            // Return to the previous screen (e.g. My Cars or the order
+            // flow) when pushed; otherwise (post-registration) go Home.
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.home);
+            }
           },
           error: (error, _) {
             AppSnackbar.showError(context, message: error.toString());

@@ -17,6 +17,8 @@ class Order {
     return Order(
       id: json['id']?.toString() ?? '',
       clientId: json['customer_id']?.toString() ?? '',
+      customerName: json['customer_name']?.toString(),
+      customerPhone: json['customer_phone']?.toString(),
       carId: json['car_id']?.toString() ?? '',
       serviceType: json['service_type']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
@@ -54,6 +56,8 @@ class Order {
     required this.status,
     required this.paymentStatus,
     required this.createdAt,
+    this.customerName,
+    this.customerPhone,
     this.technicianId,
     this.technicianName,
     this.imageUrl,
@@ -76,6 +80,9 @@ class Order {
   final String description;
   final double latitude;
   final double longitude;
+
+  final String? customerName;
+  final String? customerPhone;
 
   final String? imageUrl;
 
@@ -128,6 +135,8 @@ class Order {
         description: description,
         latitude: latitude,
         longitude: longitude,
+        customerName: customerName,
+        customerPhone: customerPhone,
         imageUrl: imageUrl,
         status: status ?? this.status,
         paymentStatus: paymentStatus ?? this.paymentStatus,

@@ -71,6 +71,14 @@ class _FakeOrdersRepository implements OrdersRepository {
       throw UnimplementedError();
 
   @override
+  Future<void> submitRating({
+    required String orderId,
+    required int rating,
+    String? comment,
+  }) async =>
+      throw UnimplementedError();
+
+  @override
   Future<bool> hasAcceptedOrders({required String technicianId}) async =>
       throw UnimplementedError();
 }

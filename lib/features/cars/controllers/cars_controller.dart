@@ -113,29 +113,33 @@ class CarsController extends _$CarsController {
   /// Deletes a car by [carId]. First checks for order references.
   /// Throws with a user-friendly message if orders exist.
   Future<void> deleteCar(String carId) async {
+    final currentList = state.value ?? const <Car>[];
     state = const AsyncLoading();
     try {
       final CarsRepository carsRepository = ref.read(carsRepositoryProvider);
       // Check for order references before deleting.
       final hasOrders = await carsRepository.carHasOrders(carId);
       if (hasOrders) {
+        state = AsyncData(currentList);
         throw Exception(
           'This car has order history and cannot be deleted.',
         );
       }
       await carsRepository.deleteCar(carId);
-      // Reload the list — we need the userId from the current state.
-      final currentList = state.valueOrNull ?? [];
-      if (currentList.isNotEmpty) {
-        final userId = currentList.first.userId;
+      // Reload the list — use the userId captured BEFORE AsyncLoading
+      // cleared `state.value`.
+      final userId = currentList.isNotEmpty ? currentList.first.userId : '';
+      if (userId.isNotEmpty) {
         state = await AsyncValue.guard(
           () => carsRepository.getCars(userId: userId),
         );
       } else {
         state = const AsyncData(<Car>[]);
       }
-    } catch (e, st) {
-      state = AsyncError(e, st);
+    } catch (e) {
+      if (state is AsyncLoading) {
+        state = AsyncData(currentList);
+      }
       rethrow;
     }
   }

@@ -41,6 +41,13 @@ abstract class OrdersRepository {
     required String paymentMethod,
   });
 
+  /// Stores the client's rating for [orderId].
+  Future<void> submitRating({
+    required String orderId,
+    required int rating,
+    String? comment,
+  });
+
   /// True if [technicianId] has any accepted/active/in-progress orders.
   Future<bool> hasAcceptedOrders({required String technicianId});
 }

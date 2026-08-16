@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/logger/app_logger.dart';
+import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/_shared/domain/entities/order.dart';
 import 'package:flutter_application_1/features/orders/controllers/orders_controller.dart';
@@ -185,7 +186,13 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                 context,
                 message: 'Payment successful! Your order is now paid.',
               );
-              context.go('/orders');
+              _invalidateOrders();
+              context.go(
+                AppRoutes.orderCompletion.replaceAll(
+                  ':orderId',
+                  widget.order.id,
+                ),
+              );
             }
             return;
           }
@@ -203,6 +210,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         context,
         message: 'Payment submitted. Your order will update shortly.',
       );
+      _invalidateOrders();
       context.go('/orders');
     }
   }
@@ -214,6 +222,17 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     });
     if (mounted) {
       AppSnackbar.showError(context, message: message);
+    }
+  }
+
+  /// Invalidates the watched `clientOrdersForUserProvider` feed so the
+  /// orders screen shows the updated status after payment.
+  void _invalidateOrders() {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    if (userId != null) {
+      ref
+          .read(ordersControllerProvider.notifier)
+          .refreshClientOrders(userId);
     }
   }
 
@@ -257,7 +276,13 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           context,
           message: 'Payment successful. Your order is now paid.',
         );
-        context.go('/orders');
+        _invalidateOrders();
+        context.go(
+          AppRoutes.orderCompletion.replaceAll(
+            ':orderId',
+            widget.order.id,
+          ),
+        );
       }
     } catch (e) {
       if (mounted) {
