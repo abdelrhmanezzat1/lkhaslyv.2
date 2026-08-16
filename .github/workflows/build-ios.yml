@@ -119,11 +119,21 @@ jobs:
           pod install
           cd ..
 
-      # 10. بناء الـ IPA بدون توقيع رقمي — جاهز للتثبيت عبر Sideloadly
-      - name: Build iOS IPA (Unsigned)
-        run: flutter build ipa --no-codesign --release
+      # 10. بناء التطبيق بدون توقيع رقمي ثم تجميعه في ملف .ipa يدوياً
+      #     (flutter build ipa --no-codesign لا يُنتج ملف IPA نهائياً)
+      - name: Build iOS App (Unsigned)
+        run: flutter build ios --release --no-codesign
 
-      # 11. رفع ملف الـ IPA مباشرة (وليس الـ archive) ليتوافق مع Sideloadly
+      - name: Package IPA
+        run: |
+          cd build/ios
+          mkdir -p ipa
+          mkdir -p Payload
+          cp -r iphoneos/Runner.app Payload/
+          zip -r ipa/lakhsly-unsigned.ipa Payload
+          rm -rf Payload
+
+      # 11. رفع ملف الـ IPA — جاهز للتثبيت عبر Sideloadly
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
