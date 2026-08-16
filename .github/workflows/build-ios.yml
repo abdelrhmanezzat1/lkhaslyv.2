@@ -1,29 +1,31 @@
-name: Build iOS IPA (Unsigned)
-# يتم تشغيل هذا السكريبت تلقائياً بمجرد عمل Push للكود على فرع main أو master
+name: Build iOS IPA (Unsigned - Sideload)
+
+# تشغيل تلقائي عند الدفع على main/master، أو يدوياً من صفحة Actions
 on:
   push:
     branches:
       - main
       - master
-  workflow_dispatch: # يتيح لك تشغيل البناء يدوياً من موقع جيت هاب
+  workflow_dispatch:
 
 jobs:
   build:
     name: Build iOS IPA
-    runs-on: macos-latest # استخدام سيرفر ماك سحابي من جيت هاب
+    runs-on: macos-latest # سيرفر ماك سحابي مجاني من جيت هاب
+
     steps:
-      # 1. سحب كود المشروع من مستودعك
+      # 1. سحب كود المشروع
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. تثبيت جافا (مطلوبة لبعض أدوات بناء فلاتر)
+      # 2. تثبيت جافا (مطلوبة لبعض أدوات فلاتر)
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # 3. تثبيت بيئة عمل Flutter (مع تفعيل الكاش الخاص بـ Flutter SDK نفسه)
+      # 3. تثبيت Flutter مع الكاش
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -32,8 +34,7 @@ jobs:
           cache-key: 'flutter-:os:-:channel:-:version:-:arch:'
           cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
 
-      # 4. كاش خاص بحزم pub (packages) بناءً على محتوى pubspec.lock
-      #    لو pubspec.lock ماتغيرش، هياخد الحزم من الكاش بدل ما ينزلها تاني
+      # 4. كاش حزم pub
       - name: Cache pub packages
         uses: actions/cache@v5
         with:
@@ -43,7 +44,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pub-
 
-      # 5. كاش خاص بمكتبات CocoaPods (ios/Pods) عشان pod install يبقى أسرع
+      # 5. كاش مكتبات CocoaPods
       - name: Cache CocoaPods
         uses: actions/cache@v5
         with:
@@ -54,19 +55,80 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pods-
 
-      # 6. تحميل مكاتب وحزم المشروع (Packages)
+      # 6. إعداد توكن Mapbox — لازم لتحميل مكتبة mapbox_maps_flutter
+      - name: Set up Mapbox download token
+        shell: bash
+        run: |
+          if [ -n "$MAPBOX_DOWNLOADS_TOKEN" ]; then
+            echo "machine api.mapbox.com login mapbox password $MAPBOX_DOWNLOADS_TOKEN" > ~/.netrc
+            chmod 0600 ~/.netrc
+          else
+            echo "::error::MAPBOX_DOWNLOADS_TOKEN secret is missing. Add it to GitHub > Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+        env:
+          MAPBOX_DOWNLOADS_TOKEN: ${{ secrets.MAPBOX_DOWNLOADS_TOKEN }}
+
+      # 7. تحميل حزم المشروع
       - name: Install dependencies
         run: flutter pub get
 
-      # 7. بناء تطبيق الـ iOS بدون توقيع رقمي (لأنه لا يمتلك حساب مطور حالياً)
-      - name: Build iOS IPA (Unsigned)
+      # 8. إنشاء ملف .env من أسرار جيت هاب (التطبيق يقرأه عند الإقلاع)
+      - name: Create .env file
+        shell: bash
         run: |
-          flutter build ipa --no-codesign
+          : > .env
+          {
+            echo "SUPABASE_URL=$SUPABASE_URL"
+            echo "SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY"
+            echo "MAPBOX_ACCESS_TOKEN=$MAPBOX_ACCESS_TOKEN"
+            echo "FIREBASE_API_KEY=$FIREBASE_API_KEY"
+            echo "FIREBASE_APP_ID=$FIREBASE_APP_ID"
+            echo "FIREBASE_MESSAGING_SENDER_ID=$FIREBASE_MESSAGING_SENDER_ID"
+            echo "FIREBASE_PROJECT_ID=$FIREBASE_PROJECT_ID"
+            echo "FIREBASE_AUTH_DOMAIN=$FIREBASE_AUTH_DOMAIN"
+            echo "FIREBASE_STORAGE_BUCKET=$FIREBASE_STORAGE_BUCKET"
+            echo "FIREBASE_MEASUREMENT_ID=$FIREBASE_MEASUREMENT_ID"
+            echo "FIREBASE_IOS_BUNDLE_ID=$FIREBASE_IOS_BUNDLE_ID"
+            echo "FIREBASE_IOS_API_KEY=$FIREBASE_IOS_API_KEY"
+            echo "FIREBASE_IOS_APP_ID=$FIREBASE_IOS_APP_ID"
+            echo "FIREBASE_IOS_CLIENT_ID=$FIREBASE_IOS_CLIENT_ID"
+          } >> .env
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ] || [ -z "$MAPBOX_ACCESS_TOKEN" ]; then
+            echo "::error::SUPABASE_URL, SUPABASE_ANON_KEY or MAPBOX_ACCESS_TOKEN secret is empty. Add them to GitHub > Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_ACCESS_TOKEN }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+          FIREBASE_IOS_BUNDLE_ID: ${{ secrets.FIREBASE_IOS_BUNDLE_ID }}
+          FIREBASE_IOS_API_KEY: ${{ secrets.FIREBASE_IOS_API_KEY }}
+          FIREBASE_IOS_APP_ID: ${{ secrets.FIREBASE_IOS_APP_ID }}
+          FIREBASE_IOS_CLIENT_ID: ${{ secrets.FIREBASE_IOS_CLIENT_ID }}
 
-      # 8. ضغط وتجهيز الملف الناتج بصيغة .zip ليكون جاهزاً للتحميل
+      # 9. تثبيت CocoaPods (تشمل مكتبة Mapbox)
+      - name: Run pod install
+        run: |
+          cd ios
+          pod install
+          cd ..
+
+      # 10. بناء الـ IPA بدون توقيع رقمي — جاهز للتثبيت عبر Sideloadly
+      - name: Build iOS IPA (Unsigned)
+        run: flutter build ipa --no-codesign --release
+
+      # 11. رفع ملف الـ IPA مباشرة (وليس الـ archive) ليتوافق مع Sideloadly
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ios-ipa-unsigned
-          path: build/ios/archive/Runner.xcarchive
-          retention-days: 7 # سيبقى الملف متاحاً للتحميل لمدة 7 أيام
+          name: lakhsly-ios-unsigned
+          path: build/ios/ipa/*.ipa
+          retention-days: 7

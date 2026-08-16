@@ -25,6 +25,10 @@ class Env {
       dotenv.env['FIREBASE_AUTH_DOMAIN'] ?? '';
   static String get firebaseStorageBucket =>
       dotenv.env['FIREBASE_STORAGE_BUCKET'] ?? '';
+  static String get firebaseIosApiKey =>
+      dotenv.env['FIREBASE_IOS_API_KEY'] ?? '';
+  static String get firebaseIosAppId =>
+      dotenv.env['FIREBASE_IOS_APP_ID'] ?? '';
   static String get firebaseIosBundleId =>
       dotenv.env['FIREBASE_IOS_BUNDLE_ID'] ?? '';
   static String get firebaseAndroidClientId =>
