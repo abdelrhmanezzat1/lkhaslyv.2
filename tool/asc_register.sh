@@ -134,12 +134,12 @@ if [ "$count" -eq 0 ]; then
 fi
 
 python3 - "$TMP/device_ids" "$CERT_ID" "$BUNDLE_ID" "$TMP/profile_body.json" "$TMP/profile_name" <<'PY'
-import json, sys, time
+import json, sys
 ids = [l.strip() for l in open(sys.argv[1]) if l.strip()]
 body = {
   "data": {
     "type": "profiles",
-    "attributes": {"name": "lkhsly-adhoc-%d" % int(time.time()), "profileType": "IOS_APP_ADHOC"},
+    "attributes": {"name": "export_anar", "profileType": "IOS_APP_ADHOC"},
     "relationships": {
       "bundleId": {"data": {"type": "bundleIds", "id": sys.argv[3]}},
       "certificates": {"data": [{"type": "certificates", "id": sys.argv[2]}]},
@@ -150,6 +150,15 @@ body = {
 json.dump(body, open(sys.argv[4], "w"))
 open(sys.argv[5], "w").write(body["data"]["attributes"]["name"])
 PY
+
+for old in $(curl -sS -G -H "$AUTH" --data-urlencode "filter[name]=export_anar" "$BASE/profiles" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+print(' '.join(p['id'] for p in d.get('data', [])))
+"); do
+  curl -sS -X DELETE -H "$AUTH" "$BASE/profiles/$old" > /dev/null || true
+  echo "  removed previous profile $old"
+done
 
 PROF_NAME=$(cat "$TMP/profile_name")
 PROF=$(asc POST "/profiles" "$(cat "$TMP/profile_body.json")")
