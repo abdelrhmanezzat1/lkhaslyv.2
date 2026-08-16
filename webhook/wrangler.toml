@@ -1,0 +1,13 @@
+name = "lakhsly-ota"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+OWNER = "abdelrhmanezzat1"
+REPO = "lkhaslyv.2"
+DEVICES_PATH = "ota/devices.json"
+CAP = "15"
+PAGES_URL = "abdelrhmanezzat1.github.io/lkhaslyv.2"
+
+# Secrets (set via: wrangler secret put GITHUB_PAT)
+# GITHUB_PAT = classic PAT with scopes: repo, workflow

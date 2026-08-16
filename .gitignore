@@ -46,3 +46,21 @@ app.*.map.json
 /android/build/
 
 .env
+
+# iOS signing material - NEVER commit (repo is public)
+sigin/
+signing/
+*.p12
+*.p8
+*.cer
+*.key
+*.pem
+*.mobileprovision
+*.certSigningRequest
+
+# ...except the Ad Hoc profile shared for OTA builds (public cert/UDIDs only, no private key)
+!ota/profile.mobileprovision
+
+# OTA webhook worker
+webhook/node_modules/
+webhook/.dev.vars*
