@@ -5,8 +5,6 @@ on:
     branches:
       - main
       - master
-  schedule:
-    - cron: '*/10 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -223,6 +221,7 @@ jobs:
         shell: bash
         run: |
           cd build/ios
+          find ipa -maxdepth 1 -name '*.ipa' -print | head -n 1 | while read -r f; do cp "$f" ipa/lakhsly.ipa; done
           if [ -f "ipa/lakhsly.ipa" ]; then
             echo "signed=true" >> "$GITHUB_OUTPUT"
           else
@@ -238,7 +237,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lakhsly-ios-signed
-          path: build/ios/ipa/*.ipa
+          path: build/ios/ipa/lakhsly.ipa
           retention-days: 7
 
       - name: Upload Unsigned IPA Artifact
@@ -246,7 +245,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lakhsly-ios-unsigned
-          path: build/ios/ipa/*.ipa
+          path: build/ios/ipa/lakhsly-unsigned.ipa
           retention-days: 7
 
   publish-ota:
@@ -263,6 +262,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Download signed IPA
         uses: actions/download-artifact@v4
         with:
