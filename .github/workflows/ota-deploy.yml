@@ -1,0 +1,74 @@
+name: Deploy OTA Site (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'App version to report (leave empty to read from IPA)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download latest signed IPA artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p ipa
+          ART_ID=$(gh api "repos/abdelrhmanezzat1/lkhaslyv.2/actions/artifacts?name=lakhsly-ios-signed&per_page=1" --jq '.artifacts[0].id')
+          gh api "repos/abdelrhmanezzat1/lkhaslyv.2/actions/artifacts/$ART_ID/zip" > "$RUNNER_TEMP/signed.zip"
+          python -c "import zipfile,sys; zipfile.ZipFile(sys.argv[1]).extractall('ipa')" "$RUNNER_TEMP/signed.zip"
+          test -f ipa/lakhsly.ipa || { echo "::error::no lakhsly.ipa found in artifact"; exit 1; }
+
+      - name: Generate OTA site
+        env:
+          VERSION_INPUT: ${{ inputs.version }}
+          WORKER_URL: ${{ secrets.WORKER_URL }}
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp ipa/lakhsly.ipa _site/lakhsly.ipa
+          cp ota/devices.json _site/devices.json
+          cp ota/profile.mobileprovision _site/profile.mobileprovision
+          VERSION=$(python3 -c "import plistlib, zipfile; print(plistlib.loads(zipfile.ZipFile('_site/lakhsly.ipa').read('Payload/Runner.app/Info.plist'))['CFBundleShortVersionString'])")
+          if [ -n "${VERSION_INPUT:-}" ]; then VERSION="$VERSION_INPUT"; fi
+          BUILT_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          if [ -n "${WORKER_URL:-}" ]; then
+            sed "s#__WORKER__#${WORKER_URL}#g" ota/index.html > _site/index.html
+          else
+            cp ota/index-static.html _site/index.html
+          fi
+          sed "s#__VERSION__#${VERSION}#g" ota/manifest.plist > _site/manifest.plist
+          sed "s#__VERSION__#${VERSION}#g; s#__BUILT_AT__#${BUILT_AT}#g" ota/build-info.json > _site/build-info.json
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
