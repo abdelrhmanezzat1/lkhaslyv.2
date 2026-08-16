@@ -153,6 +153,9 @@ jobs:
           FIREBASE_IOS_APP_ID: ${{ secrets.FIREBASE_IOS_APP_ID }}
           FIREBASE_IOS_CLIENT_ID: ${{ secrets.FIREBASE_IOS_CLIENT_ID }}
 
+      - name: Install dependencies
+        run: flutter pub get
+
       - name: Run pod install
         run: |
           cd ios
