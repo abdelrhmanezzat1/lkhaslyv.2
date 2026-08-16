@@ -31,9 +31,6 @@ jobs:
         with:
           flutter-version: '3.44.4'
           channel: 'stable'
-          cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:'
-          cache-path: '${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:'
 
       # 4. كاش حزم pub
       - name: Cache pub packages
