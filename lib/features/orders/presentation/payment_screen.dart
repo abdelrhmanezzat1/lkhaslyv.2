@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/logger/app_logger.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_application_1/widgets/custom_app_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 /// Payment screen that supports two flows:
@@ -101,10 +103,32 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
       appLogger.i('Payment iframe URL obtained: $iframeUrl');
 
-      setState(() {
-        _iframeUrl = iframeUrl;
-        _isWebViewLoading = true;
-      });
+      if (kIsWeb) {
+        // On web, open the Paymob iframe in a new tab and poll for status
+        final uri = Uri.parse(iframeUrl);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+          // Start polling for payment confirmation
+          if (mounted) {
+            setState(() => _isSubmitting = true);
+            _handlePaymentSuccess();
+          }
+        } else {
+          appLogger.e('Could not launch Paymob URL: $iframeUrl');
+          if (mounted) {
+            AppSnackbar.showError(
+              context,
+              message: 'Failed to open payment page.',
+            );
+          }
+        }
+      } else {
+        // On mobile, show WebView
+        setState(() {
+          _iframeUrl = iframeUrl;
+          _isWebViewLoading = true;
+        });
+      }
     } catch (e, st) {
       appLogger.e('Card payment initiation failed', error: e, stackTrace: st);
       if (mounted) {
@@ -304,8 +328,8 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // If we have an iframe URL, show the WebView
-    if (_iframeUrl != null) {
+    // On mobile, if we have an iframe URL, show the WebView
+    if (!kIsWeb && _iframeUrl != null) {
       return _buildWebViewScreen();
     }
 

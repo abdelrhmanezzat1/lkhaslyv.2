@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:io' if (kIsWeb) '';
+import 'dart:typed_data';
 
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
@@ -99,6 +100,7 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
   Car? _selectedCar;
   final Set<String> _selectedIssueIds = <String>{};
   File? _imageFile;
+  Uint8List? _imageBytes;
   bool _isUploadingImage = false;
   String? _imageUrl;
 
@@ -127,7 +129,12 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
         maxHeight: 1024,
       );
       if (pickedFile != null && mounted) {
-        setState(() => _imageFile = File(pickedFile.path));
+        if (kIsWeb) {
+          final bytes = await pickedFile.readAsBytes();
+          setState(() => _imageBytes = bytes);
+        } else {
+          setState(() => _imageFile = File(pickedFile.path));
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -137,7 +144,7 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
   }
 
   Future<void> _uploadImage() async {
-    if (_imageFile == null) return;
+    if (_imageFile == null && _imageBytes == null) return;
 
     setState(() => _isUploadingImage = true);
 
@@ -147,9 +154,17 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
       if (user == null) return;
 
       final fileName =
-          'orders/${user.id}/${DateTime.now().millisecondsSinceEpoch}_${_imageFile!.uri.pathSegments.last}';
+          'orders/${user.id}/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      await supabase.storage.from('order-images').upload(fileName, _imageFile!);
+      if (kIsWeb) {
+        await supabase.storage.from('order-images').uploadBinary(
+              fileName,
+              _imageBytes!,
+              fileOptions: const FileOptions(contentType: 'image/jpeg'),
+            );
+      } else {
+        await supabase.storage.from('order-images').upload(fileName, _imageFile!);
+      }
 
       final publicUrl = supabase.storage.from('order-images').getPublicUrl(fileName);
 
@@ -206,7 +221,7 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
     }
 
     // Upload image first if selected
-    if (_imageFile != null && _imageUrl == null) {
+    if ((_imageFile != null || _imageBytes != null) && _imageUrl == null) {
       await _uploadImage();
       if (_imageUrl == null) return; // Upload failed
     }
@@ -701,17 +716,24 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
                   ],
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                if (_imageFile != null)
+                if (_imageFile != null || _imageBytes != null)
                   Stack(
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: Image.file(
-                          _imageFile!,
-                          height: 180,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
+                        child: kIsWeb
+                            ? Image.memory(
+                                _imageBytes!,
+                                height: 180,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(
+                                _imageFile!,
+                                height: 180,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                       if (_isUploadingImage)
                         Positioned.fill(
@@ -733,6 +755,7 @@ class _ServiceRequestContentState extends ConsumerState<_ServiceRequestContent> 
                               : () {
                                   setState(() {
                                     _imageFile = null;
+                                    _imageBytes = null;
                                     _imageUrl = null;
                                   });
                                 },

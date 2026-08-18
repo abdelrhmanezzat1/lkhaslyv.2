@@ -10,9 +10,12 @@ import 'package:flutter_application_1/core/notifications/firebase_debug.dart';
 import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/storage/storage_keys.dart';
 import 'package:flutter_application_1/core/storage/storage_service.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+// Conditional import for flutter_local_notifications (not available on web)
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    if (kIsWeb) 'package:flutter_application_1/core/notifications/noop_notifications.dart';
 
 /// Notification payload keys
 class NotificationPayloadKeys {
@@ -157,7 +160,7 @@ class NotificationService {
       );
 
       // Android 13+ permissions
-      if (defaultTargetPlatform == TargetPlatform.android) {
+      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
         final androidPlugin = _localNotifications
             .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin
@@ -177,6 +180,11 @@ class NotificationService {
 
   /// Setup local notifications with channels
   Future<void> _setupLocalNotifications() async {
+    if (kIsWeb) {
+      appLogger.i('Local notifications skipped on web');
+      return;
+    }
+
     const androidInitializationSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
@@ -209,6 +217,8 @@ class NotificationService {
 
   /// Create Android notification channels
   Future<void> _createNotificationChannels() async {
+    if (kIsWeb) return;
+
     final androidPlugin = _localNotifications
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
@@ -351,6 +361,8 @@ class NotificationService {
 
   /// Show local notification for foreground messages
   Future<void> _showLocalNotification(RemoteMessage message) async {
+    if (kIsWeb) return;
+
     try {
       final notification = message.notification;
       final data = message.data;
@@ -683,6 +695,8 @@ class NotificationService {
 /// Background message handler (must be top-level function)
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (kIsWeb) return;
+
   // Initialize Firebase if not already initialized
   debugLogFirebaseApps(
     'firebaseMessagingBackgroundHandler BEFORE Firebase.initializeApp()',

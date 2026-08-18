@@ -39,8 +39,6 @@ Future<void> main() async {
 
   try {
     await _bootstrap();
-
-    runApp(const ProviderScope(child: App()));
   } catch (e, stack) {
     debugPrint('BOOTSTRAP FAILED');
     debugPrint(e.toString());
@@ -94,8 +92,10 @@ Future<void> _bootstrap() async {
   }
   debugLogFirebaseApps('main._bootstrap AFTER Firebase.initializeApp()');
 
-  // Set background message handler
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  // Set background message handler (no-op on web — service worker handles it)
+  if (!kIsWeb) {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  }
 
   await Supabase.initialize(
     url: Env.supabaseUrl,
@@ -112,20 +112,22 @@ Future<void> _bootstrap() async {
 
   await setupServiceLocator();
 
-  // Initialize NotificationService
-  final notificationService = sl<NotificationService>();
-  await notificationService.initialize();
+  // Initialize NotificationService (skip on web — local notifications not supported)
+  if (!kIsWeb) {
+    final notificationService = sl<NotificationService>();
+    await notificationService.initialize();
+
+    // Handle pending notification from background tap AFTER the router has been
+    // built (the router is registered into GetIt when `goRouterProvider` first
+    // resolves, during the first frame build).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      notificationService.handlePendingNotification();
+    });
+  }
 
   runApp(const ProviderScope(child: App()));
 
-  // Handle pending notification from background tap AFTER the router has been
-  // built (the router is registered into GetIt when `goRouterProvider` first
-  // resolves, during the first frame build).
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    notificationService.handlePendingNotification();
-  });
-
-  // Subscribe to role-based topics after auth
+  // Subscribe to role-based topics after auth (works on web via FCM)
   _subscribeToRoleTopics();
 }
 

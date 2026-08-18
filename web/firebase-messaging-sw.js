@@ -5,15 +5,14 @@ importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
 
 // Initialize Firebase in the service worker
-// These values will be replaced by flutterfire configure or should match your .env
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
+  apiKey: "AIzaSyCZvw5x4lcIEVVVqoVhrrB6DbAVJ_DpRA8",
+  authDomain: "phrs-94624.firebaseapp.com",
+  projectId: "phrs-94624",
+  storageBucket: "phrs-94624.firebasestorage.app",
+  messagingSenderId: "854164328432",
+  appId: "1:854164328432:android:8e46ee797e7c2ba0645735",
+  measurementId: "G-0N59F26091"
 };
 
 firebase.initializeApp(firebaseConfig);
