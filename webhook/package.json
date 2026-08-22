@@ -1,0 +1,13 @@
+{
+  "name": "lakhsly-ota-webhook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UDID webhook receiver that appends registered devices to the repo's ota/devices.json",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

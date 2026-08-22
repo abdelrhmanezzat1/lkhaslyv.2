@@ -1,0 +1,265 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_application_1/core/theme/app_colors.dart';
+import 'package:flutter_application_1/core/theme/app_motion.dart';
+import 'package:flutter_application_1/core/theme/app_radius.dart';
+import 'package:flutter_application_1/core/theme/app_shadows.dart';
+import 'package:flutter_application_1/core/theme/app_spacing.dart';
+import 'package:flutter_application_1/core/theme/app_typography.dart';
+
+/// A premium bottom navigation bar with animated indicator and labels.
+class AppNavigationBar extends StatelessWidget {
+  const AppNavigationBar({
+    super.key,
+    required this.selectedIndex,
+    required this.onDestinationSelected,
+    required this.destinations,
+    this.height = 72,
+  });
+
+  final int selectedIndex;
+  final ValueChanged<int> onDestinationSelected;
+  final List<AppNavigationDestination> destinations;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color bgColor = isDark ? AppColors.surface : AppColors.lightSurface;
+
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        color: bgColor,
+        boxShadow: AppShadows.floatingFor(context),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xxs),
+          child: Row(
+            children: List.generate(destinations.length, (index) {
+              final isSelected = index == selectedIndex;
+              return Expanded(
+                child: _NavItem(
+                  destination: destinations[index],
+                  isSelected: isSelected,
+                  onTap: () => onDestinationSelected(index),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AppNavigationDestination {
+  const AppNavigationDestination({
+    required this.icon,
+    required this.label,
+    this.selectedIcon,
+  });
+
+  final IconData icon;
+  final String label;
+  final IconData? selectedIcon;
+}
+
+class _NavItem extends StatelessWidget {
+  const _NavItem({
+    required this.destination,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final AppNavigationDestination destination;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color activeColor = AppColors.primary;
+    final Color inactiveColor = isDark ? AppColors.onSurfaceVariant : AppColors.onLightSurfaceVariant;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: AppRadius.buttonRadius,
+      child: AnimatedContainer(
+        duration: AppMotion.standard,
+        curve: AppMotion.easeOutCubic,
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs, horizontal: AppSpacing.sm),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedSwitcher(
+              duration: AppMotion.standard,
+              transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
+              child: Icon(
+                isSelected ? (destination.selectedIcon ?? destination.icon) : destination.icon,
+                key: ValueKey(isSelected),
+                size: 24,
+                color: isSelected ? activeColor : inactiveColor,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xxs),
+            AnimatedDefaultTextStyle(
+              duration: AppMotion.standard,
+              curve: AppMotion.easeOutCubic,
+              style: AppTypography.textTheme.labelMedium?.copyWith(
+                    color: isSelected ? activeColor : inactiveColor,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  ) ??
+                  const TextStyle(),
+              child: Text(destination.label),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A premium floating action button with press animation.
+class AppFloatingButton extends StatelessWidget {
+  const AppFloatingButton({
+    super.key,
+    required this.onPressed,
+    required this.icon,
+    this.label,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.mini = false,
+  });
+
+  final VoidCallback? onPressed;
+  final IconData icon;
+  final String? label;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+  final bool mini;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color bgColor = backgroundColor ?? AppColors.primary;
+    final Color fgColor = foregroundColor ?? AppColors.onPrimary;
+
+    if (label != null) {
+      return FloatingActionButton.extended(
+        onPressed: onPressed,
+        icon: Icon(icon, color: fgColor),
+        label: Text(label!, style: AppTypography.buttonTextStyle.copyWith(color: fgColor)),
+        backgroundColor: bgColor,
+        elevation: 0,
+        focusElevation: 0,
+        hoverElevation: 0,
+        highlightElevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.buttonRadius),
+      );
+    }
+
+    return FloatingActionButton(
+      onPressed: onPressed,
+      backgroundColor: bgColor,
+      foregroundColor: fgColor,
+      elevation: 0,
+      focusElevation: 0,
+      hoverElevation: 0,
+      highlightElevation: 0,
+      mini: mini,
+      shape: RoundedRectangleBorder(borderRadius: AppRadius.buttonRadius),
+      child: Icon(icon),
+    );
+  }
+}
+
+/// A status indicator chip with semantic color variants.
+class AppStatus extends StatelessWidget {
+  const AppStatus({
+    super.key,
+    required this.label,
+    this.variant = AppStatusVariant.neutral,
+    this.icon,
+    this.size = AppStatusSize.medium,
+  });
+
+  final String label;
+  final AppStatusVariant variant;
+  final IconData? icon;
+  final AppStatusSize size;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = _colorsForVariant(variant, context);
+    final padding = _paddingForSize(size);
+    final textStyle = _textStyleForSize(size);
+
+    return AnimatedContainer(
+      duration: AppMotion.standard,
+      curve: AppMotion.easeOutCubic,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: colors.$1,
+        borderRadius: AppRadius.buttonRadius,
+        border: Border.all(color: colors.$2, width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 16, color: colors.$2),
+            const SizedBox(width: AppSpacing.xxs),
+          ],
+          Text(label, style: textStyle.copyWith(color: colors.$2)),
+        ],
+      ),
+    );
+  }
+
+  (Color, Color) _colorsForVariant(AppStatusVariant v, BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    switch (v) {
+      case AppStatusVariant.success:
+        return (AppColors.successContainer, AppColors.success);
+      case AppStatusVariant.warning:
+        return (AppColors.warningContainer, AppColors.warning);
+      case AppStatusVariant.danger:
+        return (AppColors.errorContainer, AppColors.error);
+      case AppStatusVariant.info:
+        return (AppColors.primaryContainer, AppColors.primary);
+      case AppStatusVariant.neutral:
+        return (
+          isDark ? AppColors.surfaceVariant : AppColors.lightSurfaceVariant,
+          isDark ? AppColors.onSurfaceVariant : AppColors.onLightSurfaceVariant,
+        );
+    }
+  }
+
+  EdgeInsetsGeometry _paddingForSize(AppStatusSize s) {
+    switch (s) {
+      case AppStatusSize.small:
+        return const EdgeInsets.symmetric(horizontal: AppSpacing.xs, vertical: AppSpacing.xxs);
+      case AppStatusSize.medium:
+        return const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xxs);
+      case AppStatusSize.large:
+        return const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs);
+    }
+  }
+
+  TextStyle _textStyleForSize(AppStatusSize s) {
+    switch (s) {
+      case AppStatusSize.small:
+        return AppTypography.textTheme.labelSmall ?? const TextStyle();
+      case AppStatusSize.medium:
+        return AppTypography.textTheme.labelMedium ?? const TextStyle();
+      case AppStatusSize.large:
+        return AppTypography.textTheme.labelLarge ?? const TextStyle();
+    }
+  }
+}
+
+enum AppStatusVariant { success, warning, danger, info, neutral }
+enum AppStatusSize { small, medium, large }

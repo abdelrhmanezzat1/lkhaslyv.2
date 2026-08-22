@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lakhsly - Install</title>
+  <style>
+    body { font-family: -apple-system, Segoe UI, sans-serif; background: #0f172a; color: #e2e8f0; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .card { background: #1e293b; padding: 32px; border-radius: 16px; text-align: center; max-width: 380px; width: 100%; }
+    h1 { margin: 0 0 8px; font-size: 22px; }
+    p { color: #94a3b8; font-size: 14px; line-height: 1.55; }
+    .btn { display: block; background: #38bdf8; color: #082f49; text-decoration: none; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 16px; margin: 18px 0; }
+    .btn:disabled { background: #334155; color: #94a3b8; }
+    .badge { display: inline-block; background: #0ea5e9; color: #082f49; border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 600; }
+    .hidden { display: none; }
+    .small { font-size: 12px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Lakhsly</h1>
+    <p>Self-service install for registered iPhones.</p>
+
+    <div id="step1">
+      <p><b>Step 1 - Register this device</b></p>
+      <p>Open this page in <b>Safari</b>, then tap the button below and install the profile.</p>
+      <a class="btn" id="registerBtn" href="__WORKER__/udid">Install Device Profile</a>
+      <p class="small">After installing: Settings &gt; Profile Downloaded &gt; Install.<br>This only identifies your device - it does not manage it.</p>
+    </div>
+
+    <div id="waiting" class="hidden">
+      <p class="badge">Waiting for registration…</p>
+      <p>If you already installed the profile, this page updates automatically.</p>
+      <a class="btn" href="__WORKER__/udid">Re-install Device Profile</a>
+    </div>
+
+    <div id="building" class="hidden">
+      <p class="badge">Registered - building…</p>
+      <p>Your device is in the queue. A signed build takes about 10 minutes. This page refreshes automatically.</p>
+    </div>
+
+    <div id="ready" class="hidden">
+      <p class="badge" id="readyBadge">Registered</p>
+      <p>Your device can install Lakhsly.</p>
+      <a class="btn" id="installBtn" href="itms-services://?action=download-manifest&amp;url=https%3A%2F%2Fabdelrhmanezzat1.github.io%2Flkhaslyv.2%2Fmanifest.plist">Install Lakhsly</a>
+      <p class="small" id="versionText"></p>
+    </div>
+
+    <div id="full" class="hidden">
+      <p class="badge">Registration full</p>
+      <p>Lakhsly has reached its device limit of 15.</p>
+    </div>
+  </div>
+  <script>
+    var worker = "__WORKER__";
+    var params = new URLSearchParams(window.location.search);
+    var udid = params.get("udid");
+    function show(id) {
+      ["step1","waiting","building","ready","full"].forEach(function(x){ document.getElementById(x).classList.add("hidden"); });
+      document.getElementById(id).classList.remove("hidden");
+    }
+    function poll() {
+      if (!udid) { show("step1"); return; }
+      fetch(worker + "/api/status?udid=" + encodeURIComponent(udid))
+        .then(function(r){ return r.json(); })
+        .then(function(s) {
+          if (!s.registered) {
+            if (s.count >= s.cap) { show("full"); } else { show("waiting"); }
+          } else if (s.canInstall) {
+            show("ready");
+            document.getElementById("versionText").textContent = "Version " + s.version;
+          } else {
+            show("building");
+          }
+        })
+        .catch(function(){ show("waiting"); });
+    }
+    poll();
+    setInterval(poll, 10000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_application_1/core/theme/app_motion.dart';
+
+/// A page entrance animation wrapper (fade + slide up).
+class AppAnimatedPage extends StatefulWidget {
+  const AppAnimatedPage({
+    super.key,
+    required this.child,
+    this.delay = Duration.zero,
+    this.duration = AppMotion.emphasized,
+  });
+
+  final Widget child;
+  final Duration delay;
+  final Duration duration;
+
+  @override
+  State<AppAnimatedPage> createState() => _AppAnimatedPageState();
+}
+
+class _AppAnimatedPageState extends State<AppAnimatedPage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fade;
+  late final Animation<Offset> _slide;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: widget.duration);
+    _fade = CurvedAnimation(parent: _controller, curve: AppMotion.easeOutCubic);
+    _slide = Tween<Offset>(
+      begin: AppMotion.offsetBottomIn,
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: AppMotion.easeOutCubic));
+
+    if (widget.delay > Duration.zero) {
+      Future.delayed(widget.delay, () {
+        if (mounted) _controller.forward();
+      });
+    } else {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fade,
+      child: SlideTransition(position: _slide, child: widget.child),
+    );
+  }
+}
+
+/// A hero-style entrance with fade + scale.
+class AppAnimatedHero extends StatefulWidget {
+  const AppAnimatedHero({
+    super.key,
+    required this.child,
+    this.delay = Duration.zero,
+  });
+
+  final Widget child;
+  final Duration delay;
+
+  @override
+  State<AppAnimatedHero> createState() => _AppAnimatedHeroState();
+}
+
+class _AppAnimatedHeroState extends State<AppAnimatedHero>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fade;
+  late final Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: AppMotion.splash);
+    _fade = CurvedAnimation(parent: _controller, curve: AppMotion.easeOutCubic);
+    _scale = Tween<double>(begin: 0.92, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: AppMotion.elasticOut),
+    );
+
+    if (widget.delay > Duration.zero) {
+      Future.delayed(widget.delay, () {
+        if (mounted) _controller.forward();
+      });
+    } else {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fade,
+      child: ScaleTransition(scale: _scale, child: widget.child),
+    );
+  }
+}
+
+/// An animated list wrapper that fades/slides items in on insert.
+class AppAnimatedList<T> extends StatelessWidget {
+  const AppAnimatedList({
+    super.key,
+    required this.items,
+    required this.itemBuilder,
+    this.separator,
+    this.padding,
+  });
+
+  final List<T> items;
+  final Widget Function(BuildContext, T, int) itemBuilder;
+  final Widget? separator;
+  final EdgeInsetsGeometry? padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      padding: padding,
+      itemCount: items.length,
+      separatorBuilder: (_, __) => separator ?? const SizedBox.shrink(),
+      itemBuilder: (context, index) {
+        return AppAnimatedPage(
+          delay: Duration(milliseconds: 50 * (index.clamp(0, 8))),
+          child: itemBuilder(context, items[index], index),
+        );
+      },
+    );
+  }
+}

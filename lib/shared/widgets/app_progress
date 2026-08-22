@@ -1,0 +1,80 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_application_1/core/theme/app_colors.dart';
+import 'package:flutter_application_1/core/theme/app_spacing.dart';
+
+/// A linear progress bar with rounded ends and theme color.
+class AppProgress extends StatelessWidget {
+  const AppProgress({
+    super.key,
+    this.value,
+    this.backgroundColor,
+    this.color,
+    this.height = 6,
+    this.borderRadius,
+  });
+
+  final double? value;
+  final Color? backgroundColor;
+  final Color? color;
+  final double height;
+  final BorderRadiusGeometry? borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return ClipRRect(
+      borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(height / 2)),
+      child: LinearProgressIndicator(
+        value: value,
+        minHeight: height,
+        backgroundColor: backgroundColor ??
+            (isDark ? AppColors.surfaceVariant : AppColors.lightSurfaceVariant),
+        valueColor: AlwaysStoppedAnimation<Color>(color ?? AppColors.primary),
+      ),
+    );
+  }
+}
+
+/// A circular progress indicator with optional message.
+class AppCircularProgress extends StatelessWidget {
+  const AppCircularProgress({
+    super.key,
+    this.size = 32,
+    this.strokeWidth = 3,
+    this.color,
+    this.message,
+  });
+
+  final double size;
+  final double strokeWidth;
+  final Color? color;
+  final String? message;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          height: size,
+          width: size,
+          child: CircularProgressIndicator(
+            strokeWidth: strokeWidth,
+            valueColor: AlwaysStoppedAnimation<Color>(color ?? AppColors.primary),
+          ),
+        ),
+        if (message != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            message!,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: isDark ? AppColors.onSurfaceVariant : AppColors.onLightSurfaceVariant,
+                ),
+          ),
+        ],
+      ],
+    );
+  }
+}

@@ -1,0 +1,5 @@
+Analyzing auth_controller.dart...                               
+
+   info - Closure should be a tearoff. Try using a tearoff rather than a closure - lib\features\auth\controllers\auth_controller.dart:55:36 - unnecessary_lambdas
+
+1 issue found. (ran in 306.5s)

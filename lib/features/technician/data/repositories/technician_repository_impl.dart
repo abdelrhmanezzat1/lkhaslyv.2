@@ -1,0 +1,471 @@
+import 'dart:async';
+
+import 'package:flutter_application_1/core/logger/app_logger.dart';
+import 'package:flutter_application_1/features/technician/domain/repositories/technician_repository.dart';
+import 'package:flutter_application_1/features/technician/models/job_status.dart';
+import 'package:flutter_application_1/features/technician/models/service_progress.dart';
+import 'package:flutter_application_1/features/technician/models/technician.dart';
+import 'package:flutter_application_1/features/technician/models/technician_request.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class TechnicianRepositoryImpl implements TechnicianRepository {
+
+  TechnicianRepositoryImpl();
+  final SupabaseClient _supabase = Supabase.instance.client;
+
+  // Local state for technician data
+  Technician? _technician;
+  bool _isOnline = true;
+  final List<TechnicianRequest> _pendingRequests = [];
+  final List<TechnicianRequest> _acceptedRequests = [];
+  final List<TechnicianRequest> _activeRequests = [];
+  final List<TechnicianRequest> _completedRequests = [];
+  final Map<String, ServiceProgress> _progressMap = {};
+  final _requestsController =
+      StreamController<List<TechnicianRequest>>.broadcast();
+
+  @override
+  Technician getTechnicianProfile() {
+    if (_technician == null) {
+      throw Exception('Technician profile not loaded.');
+    }
+    return _technician!;
+  }
+
+  @override
+  void setTechnicianProfile(Technician technician) {
+    _technician = technician;
+  }
+
+  @override
+  Future<void> loadTechnicianProfile(String userId) async {
+    try {
+      final response = await _supabase
+          .from('profiles')
+          .select()
+          .eq('id', userId)
+          .maybeSingle();
+      if (response != null) {
+        _technician = Technician(
+          id: response['id']?.toString() ?? '',
+          name: response['name']?.toString() ?? '',
+          email: response['email']?.toString() ?? '',
+          phone: response['phone']?.toString() ?? '',
+          rating: (response['rating'] as num?)?.toDouble() ?? 4.5,
+          completedJobs: (response['completed_jobs'] as int?) ?? 0,
+          isOnline: response['is_online'] as bool? ?? true,
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> toggleOnline() async {
+    final technicianId = _technician?.id;
+    if (technicianId == null || technicianId.isEmpty) {
+      appLogger.w(
+        'TechnicianRepositoryImpl: cannot persist online status — '
+        'technician profile not loaded.',
+      );
+      return;
+    }
+    _isOnline = !_isOnline;
+    await _supabase
+        .from('profiles')
+        .update(<String, dynamic>{
+          'is_online': _isOnline,
+          'updated_at': DateTime.now().toIso8601String(),
+        })
+        .eq('id', technicianId);
+    final current = _technician;
+    if (current != null) {
+      setTechnicianProfile(
+        Technician(
+          id: current.id,
+          name: current.name,
+          email: current.email,
+          phone: current.phone,
+          rating: current.rating,
+          completedJobs: current.completedJobs,
+          isOnline: _isOnline,
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<List<TechnicianRequest>> fetchPendingRequests() async {
+    appLogger.i('TechnicianRepositoryImpl: fetching pending orders from Supabase');
+    try {
+      final response = await _supabase
+          .from('orders')
+          .select('*, car_info:cars(*)')
+          .eq('status', 'pending')
+          .order('created_at', ascending: false);
+
+      appLogger.i(
+        'TechnicianRepositoryImpl: fetched ${response.length} pending orders',
+      );
+
+      _pendingRequests.clear();
+      for (final row in response) {
+        final order = Map<String, dynamic>.from(row);
+        _pendingRequests.add(_mapOrderToRequest(order));
+      }
+      _notifyStream();
+    } catch (e) {
+      appLogger.e(
+        'TechnicianRepositoryImpl: failed to fetch pending orders',
+        error: e,
+      );
+      // Keep existing list on failure — don't clear it.
+    }
+    return List.unmodifiable(_pendingRequests);
+  }
+
+  @override
+  Future<List<TechnicianRequest>> fetchAcceptedRequests() async {
+    final technicianId = _technician?.id;
+    if (technicianId == null || technicianId.isEmpty) {
+      appLogger.w(
+        'TechnicianRepositoryImpl: cannot fetch accepted requests — '
+        'technician profile not loaded.',
+      );
+      return List.unmodifiable(_acceptedRequests);
+    }
+
+    appLogger.i(
+      'TechnicianRepositoryImpl: fetching accepted orders for '
+      'technician=$technicianId',
+    );
+    try {
+      final response = await _supabase
+          .from('orders')
+          .select('*, car_info:cars(*)')
+          .eq('status', 'accepted')
+          .eq('technician_id', technicianId)
+          .order('created_at', ascending: false);
+
+      appLogger.i(
+        'TechnicianRepositoryImpl: fetched ${response.length} accepted orders',
+      );
+
+      _acceptedRequests.clear();
+      _activeRequests.clear();
+      for (final row in response) {
+        final order = Map<String, dynamic>.from(row);
+        final request = _mapOrderToRequest(order);
+        _acceptedRequests.add(request);
+        // Also populate progress map for each accepted request.
+        _progressMap[request.id] = ServiceProgress(
+          requestId: request.id,
+          acceptedAt: DateTime.tryParse(
+                order['accepted_at']?.toString() ?? '',
+              ) ??
+              DateTime.now(),
+        );
+      }
+      _notifyStream();
+    } catch (e) {
+      appLogger.e(
+        'TechnicianRepositoryImpl: failed to fetch accepted orders',
+        error: e,
+      );
+      // Keep existing list on failure.
+    }
+    return List.unmodifiable(_acceptedRequests);
+  }
+
+  @override
+  List<TechnicianRequest> getPendingRequests() {
+    return List.unmodifiable(_pendingRequests);
+  }
+
+  @override
+  List<TechnicianRequest> getAcceptedRequests() {
+    return List.unmodifiable(_acceptedRequests);
+  }
+
+  @override
+  List<TechnicianRequest> getActiveRequests() {
+    return List.unmodifiable(_activeRequests);
+  }
+
+  @override
+  List<TechnicianRequest> getCompletedRequests() {
+    return List.unmodifiable(_completedRequests);
+  }
+
+  @override
+  TechnicianRequest? getRequestById(String id) {
+    // Search all in-memory lists for the request.
+    try {
+      return _acceptedRequests.firstWhere((r) => r.id == id);
+    } catch (_) {}
+    try {
+      return _activeRequests.firstWhere((r) => r.id == id);
+    } catch (_) {}
+    try {
+      return _pendingRequests.firstWhere((r) => r.id == id);
+    } catch (_) {}
+    try {
+      return _completedRequests.firstWhere((r) => r.id == id);
+    } catch (_) {}
+    return null;
+  }
+
+  @override
+  Stream<List<TechnicianRequest>> get requestsStream =>
+      _requestsController.stream;
+
+  @override
+  Future<void> acceptRequest(String requestId) async {
+    final order = await _getOrderById(requestId);
+    if (order == null) {
+      throw Exception('Order $requestId not found.');
+    }
+
+    final technicianId = _technician?.id;
+    final technicianName = _technician?.name;
+    if (technicianId == null || technicianId.isEmpty) {
+      throw Exception('Technician profile not loaded — cannot accept request.');
+    }
+
+    final request = _mapOrderToRequest(order);
+    _pendingRequests.removeWhere((r) => r.id == requestId);
+    _acceptedRequests.add(request);
+    _progressMap[requestId] = ServiceProgress(
+      requestId: requestId,
+      acceptedAt: DateTime.now(),
+    );
+
+    // Update Supabase: set status, technician_id, and technician_name.
+    await _supabase.from('orders').update(<String, dynamic>{
+      'status': 'accepted',
+      'technician_id': technicianId,
+      'technician_name': technicianName,
+      'accepted_at': DateTime.now().toIso8601String(),
+    }).eq('id', requestId);
+    _notifyStream();
+  }
+
+  @override
+  Future<void> rejectRequest(String requestId) async {
+    _pendingRequests.removeWhere((r) => r.id == requestId);
+    await _updateOrderStatus(requestId, 'rejected');
+    _notifyStream();
+  }
+
+  @override
+  Future<void> updateRequestStatus(
+    String requestId,
+    JobStatus newStatus,
+  ) async {
+    final progress = _progressMap[requestId];
+    if (progress == null) {
+      throw Exception('Progress not found for request $requestId');
+    }
+
+    final now = DateTime.now();
+    final dbStatus = newStatus.dbValue;
+
+    switch (newStatus) {
+      case JobStatus.driving:
+        progress.drivingAt = now;
+        break;
+      case JobStatus.arrived:
+        progress.arrivedAt = now;
+        break;
+      case JobStatus.working:
+        progress.workingAt = now;
+        break;
+      case JobStatus.finished:
+      case JobStatus.completed:
+        progress.finishedAt = now;
+        break;
+      default:
+        break;
+    }
+
+    await _updateOrderStatus(requestId, dbStatus);
+
+    // Move between lists — capture the request object BEFORE removing it,
+    // otherwise the firstWhere lookups below find nothing and throw.
+    final request = getRequestById(requestId);
+    if (request == null) {
+      throw Exception('Request not found for $requestId');
+    }
+
+    _acceptedRequests.removeWhere((r) => r.id == requestId);
+    _activeRequests.removeWhere((r) => r.id == requestId);
+    _completedRequests.removeWhere((r) => r.id == requestId);
+
+    request.status = newStatus;
+    if (newStatus == JobStatus.completed || newStatus == JobStatus.rejected) {
+      _completedRequests.add(request);
+    } else {
+      _activeRequests.add(request);
+    }
+
+    _notifyStream();
+  }
+
+  @override
+  ServiceProgress getProgress(String requestId) {
+    final progress = _progressMap[requestId];
+    if (progress == null) {
+      throw Exception('Progress not found for request $requestId');
+    }
+    return progress;
+  }
+
+  @override
+  Future<void> finishJob(String requestId, String notes, double amount) async {
+    final progress = _progressMap[requestId];
+    if (progress != null) {
+      progress.notes = notes;
+      progress.totalAmount = amount;
+    }
+    // Keep the local request's amount in sync so the completed-jobs list
+    // shows the real earnings.
+    for (final request in _activeRequests.where((r) => r.id == requestId)) {
+      request.totalAmount = amount;
+    }
+    // Persist the job amount + notes so the client can pay and the tech's
+    // earnings can be computed from the DB (not just in-memory).
+    await _supabase.from('orders').update(<String, dynamic>{
+      'notes': notes,
+      'total_amount': amount,
+    }).eq('id', requestId);
+    await updateRequestStatus(requestId, JobStatus.finished);
+  }
+
+  @override
+  Future<void> completeOrderAfterPayment(String requestId) async {
+    // Guard: if the order has no technician assigned (not in our local
+    // lists), there is nothing to mirror — log and return early.
+    if (_activeRequests.every((r) => r.id != requestId) &&
+        _acceptedRequests.every((r) => r.id != requestId)) {
+      appLogger.i(
+        'completeOrderAfterPayment: order $requestId has no technician '
+        'assigned — skipping mirror update.',
+      );
+      return;
+    }
+
+    final request = _activeRequests.firstWhere(
+      (r) => r.id == requestId,
+      orElse: () => _acceptedRequests.firstWhere(
+        (r) => r.id == requestId,
+        orElse: () => throw Exception('Request $requestId not found'),
+      ),
+    );
+
+    _activeRequests.removeWhere((r) => r.id == requestId);
+    _acceptedRequests.removeWhere((r) => r.id == requestId);
+    _completedRequests.add(request..status = JobStatus.completed);
+
+    await _updateOrderStatus(requestId, 'completed');
+    _notifyStream();
+  }
+
+  @override
+  int get pendingCount => _pendingRequests.length;
+
+  @override
+  int get acceptedCount => _acceptedRequests.length;
+
+  @override
+  int get completedCount => _completedRequests.length;
+
+  @override
+  Future<Map<String, dynamic>?> getOrderById(String orderId) async {
+    return _getOrderById(orderId);
+  }
+
+  Future<Map<String, dynamic>?> _getOrderById(String orderId) async {
+    try {
+      final response = await _supabase
+          .from('orders')
+          .select('*, car_info:cars(*)')
+          .eq('id', orderId)
+          .maybeSingle();
+      if (response == null) return null;
+      return Map<String, dynamic>.from(response);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> _updateOrderStatus(String orderId, String status) async {
+    final payload = <String, dynamic>{'status': status};
+
+    switch (status) {
+      case 'on_the_way':
+        payload['driving_at'] = DateTime.now().toIso8601String();
+        break;
+      case 'arrived':
+        payload['arrived_at'] = DateTime.now().toIso8601String();
+        break;
+      case 'working':
+        payload['working_at'] = DateTime.now().toIso8601String();
+        break;
+      case 'finished':
+        payload['finished_at'] = DateTime.now().toIso8601String();
+        break;
+      case 'completed':
+        payload['finished_at'] = DateTime.now().toIso8601String();
+        payload['completed_at'] = DateTime.now().toIso8601String();
+        break;
+      default:
+        break;
+    }
+
+    await _supabase.from('orders').update(payload).eq('id', orderId);
+  }
+
+  TechnicianRequest _mapOrderToRequest(Map<String, dynamic> order) {
+    final carInfo = order['car_info'] as Map<String, dynamic>?;
+    final carType = carInfo?['car_type']?.toString() ?? '';
+    final carModel = carInfo?['car_model']?.toString() ?? '';
+    final plateNumber = carInfo?['plate_number']?.toString() ?? '';
+    final vehicleName = '$carType $carModel'.trim();
+    final latitude = (order['latitude'] as num?)?.toDouble() ?? 0.0;
+    final longitude = (order['longitude'] as num?)?.toDouble() ?? 0.0;
+
+    return TechnicianRequest(
+      id: order['id']?.toString() ?? '',
+      customerName: order['customer_name']?.toString() ?? 'Unknown',
+      customerPhone: order['customer_phone']?.toString() ?? '',
+      serviceType: order['service_type']?.toString() ?? 'Unknown',
+      vehicleName: vehicleName.isEmpty ? 'N/A' : vehicleName,
+      vehiclePlate: plateNumber,
+      description: order['description']?.toString() ?? '',
+      distanceKm: 0,
+      requestTime:
+          DateTime.tryParse(order['created_at']?.toString() ?? '') ??
+          DateTime.now(),
+      latitude: latitude,
+      longitude: longitude,
+      status: JobStatusExtension.fromString(
+        order['status']?.toString() ?? 'pending',
+      ),
+      totalAmount: (order['total_amount'] as num?)?.toDouble() ?? 0,
+    );
+  }
+
+  void _notifyStream() {
+    final all = <TechnicianRequest>[
+      ..._pendingRequests,
+      ..._acceptedRequests,
+      ..._activeRequests,
+      ..._completedRequests,
+    ];
+    appLogger.d('TechnicianRepositoryImpl._notifyStream() — emitting ${all.length} requests '
+        '(pending=${_pendingRequests.length} accepted=${_acceptedRequests.length} '
+        'active=${_activeRequests.length} completed=${_completedRequests.length})');
+    _requestsController.add(List.unmodifiable(all));
+  }
+}

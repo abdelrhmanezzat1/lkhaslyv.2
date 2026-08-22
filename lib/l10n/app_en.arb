@@ -1,0 +1,1032 @@
+{
+  "@@locale": "en",
+  "@@last_modified": "2026-07-31",
+
+  "appTitle": "Lakhsly",
+  "@appTitle": {
+    "description": "The application name/title"
+  },
+
+  "welcomeToApp": "Welcome to\nLakhsly",
+  "@welcomeToApp": {
+    "description": "Onboarding screen welcome title"
+  },
+  "onboardingDescription": "The future of car service management is here. Track your orders, manage your garage, and connect with service providers seamlessly.",
+  "@onboardingDescription": {
+    "description": "Onboarding screen description text"
+  },
+  "getStarted": "Get Started",
+  "@getStarted": {
+    "description": "Onboarding CTA button"
+  },
+
+  "welcomeBack": "Welcome back",
+  "@welcomeBack": {
+    "description": "Login screen title"
+  },
+  "signInSubtitle": "Sign in to continue to your account",
+  "@signInSubtitle": {
+    "description": "Login screen subtitle"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  "emailHint": "you@example.com",
+  "@emailHint": {
+    "description": "Email field hint text"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Password field label"
+  },
+  "passwordHint": "Enter your password",
+  "@passwordHint": {
+    "description": "Password field hint text"
+  },
+  "forgotPassword": "Forgot password?",
+  "@forgotPassword": {
+    "description": "Forgot password link text"
+  },
+  "signIn": "Sign In",
+  "@signIn": {
+    "description": "Sign in button text"
+  },
+  "dontHaveAccount": "Don't have an account? ",
+  "@dontHaveAccount": {
+    "description": "Register prompt text"
+  },
+  "createOne": "Create one",
+  "@createOne": {
+    "description": "Create account link text"
+  },
+  "pleaseEnterEmail": "Please enter your email",
+  "@pleaseEnterEmail": {
+    "description": "Email validation error"
+  },
+  "pleaseEnterValidEmail": "Please enter a valid email address",
+  "@pleaseEnterValidEmail": {
+    "description": "Email format validation error"
+  },
+  "pleaseEnterPassword": "Please enter your password",
+  "@pleaseEnterPassword": {
+    "description": "Password validation error"
+  },
+  "unknownError": "An unknown error occurred.",
+  "@unknownError": {
+    "description": "Generic error message"
+  },
+
+  "createAccount": "Create Account",
+  "@createAccount": {
+    "description": "Register screen title and button"
+  },
+  "joinUs": "Join Us!",
+  "@joinUs": {
+    "description": "Register screen heading"
+  },
+  "firstName": "First Name",
+  "@firstName": {
+    "description": "First name field hint"
+  },
+  "lastName": "Last Name",
+  "@lastName": {
+    "description": "Last name field hint"
+  },
+  "phoneNumber": "Phone Number",
+  "@phoneNumber": {
+    "description": "Phone number field hint"
+  },
+  "confirmPassword": "Confirm Password",
+  "@confirmPassword": {
+    "description": "Confirm password field hint"
+  },
+  "iAmA": "I am a:",
+  "@iAmA": {
+    "description": "User type selection label"
+  },
+  "client": "Client",
+  "@client": {
+    "description": "Client user type"
+  },
+  "technician": "Technician",
+  "@technician": {
+    "description": "Technician user type"
+  },
+  "creatingAccount": "Creating Account...",
+  "@creatingAccount": {
+    "description": "Loading state for create account button"
+  },
+  "pleaseEnterFirstName": "Please enter your first name",
+  "@pleaseEnterFirstName": {
+    "description": "First name validation error"
+  },
+  "pleaseEnterLastName": "Please enter your last name",
+  "@pleaseEnterLastName": {
+    "description": "Last name validation error"
+  },
+  "pleaseEnterPhoneNumber": "Please enter your phone number",
+  "@pleaseEnterPhoneNumber": {
+    "description": "Phone number validation error"
+  },
+  "pleaseEnterAPassword": "Please enter a password",
+  "@pleaseEnterAPassword": {
+    "description": "Password required validation"
+  },
+  "passwordMinLength": "Password must be at least 6 characters long",
+  "@passwordMinLength": {
+    "description": "Password length validation"
+  },
+  "passwordsDoNotMatch": "Passwords do not match",
+  "@passwordsDoNotMatch": {
+    "description": "Confirm password mismatch error"
+  },
+
+  "addYourCar": "Add Your Car",
+  "@addYourCar": {
+    "description": "Add car screen title"
+  },
+  "tellUsAboutYourCar": "Tell us about your car",
+  "@tellUsAboutYourCar": {
+    "description": "Add car screen heading"
+  },
+  "carType": "Car Type",
+  "@carType": {
+    "description": "Car type field hint"
+  },
+  "carModel": "Car Model",
+  "@carModel": {
+    "description": "Car model field hint"
+  },
+  "color": "Color",
+  "@color": {
+    "description": "Car color field hint"
+  },
+  "plateNumber": "Plate Number",
+  "@plateNumber": {
+    "description": "Plate number field hint"
+  },
+  "carYearOptional": "Car Year (optional)",
+  "@carYearOptional": {
+    "description": "Car year field hint"
+  },
+  "saving": "Saving...",
+  "@saving": {
+    "description": "Loading state for save button"
+  },
+  "saveAndContinue": "Save & Continue",
+  "@saveAndContinue": {
+    "description": "Save and continue button"
+  },
+  "carSavedSuccessfully": "Car saved successfully!",
+  "@carSavedSuccessfully": {
+    "description": "Success message after saving car"
+  },
+  "pleaseEnterCarType": "Please enter the car type",
+  "@pleaseEnterCarType": {
+    "description": "Car type validation error"
+  },
+  "pleaseEnterCarModel": "Please enter the car model",
+  "@pleaseEnterCarModel": {
+    "description": "Car model validation error"
+  },
+  "pleaseEnterColor": "Please enter the color",
+  "@pleaseEnterColor": {
+    "description": "Color validation error"
+  },
+  "pleaseEnterPlateNumber": "Please enter the plate number",
+  "@pleaseEnterPlateNumber": {
+    "description": "Plate number validation error"
+  },
+
+  "forgotPasswordTitle": "Forgot Password",
+  "@forgotPasswordTitle": {
+    "description": "Forgot password screen title"
+  },
+  "resetYourPassword": "Reset Your Password",
+  "@resetYourPassword": {
+    "description": "Forgot password screen heading"
+  },
+  "resetPasswordDescription": "Enter your email and we will send you a link to reset your password.",
+  "@resetPasswordDescription": {
+    "description": "Forgot password description"
+  },
+  "sendResetLink": "Send Reset Link",
+  "@sendResetLink": {
+    "description": "Send reset link button"
+  },
+  "passwordResetSent": "Password reset link sent! Please check your email.",
+  "@passwordResetSent": {
+    "description": "Success message after sending reset link"
+  },
+
+  "home": "Home",
+  "@home": {
+    "description": "Home screen title"
+  },
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile button tooltip"
+  },
+  "myOrders": "My Orders",
+  "@myOrders": {
+    "description": "Orders button tooltip and screen title"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout button tooltip"
+  },
+  "notLoggedIn": "Not logged in.",
+  "@notLoggedIn": {
+    "description": "Text shown when user is not logged in"
+  },
+  "noEmail": "No email",
+  "@noEmail": {
+    "description": "Fallback when email is null"
+  },
+  "notificationsComingSoon": "Notifications coming soon.",
+  "@notificationsComingSoon": {
+    "description": "Notification feature placeholder"
+  },
+  "whatServiceDoYouNeed": "What service do you need?",
+  "@whatServiceDoYouNeed": {
+    "description": "Home screen service section header"
+  },
+  "mechanical": "Mechanical",
+  "@mechanical": {
+    "description": "Mechanical service category"
+  },
+  "electrical": "Electrical",
+  "@electrical": {
+    "description": "Electrical service category"
+  },
+  "diagnostics": "Diagnostics",
+  "@diagnostics": {
+    "description": "Diagnostics service category"
+  },
+  "spareParts": "Spare Parts",
+  "@spareParts": {
+    "description": "Spare parts service category"
+  },
+  "welcomeUser": "Welcome, {name}!",
+  "@welcomeUser": {
+    "description": "Welcome message with user name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "logoutFailed": "Logout failed: {error}",
+  "@logoutFailed": {
+    "description": "Logout error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "errorPrefix": "Error: {error}",
+  "@errorPrefix": {
+    "description": "Error display prefix",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "editProfile": "Edit Profile",
+  "@editProfile": {
+    "description": "Profile screen title"
+  },
+  "updateYourInformation": "Update Your Information",
+  "@updateYourInformation": {
+    "description": "Profile screen heading"
+  },
+  "fullName": "Full Name",
+  "@fullName": {
+    "description": "Full name field label"
+  },
+  "updateProfile": "Update Profile",
+  "@updateProfile": {
+    "description": "Update profile button"
+  },
+  "profileUpdatedSuccessfully": "Profile updated successfully!",
+  "@profileUpdatedSuccessfully": {
+    "description": "Success message after profile update"
+  },
+  "pleaseEnterName": "Please enter your name",
+  "@pleaseEnterName": {
+    "description": "Name validation error"
+  },
+
+  "selectLocation": "Select Location",
+  "@selectLocation": {
+    "description": "Map screen title for location selection"
+  },
+  "liveTracking": "Live Tracking",
+  "@liveTracking": {
+    "description": "Map screen title for tracking mode"
+  },
+  "loadingMap": "Loading map...",
+  "@loadingMap": {
+    "description": "Map loading message"
+  },
+  "distance": "Distance",
+  "@distance": {
+    "description": "Distance label"
+  },
+  "eta": "ETA",
+  "@eta": {
+    "description": "Estimated time of arrival label"
+  },
+  "myLocation": "My Location",
+  "@myLocation": {
+    "description": "My location button tooltip"
+  },
+  "confirmLocation": "Confirm Location",
+  "@confirmLocation": {
+    "description": "Confirm location button"
+  },
+  "locationServicesDisabled": "Location services are disabled. Please enable GPS.",
+  "@locationServicesDisabled": {
+    "description": "Error when location services are off"
+  },
+  "locationPermissionRequired": "Location permission is required to continue.",
+  "@locationPermissionRequired": {
+    "description": "Error when location permission denied"
+  },
+  "locationPermissionDeniedForever": "Location permission is permanently denied. Enable it in app settings.",
+  "@locationPermissionDeniedForever": {
+    "description": "Error when location permission permanently denied"
+  },
+  "unableToGetPosition": "Unable to get current position.",
+  "@unableToGetPosition": {
+    "description": "Error when unable to get GPS position"
+  },
+  "pleaseSelectLocation": "Please choose a pickup location.",
+  "@pleaseSelectLocation": {
+    "description": "Error when no location selected"
+  },
+  "selectInsideCairoGiza": "Please select a location inside Cairo or Giza.",
+  "@selectInsideCairoGiza": {
+    "description": "Error when location outside allowed bounds"
+  },
+  "orderCreatedSuccessfully": "Order created successfully!",
+  "@orderCreatedSuccessfully": {
+    "description": "Success message after order creation"
+  },
+  "failedToCreateOrder": "Failed to create order: {error}",
+  "@failedToCreateOrder": {
+    "description": "Order creation error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "selectedService": "Selected Service",
+  "@selectedService": {
+    "description": "Service request screen section label"
+  },
+  "selectVehicle": "Select Vehicle",
+  "@selectVehicle": {
+    "description": "Vehicle selection section header"
+  },
+  "noVehiclesFound": "No vehicles found",
+  "@noVehiclesFound": {
+    "description": "Empty state when no cars"
+  },
+  "addAVehicle": "Add a vehicle",
+  "@addAVehicle": {
+    "description": "Add vehicle button"
+  },
+  "problemDescription": "Problem Description",
+  "@problemDescription": {
+    "description": "Problem description section header"
+  },
+  "describeIssue": "Describe the issue you are experiencing...",
+  "@describeIssue": {
+    "description": "Problem description hint"
+  },
+  "pleaseDescribeProblem": "Please describe the problem.",
+  "@pleaseDescribeProblem": {
+    "description": "Problem description validation error"
+  },
+  "uploadImageOptional": "Upload Image (optional)",
+  "@uploadImageOptional": {
+    "description": "Upload image section header"
+  },
+  "tapToUploadImage": "Tap to upload an image",
+  "@tapToUploadImage": {
+    "description": "Upload image placeholder text"
+  },
+  "imageFormatHint": "JPG, PNG up to 10MB",
+  "@imageFormatHint": {
+    "description": "Image format hint"
+  },
+  "uploaded": "Uploaded",
+  "@uploaded": {
+    "description": "Upload success label"
+  },
+  "continueButton": "Continue",
+  "@continueButton": {
+    "description": "Continue button"
+  },
+  "failedToPickImage": "Failed to pick image: {error}",
+  "@failedToPickImage": {
+    "description": "Image pick error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "failedToUploadImage": "Failed to upload image: {error}",
+  "@failedToUploadImage": {
+    "description": "Image upload error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "pleaseSelectVehicle": "Please select a vehicle.",
+  "@pleaseSelectVehicle": {
+    "description": "Vehicle selection validation error"
+  },
+  "failedToLoadVehicles": "Failed to load vehicles: {error}",
+  "@failedToLoadVehicles": {
+    "description": "Vehicle load error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "goBack": "Go Back",
+  "@goBack": {
+    "description": "Go back button"
+  },
+
+  "payment": "Payment",
+  "@payment": {
+    "description": "Payment screen title"
+  },
+  "paymentSummary": "Payment Summary",
+  "@paymentSummary": {
+    "description": "Payment summary card title"
+  },
+  "service": "Service",
+  "@service": {
+    "description": "Service label"
+  },
+  "vehicle": "Vehicle",
+  "@vehicle": {
+    "description": "Vehicle label"
+  },
+  "amountDue": "Amount Due",
+  "@amountDue": {
+    "description": "Amount due label"
+  },
+  "payNow": "Pay Now",
+  "@payNow": {
+    "description": "Pay now button and badge"
+  },
+  "choosePaymentMethod": "Choose Payment Method",
+  "@choosePaymentMethod": {
+    "description": "Payment method section header"
+  },
+  "wallet": "Wallet",
+  "@wallet": {
+    "description": "Wallet payment method"
+  },
+  "payFromWallet": "Pay from your wallet balance",
+  "@payFromWallet": {
+    "description": "Wallet payment description"
+  },
+  "card": "Card",
+  "@card": {
+    "description": "Card payment method"
+  },
+  "payWithCard": "Pay with saved card",
+  "@payWithCard": {
+    "description": "Card payment description"
+  },
+  "pleaseSelectPaymentMethod": "Please select a payment method.",
+  "@pleaseSelectPaymentMethod": {
+    "description": "Payment method validation error"
+  },
+  "paymentSuccessful": "Payment successful. Your order is now paid.",
+  "@paymentSuccessful": {
+    "description": "Payment success message"
+  },
+  "failedToProcessPayment": "Failed to process payment: {error}",
+  "@failedToProcessPayment": {
+    "description": "Payment processing error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "nA": "N/A",
+  "@nA": {
+    "description": "Not available abbreviation"
+  },
+
+  "loadingOrders": "Loading orders...",
+  "@loadingOrders": {
+    "description": "Orders loading message"
+  },
+  "couldNotLoadOrders": "Could not load orders: {error}",
+  "@couldNotLoadOrders": {
+    "description": "Orders load error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "noOrdersYet": "No orders yet",
+  "@noOrdersYet": {
+    "description": "Empty orders state title"
+  },
+  "noOrdersDescription": "Request a service to see your orders here",
+  "@noOrdersDescription": {
+    "description": "Empty orders state description"
+  },
+  "pending": "Pending",
+  "@pending": {
+    "description": "Pending status label"
+  },
+  "accepted": "Accepted",
+  "@accepted": {
+    "description": "Accepted status label"
+  },
+  "technicianOnTheWay": "Technician on the Way",
+  "@technicianOnTheWay": {
+    "description": "On the way status label"
+  },
+  "technicianArrived": "Technician Arrived",
+  "@technicianArrived": {
+    "description": "Arrived status label"
+  },
+  "inProgress": "In Progress",
+  "@inProgress": {
+    "description": "Working status label"
+  },
+  "finished": "Finished",
+  "@finished": {
+    "description": "Finished status label"
+  },
+  "completed": "Completed",
+  "@completed": {
+    "description": "Completed status label"
+  },
+  "paid": "Paid",
+  "@paid": {
+    "description": "Paid status label"
+  },
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Unknown status label"
+  },
+  "date": "Date",
+  "@date": {
+    "description": "Date label"
+  },
+  "paymentStatus": "Payment",
+  "@paymentStatus": {
+    "description": "Payment status label"
+  },
+  "trackTechnician": "Track Technician",
+  "@trackTechnician": {
+    "description": "Track technician button"
+  },
+  "thisOrderIsPaid": "This order is already paid.",
+  "@thisOrderIsPaid": {
+    "description": "Message when order already paid"
+  },
+  "invalidOrderData": "Invalid order data.",
+  "@invalidOrderData": {
+    "description": "Invalid order error"
+  },
+  "failedToLoadOrders": "Failed to load orders: {error}",
+  "@failedToLoadOrders": {
+    "description": "Orders load error snackbar",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "technicianHome": "Technician",
+  "@technicianHome": {
+    "description": "Technician home screen title"
+  },
+  "status": "Status",
+  "@status": {
+    "description": "Status label"
+  },
+  "online": "Online",
+  "@online": {
+    "description": "Online status"
+  },
+  "offline": "Offline",
+  "@offline": {
+    "description": "Offline status"
+  },
+  "receivingRequests": "Receiving new service requests",
+  "@receivingRequests": {
+    "description": "Online status description"
+  },
+  "tapToGoOnline": "Tap to go online and receive requests",
+  "@tapToGoOnline": {
+    "description": "Offline status description"
+  },
+  "todaysStatistics": "Today's Statistics",
+  "@todaysStatistics": {
+    "description": "Statistics section header"
+  },
+  "rating": "Rating",
+  "@rating": {
+    "description": "Rating label"
+  },
+  "quickActions": "Quick Actions",
+  "@quickActions": {
+    "description": "Quick actions section header"
+  },
+  "incomingRequests": "Incoming Requests",
+  "@incomingRequests": {
+    "description": "Incoming requests action title"
+  },
+  "incomingRequestsSubtitle": "New service requests from customers",
+  "@incomingRequestsSubtitle": {
+    "description": "Incoming requests action subtitle"
+  },
+  "acceptedRequests": "Accepted Requests",
+  "@acceptedRequests": {
+    "description": "Accepted requests action title and screen title"
+  },
+  "acceptedRequestsSubtitle": "Your active service jobs",
+  "@acceptedRequestsSubtitle": {
+    "description": "Accepted requests action subtitle"
+  },
+  "completedJobs": "Completed Jobs",
+  "@completedJobs": {
+    "description": "Completed jobs action title and screen title"
+  },
+  "completedJobsSubtitle": "History of finished services",
+  "@completedJobsSubtitle": {
+    "description": "Completed jobs action subtitle"
+  },
+
+  "noActiveJobs": "No Active Jobs",
+  "@noActiveJobs": {
+    "description": "Empty accepted requests title"
+  },
+  "noActiveJobsMessage": "Accept a request to start working on a service job.",
+  "@noActiveJobsMessage": {
+    "description": "Empty accepted requests description"
+  },
+  "viewIncoming": "View Incoming",
+  "@viewIncoming": {
+    "description": "View incoming requests button"
+  },
+  "activeJob": "Active Job",
+  "@activeJob": {
+    "description": "Active job label"
+  },
+  "details": "Details",
+  "@details": {
+    "description": "Details label"
+  },
+  "viewJob": "View Job",
+  "@viewJob": {
+    "description": "View job button"
+  },
+  "kmAway": "{distance} km away",
+  "@kmAway": {
+    "description": "Distance display",
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
+
+  "jobDetails": "Job Details",
+  "@jobDetails": {
+    "description": "Job details screen title"
+  },
+  "loadingJobDetails": "Loading job details...",
+  "@loadingJobDetails": {
+    "description": "Job details loading message"
+  },
+  "failedToLoadJob": "Failed to load job: {error}",
+  "@failedToLoadJob": {
+    "description": "Job load error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "jobNotFound": "Job not found",
+  "@jobNotFound": {
+    "description": "Job not found message"
+  },
+  "viewLiveStatus": "View Live Status",
+  "@viewLiveStatus": {
+    "description": "View live status button"
+  },
+
+  "liveStatus": "Live Status",
+  "@liveStatus": {
+    "description": "Live status screen title"
+  },
+  "customer": "Customer",
+  "@customer": {
+    "description": "Customer section label"
+  },
+  "problem": "Problem",
+  "@problem": {
+    "description": "Problem section label"
+  },
+  "progress": "Progress",
+  "@progress": {
+    "description": "Progress section header"
+  },
+  "navigate": "Navigate",
+  "@navigate": {
+    "description": "Navigate button"
+  },
+  "startDriving": "Start Driving",
+  "@startDriving": {
+    "description": "Start driving button"
+  },
+  "statusUpdatedToDriving": "Status updated to Driving",
+  "@statusUpdatedToDriving": {
+    "description": "Status update success message"
+  },
+  "markArrived": "Mark Arrived",
+  "@markArrived": {
+    "description": "Mark arrived button"
+  },
+  "statusUpdatedToArrived": "Status updated to Arrived",
+  "@statusUpdatedToArrived": {
+    "description": "Status update success message"
+  },
+  "startWorking": "Start Working",
+  "@startWorking": {
+    "description": "Start working button"
+  },
+  "statusUpdatedToWorking": "Status updated to Working",
+  "@statusUpdatedToWorking": {
+    "description": "Status update success message"
+  },
+  "finishJob": "Finish Job",
+  "@finishJob": {
+    "description": "Finish job button and screen title"
+  },
+  "jobNotFoundTitle": "Job Not Found",
+  "@jobNotFoundTitle": {
+    "description": "Job not found screen title"
+  },
+  "errorPrefixTitle": "Error: {error}",
+  "@errorPrefixTitle": {
+    "description": "Error display",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "serviceSummary": "Service Summary",
+  "@serviceSummary": {
+    "description": "Finish job summary card title"
+  },
+  "serviceNotes": "Service Notes",
+  "@serviceNotes": {
+    "description": "Service notes section header"
+  },
+  "describeWorkDone": "Describe the work done...",
+  "@describeWorkDone": {
+    "description": "Service notes hint"
+  },
+  "totalAmount": "Total Amount",
+  "@totalAmount": {
+    "description": "Total amount section header"
+  },
+  "enterTotalAmount": "Enter total amount",
+  "@enterTotalAmount": {
+    "description": "Amount field hint"
+  },
+  "submitting": "Submitting...",
+  "@submitting": {
+    "description": "Loading state for submit button"
+  },
+  "pleaseEnterServiceNotes": "Please enter service notes",
+  "@pleaseEnterServiceNotes": {
+    "description": "Notes validation error"
+  },
+  "pleaseEnterTotalAmount": "Please enter total amount",
+  "@pleaseEnterTotalAmount": {
+    "description": "Amount validation error"
+  },
+  "pleaseEnterValidAmount": "Please enter a valid amount",
+  "@pleaseEnterValidAmount": {
+    "description": "Amount format validation error"
+  },
+  "jobFinishedSuccessfully": "Job finished successfully",
+  "@jobFinishedSuccessfully": {
+    "description": "Job finish success message"
+  },
+  "failedToFinishJob": "Failed to finish job: {error}",
+  "@failedToFinishJob": {
+    "description": "Job finish error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "noIncomingRequests": "No Incoming Requests",
+  "@noIncomingRequests": {
+    "description": "Empty incoming requests title"
+  },
+  "noIncomingRequestsMessage": "New service requests will appear here in real-time.",
+  "@noIncomingRequestsMessage": {
+    "description": "Empty incoming requests description"
+  },
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Refresh button"
+  },
+  "loadingRequests": "Loading requests...",
+  "@loadingRequests": {
+    "description": "Requests loading message"
+  },
+  "failedToLoadRequests": "Failed to load requests: {error}",
+  "@failedToLoadRequests": {
+    "description": "Requests load error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "requestAccepted": "Request accepted",
+  "@requestAccepted": {
+    "description": "Accept success message"
+  },
+  "failedToAccept": "Failed to accept: {error}",
+  "@failedToAccept": {
+    "description": "Accept error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "requestRejected": "Request rejected",
+  "@requestRejected": {
+    "description": "Reject success message"
+  },
+  "reject": "Reject",
+  "@reject": {
+    "description": "Reject button"
+  },
+  "accept": "Accept",
+  "@accept": {
+    "description": "Accept button"
+  },
+  "newRequest": "New Request",
+  "@newRequest": {
+    "description": "New request label"
+  },
+  "justNow": "Just now",
+  "@justNow": {
+    "description": "Time label for less than 1 minute ago"
+  },
+  "minutesAgo": "{count}m ago",
+  "@minutesAgo": {
+    "description": "Time label for minutes ago",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{count}h ago",
+  "@hoursAgo": {
+    "description": "Time label for hours ago",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "noCompletedJobs": "No Completed Jobs",
+  "@noCompletedJobs": {
+    "description": "Empty completed jobs title"
+  },
+  "noCompletedJobsMessage": "Your finished jobs will appear here once completed.",
+  "@noCompletedJobsMessage": {
+    "description": "Empty completed jobs description"
+  },
+  "viewActiveJobs": "View Active Jobs",
+  "@viewActiveJobs": {
+    "description": "View active jobs button"
+  },
+  "loadingJobs": "Loading jobs...",
+  "@loadingJobs": {
+    "description": "Jobs loading message"
+  },
+  "failedToLoadJobs": "Failed to load jobs: {error}",
+  "@failedToLoadJobs": {
+    "description": "Jobs load error",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "totalEarned": "Total Earned",
+  "@totalEarned": {
+    "description": "Total earned label"
+  },
+
+  "somethingWentWrong": "Something went wrong",
+  "@somethingWentWrong": {
+    "description": "Generic error title"
+  },
+  "tryAgain": "Try Again",
+  "@tryAgain": {
+    "description": "Retry button"
+  },
+
+  "invalidMapData": "Invalid map data.",
+  "@invalidMapData": {
+    "description": "Invalid map data error"
+  },
+  "invalidPaymentData": "Invalid payment data.",
+  "@invalidPaymentData": {
+    "description": "Invalid payment data error"
+  },
+  "invalidServiceRequestData": "Invalid service request data.",
+  "@invalidServiceRequestData": {
+    "description": "Invalid service request data error"
+  },
+  "invalidLiveStatusData": "Invalid live status data.",
+  "@invalidLiveStatusData": {
+    "description": "Invalid live status data error"
+  },
+  "invalidFinishJobData": "Invalid finish job data.",
+  "@invalidFinishJobData": {
+    "description": "Invalid finish job data error"
+  },
+
+  "applicationFailedToStart": "Application failed to start.\n\n{error}",
+  "@applicationFailedToStart": {
+    "description": "App bootstrap failure message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "language": "Language",
+  "@language": {
+    "description": "Language setting label"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language name"
+  },
+  "arabic": "Arabic",
+  "@arabic": {
+    "description": "Arabic language name"
+  },
+
+  "onTheWay": "On The Way",
+  "@onTheWay": {
+    "description": "Driving status label"
+  },
+  "arrived": "Arrived",
+  "@arrived": {
+    "description": "Arrived status label"
+  },
+  "working": "Working",
+  "@working": {
+    "description": "Working status label"
+  }
+}
