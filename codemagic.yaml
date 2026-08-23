@@ -1,6 +1,14 @@
+# Codemagic CI for Lakhsly iOS.
+#
+# CURRENT STATE: unsigned verification build only (no Apple Developer
+# Program subscription yet). When you subscribe later, restore:
+#   1. groups: signing (+ app_store_connect once ASC keys exist)
+#   2. the certificate-import + signed-export scripts (see git history,
+#      commit 7318a71 for the previous full version)
+#   3. the app_store_connect publishing block
 workflows:
   ios-release:
-    name: Build & Deploy Lakhsly (App Store / TestFlight)
+    name: Build Lakhsly iOS (unsigned)
     instance_type: mac_mini_m2
     max_build_duration: 60
     environment:
@@ -8,8 +16,6 @@ workflows:
       xcode: latest
       groups:
         - app_secrets
-        - signing
-        - app_store_connect
     scripts:
       - name: Setup Mapbox token
         script: |
@@ -47,64 +53,22 @@ workflows:
             exit 1
           fi
 
-      - name: Import signing certificate
-        script: |
-          KEYCHAIN="$CM_BUILD_DIR/signing.keychain-db"
-          security create-keychain -p "" "$KEYCHAIN"
-          security set-keychain-settings -lut 21600 "$KEYCHAIN"
-          security unlock-keychain -p "" "$KEYCHAIN"
-          echo "$SIGNING_CERTIFICATE_P12" | base64 --decode > /tmp/cert.p12
-          security import /tmp/cert.p12 \
-            -k "$KEYCHAIN" \
-            -P "$SIGNING_CERTIFICATE_P12_PASSWORD" \
-            -T /usr/bin/codesign \
-            -T /usr/bin/security
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" "$KEYCHAIN"
-          security list-keychain -d user -s "$KEYCHAIN"
+      # Unsigned verification build — proves the code compiles and links
+      # against all native pods without needing any Apple credentials.
+      - name: Build iOS App (unsigned)
+        script: flutter build ios --release --no-codesign
 
-          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print :UUID" /dev/stdin <<< "$(security cms -D -i ota/profile.mobileprovision)")
-          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-          cp ota/profile.mobileprovision "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
-          echo "PROFILE_UUID=$PROFILE_UUID" >> $CM_ENV
-
-      - name: Build signed IPA
+      - name: Package unsigned IPA
         script: |
-          cat > /tmp/ExportOptions.plist <<EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-          	<key>method</key>
-          	<string>ad-hoc</string>
-          	<key>teamID</key>
-          	<string>4Z7V3V3G9R</string>
-          	<key>uploadSymbols</key>
-          	<true/>
-          	<key>compileBitcode</key>
-          	<false/>
-          	<key>provisioningProfiles</key>
-          	<dict>
-          		<key>com.anaranar.lkhsly</key>
-          		<string>\$PROFILE_UUID</string>
-          	</dict>
-          </dict>
-          </plist>
-          EOF
-          flutter build ipa --release --export-options-plist=/tmp/ExportOptions.plist
+          cd build/ios
+          mkdir -p ipa Payload
+          cp -r iphoneos/Runner.app Payload/
+          zip -qr ipa/lakhsly-unsigned.ipa Payload
 
     artifacts:
       - build/ios/ipa/*.ipa
-      - build/ios/**/*.dSYM
 
     publishing:
       email:
         recipients:
           - abdelrahmansoliman101@gmail.com
-      app_store_connect:
-        # APP_STORE_CONNECT_API_KEY must contain the full contents of the
-        # .p8 private key (-----BEGIN PRIVATE KEY----- ... -----END PRIVATE
-        # KEY-----), not the key file name.
-        api_key: $APP_STORE_CONNECT_API_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
-        submit_to_app_store: false
