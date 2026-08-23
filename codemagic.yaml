@@ -101,5 +101,10 @@ workflows:
         recipients:
           - abdelrahmansoliman101@gmail.com
       app_store_connect:
+        # APP_STORE_CONNECT_API_KEY must contain the full contents of the
+        # .p8 private key (-----BEGIN PRIVATE KEY----- ... -----END PRIVATE
+        # KEY-----), not the key file name.
         api_key: $APP_STORE_CONNECT_API_KEY
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
         submit_to_app_store: false
