@@ -64,3 +64,7 @@ signing/
 # OTA webhook worker
 webhook/node_modules/
 webhook/.dev.vars*
+
+# intl_utils byproducts (unused; app uses l10n/app_localizations*.dart)
+lib/generated/
+lib/l10n/intl_en.arb

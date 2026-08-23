@@ -120,7 +120,7 @@ class AppOrderCard extends StatelessWidget {
                             ),
                           ),
                           const Spacer(),
-                          ?trailing,
+                          if (trailing != null) trailing!,
                         ],
                       ),
                     ],

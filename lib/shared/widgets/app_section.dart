@@ -61,7 +61,7 @@ class AppSection extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                ?action,
+                if (action != null) action!,
               ],
             ),
           if (title != null || action != null) SizedBox(height: spacing),

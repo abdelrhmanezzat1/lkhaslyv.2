@@ -733,4 +733,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get working => 'قيد العمل';
+
+  @override
+  String get notificationsTitle => 'الإشعارات';
+
+  @override
+  String get notificationsEmpty => 'لا توجد إشعارات بعد';
+
+  @override
+  String get markAllAsRead => 'تحديد الكل كمقروء';
 }

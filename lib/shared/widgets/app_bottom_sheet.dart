@@ -137,7 +137,7 @@ class AppBottomSheet extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                    ?action,
+                    if (action != null) action!,
                   ],
                 ),
               ),

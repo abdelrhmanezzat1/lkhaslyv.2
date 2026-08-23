@@ -250,5 +250,18 @@
 
   "onTheWay": "في الطريق",
   "arrived": "وصل",
-  "working": "قيد العمل"
+  "working": "قيد العمل",
+
+  "notificationsTitle": "الإشعارات",
+  "@notificationsTitle": {
+    "description": "Notification center screen title"
+  },
+  "notificationsEmpty": "لا توجد إشعارات بعد",
+  "@notificationsEmpty": {
+    "description": "Empty state for the notification center"
+  },
+  "markAllAsRead": "تحديد الكل كمقروء",
+  "@markAllAsRead": {
+    "description": "Mark all notifications read button tooltip"
+  }
 }

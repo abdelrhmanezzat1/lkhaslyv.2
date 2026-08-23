@@ -25,8 +25,8 @@ class CarsRepositoryImpl implements CarsRepository {
       'car_type': carType,
       'car_model': carModel,
       'plate_number': plateNumber,
-      'car_year': ?carYear,
-      'color': ?color,
+      if (carYear != null) 'car_year': carYear,
+      if (color != null) 'color': color,
       'created_at': DateTime.now().toIso8601String(),
     };
 

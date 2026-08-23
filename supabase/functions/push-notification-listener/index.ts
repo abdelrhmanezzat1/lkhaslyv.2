@@ -89,6 +89,19 @@ serve(async (req: Request) => {
 
     const result = await sendToTokensWithRetry(tokens, payload)
 
+    // Persist an inbox row per target user so the app's notification
+    // center can show history. Best-effort: never fail the push because
+    // of inbox persistence.
+    try {
+      let userIdsToPersist: string[] = payload.userIds ?? []
+      if (userIdsToPersist.length === 0 && payload.role) {
+        userIdsToPersist = await resolveUserIdsByRole(supabaseClient, payload.role)
+      }
+      await persistNotifications(supabaseClient, userIdsToPersist, payload)
+    } catch (persistError) {
+      console.error('Failed to persist notifications inbox:', persistError)
+    }
+
     return new Response(
       JSON.stringify({
         success: result.failed === 0,
@@ -470,4 +483,51 @@ function getChannelId(type: string): string {
     'new_nearby_order',
   ]
   return criticalTypes.includes(type) ? 'high_importance_channel' : 'default_channel'
+}
+
+async function resolveUserIdsByRole(
+  supabaseClient: ReturnType<typeof createClient>,
+  role: 'client' | 'technician' | 'all'
+): Promise<string[]> {
+  let query = supabaseClient.from('profiles').select('id')
+  if (role !== 'all') {
+    query = query.eq('role', role)
+  }
+  const { data, error } = await query
+  if (error) {
+    console.error('Error resolving user ids by role:', error)
+    return []
+  }
+  return (data as Array<{ id: string }>).map((row) => row.id)
+}
+
+async function persistNotifications(
+  supabaseClient: ReturnType<typeof createClient>,
+  userIds: string[],
+  payload: NotificationPayload
+): Promise<void> {
+  if (!userIds || userIds.length === 0) return
+
+  const rows = userIds.map((userId) => ({
+    user_id: userId,
+    type: payload.type,
+    title: payload.title,
+    body: payload.body,
+    data: {
+      ...(payload.data ?? {}),
+      ...(payload.deepLink ? { deep_link: payload.deepLink } : {}),
+    },
+  }))
+
+  // Insert in chunks to stay within request size limits.
+  const chunkSize = 500
+  for (let i = 0; i < rows.length; i += chunkSize) {
+    const { error } = await supabaseClient
+      .from('notifications')
+      .insert(rows.slice(i, i + chunkSize))
+    if (error) {
+      console.error('Error inserting notifications rows:', error)
+      throw new Error('Failed to persist notifications')
+    }
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_application_1/features/auth/domain/repositories/auth_rep
 import 'package:flutter_application_1/features/auth/domain/usecases/register_user_use_case.dart';
 import 'package:flutter_application_1/features/cars/domain/repositories/cars_repository.dart';
 import 'package:flutter_application_1/features/mechanical/domain/repositories/mechanical_catalog_repository.dart';
+import 'package:flutter_application_1/features/notifications/domain/repositories/notifications_repository.dart';
 import 'package:flutter_application_1/features/orders/domain/repositories/orders_repository.dart';
 import 'package:flutter_application_1/features/orders/domain/usecases/accept_order_use_case.dart';
 import 'package:flutter_application_1/features/orders/domain/usecases/pay_order_use_case.dart';
@@ -61,6 +62,10 @@ final technicianRepositoryProvider = Provider<TechnicianRepository>((ref) {
 final technicianLocationRepositoryProvider =
     Provider<TechnicianLocationRepository>((ref) {
   return ref.watch(serviceLocatorProvider)<TechnicianLocationRepository>();
+});
+
+final notificationsRepositoryProvider = Provider<NotificationsRepository>((ref) {
+  return ref.watch(serviceLocatorProvider)<NotificationsRepository>();
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

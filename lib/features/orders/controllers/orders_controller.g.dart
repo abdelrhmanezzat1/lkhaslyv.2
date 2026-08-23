@@ -56,15 +56,21 @@ class ClientOrdersForUserFamily extends Family<AsyncValue<List<Order>>> {
   /// shape instead of the imperative `loadClientOrders(...)` calls.
   ///
   /// Copied from [clientOrdersForUser].
-  ClientOrdersForUserProvider call(String clientId) {
-    return ClientOrdersForUserProvider(clientId);
+  ClientOrdersForUserProvider call(
+    String clientId,
+  ) {
+    return ClientOrdersForUserProvider(
+      clientId,
+    );
   }
 
   @override
   ClientOrdersForUserProvider getProviderOverride(
     covariant ClientOrdersForUserProvider provider,
   ) {
-    return call(provider.clientId);
+    return call(
+      provider.clientId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -94,19 +100,24 @@ class ClientOrdersForUserProvider
   /// shape instead of the imperative `loadClientOrders(...)` calls.
   ///
   /// Copied from [clientOrdersForUser].
-  ClientOrdersForUserProvider(String clientId)
-    : this._internal(
-        (ref) => clientOrdersForUser(ref as ClientOrdersForUserRef, clientId),
-        from: clientOrdersForUserProvider,
-        name: r'clientOrdersForUserProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$clientOrdersForUserHash,
-        dependencies: ClientOrdersForUserFamily._dependencies,
-        allTransitiveDependencies:
-            ClientOrdersForUserFamily._allTransitiveDependencies,
-        clientId: clientId,
-      );
+  ClientOrdersForUserProvider(
+    String clientId,
+  ) : this._internal(
+          (ref) => clientOrdersForUser(
+            ref as ClientOrdersForUserRef,
+            clientId,
+          ),
+          from: clientOrdersForUserProvider,
+          name: r'clientOrdersForUserProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$clientOrdersForUserHash,
+          dependencies: ClientOrdersForUserFamily._dependencies,
+          allTransitiveDependencies:
+              ClientOrdersForUserFamily._allTransitiveDependencies,
+          clientId: clientId,
+        );
 
   ClientOrdersForUserProvider._internal(
     super._createNotifier, {
@@ -157,8 +168,6 @@ class ClientOrdersForUserProvider
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
 mixin ClientOrdersForUserRef on AutoDisposeFutureProviderRef<List<Order>> {
   /// The parameter `clientId` of this provider.
   String get clientId;
@@ -181,33 +190,31 @@ String _$pendingOrdersFeedHash() => r'e67187f7a6f42bb5baefd2cbc1de7212bd5463d5';
 @ProviderFor(pendingOrdersFeed)
 final pendingOrdersFeedProvider =
     AutoDisposeFutureProvider<List<Order>>.internal(
-      pendingOrdersFeed,
-      name: r'pendingOrdersFeedProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$pendingOrdersFeedHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  pendingOrdersFeed,
+  name: r'pendingOrdersFeedProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$pendingOrdersFeedHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
 typedef PendingOrdersFeedRef = AutoDisposeFutureProviderRef<List<Order>>;
-String _$ordersControllerHash() => r'68b448b483195656f08f16f2ab380a3814915d05';
+String _$ordersControllerHash() => r'592e88293aee955e812c731cb47aecff306c211b';
 
 /// See also [OrdersController].
 @ProviderFor(OrdersController)
 final ordersControllerProvider =
     AutoDisposeAsyncNotifierProvider<OrdersController, List<Order>>.internal(
-      OrdersController.new,
-      name: r'ordersControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$ordersControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  OrdersController.new,
+  name: r'ordersControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$ordersControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$OrdersController = AutoDisposeAsyncNotifier<List<Order>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

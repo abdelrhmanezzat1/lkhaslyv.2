@@ -24,6 +24,8 @@ import 'package:flutter_application_1/features/orders/presentation/order_trackin
 import 'package:flutter_application_1/features/orders/presentation/orders_screen.dart';
 import 'package:flutter_application_1/features/orders/presentation/payment_screen.dart';
 import 'package:flutter_application_1/features/orders/presentation/service_request_screen.dart';
+import 'package:flutter_application_1/features/notifications/presentation/notifications_screen.dart'
+    as notifications_screen;
 import 'package:flutter_application_1/features/splash/presentation/splash_screen.dart';
 import 'package:flutter_application_1/features/technician/presentation/accepted_request_detail_screen.dart';
 import 'package:flutter_application_1/features/technician/presentation/accepted_request_screen.dart';
@@ -197,6 +199,11 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: AppRoutes.orders,
         builder: (context, state) => const OrdersScreen(),
+      ),
+      // Notification center route
+      GoRoute(
+        path: AppRoutes.notifications,
+        builder: (context, state) => const notifications_screen.NotificationsScreen(),
       ),
       // Order tracking route
       GoRoute(

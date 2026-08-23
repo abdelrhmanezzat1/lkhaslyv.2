@@ -59,15 +59,21 @@ class ProfileByIdFamily extends Family<AsyncValue<UserProfile?>> {
   /// from `initState`.
   ///
   /// Copied from [profileById].
-  ProfileByIdProvider call(String userId) {
-    return ProfileByIdProvider(userId);
+  ProfileByIdProvider call(
+    String userId,
+  ) {
+    return ProfileByIdProvider(
+      userId,
+    );
   }
 
   @override
   ProfileByIdProvider getProviderOverride(
     covariant ProfileByIdProvider provider,
   ) {
-    return call(provider.userId);
+    return call(
+      provider.userId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -98,18 +104,24 @@ class ProfileByIdProvider extends AutoDisposeFutureProvider<UserProfile?> {
   /// from `initState`.
   ///
   /// Copied from [profileById].
-  ProfileByIdProvider(String userId)
-    : this._internal(
-        (ref) => profileById(ref as ProfileByIdRef, userId),
-        from: profileByIdProvider,
-        name: r'profileByIdProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$profileByIdHash,
-        dependencies: ProfileByIdFamily._dependencies,
-        allTransitiveDependencies: ProfileByIdFamily._allTransitiveDependencies,
-        userId: userId,
-      );
+  ProfileByIdProvider(
+    String userId,
+  ) : this._internal(
+          (ref) => profileById(
+            ref as ProfileByIdRef,
+            userId,
+          ),
+          from: profileByIdProvider,
+          name: r'profileByIdProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$profileByIdHash,
+          dependencies: ProfileByIdFamily._dependencies,
+          allTransitiveDependencies:
+              ProfileByIdFamily._allTransitiveDependencies,
+          userId: userId,
+        );
 
   ProfileByIdProvider._internal(
     super._createNotifier, {
@@ -160,16 +172,13 @@ class ProfileByIdProvider extends AutoDisposeFutureProvider<UserProfile?> {
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
 mixin ProfileByIdRef on AutoDisposeFutureProviderRef<UserProfile?> {
   /// The parameter `userId` of this provider.
   String get userId;
 }
 
 class _ProfileByIdProviderElement
-    extends AutoDisposeFutureProviderElement<UserProfile?>
-    with ProfileByIdRef {
+    extends AutoDisposeFutureProviderElement<UserProfile?> with ProfileByIdRef {
   _ProfileByIdProviderElement(super.provider);
 
   @override
@@ -182,15 +191,15 @@ String _$profileControllerHash() => r'ca7da2ed708d77cf2300da12f649c9a58a6ec8d9';
 @ProviderFor(ProfileController)
 final profileControllerProvider =
     AutoDisposeAsyncNotifierProvider<ProfileController, UserProfile?>.internal(
-      ProfileController.new,
-      name: r'profileControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$profileControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  ProfileController.new,
+  name: r'profileControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$profileControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$ProfileController = AutoDisposeAsyncNotifier<UserProfile?>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

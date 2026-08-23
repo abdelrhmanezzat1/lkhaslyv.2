@@ -3,6 +3,7 @@ import 'package:flutter_application_1/core/router/app_routes.dart';
 import 'package:flutter_application_1/core/theme/app_spacing.dart';
 import 'package:flutter_application_1/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_application_1/features/home/presentation/widgets/home_greeting_bar.dart';
+import 'package:flutter_application_1/features/notifications/controllers/notifications_controller.dart';
 import 'package:flutter_application_1/shared/widgets/app_card.dart';
 import 'package:flutter_application_1/shared/widgets/app_language_switcher.dart';
 import 'package:flutter_application_1/shared/widgets/app_loader.dart';
@@ -30,6 +31,7 @@ class HomeScreen extends ConsumerWidget {
 
     final authControllerState = ref.watch(authControllerProvider);
     final isLoggingOut = authControllerState is AsyncLoading;
+    final unreadCount = ref.watch(unreadNotificationsCountProvider).value ?? 0;
 
     final serviceCategories = [
       _ServiceCategory(
@@ -118,12 +120,13 @@ class HomeScreen extends ConsumerWidget {
                       onAvatarTap: () {
                         context.push(AppRoutes.profile);
                       },
-                      hasUnreadNotifications: true,
-                      onNotificationTap: () {
-                        AppSnackbar.showSuccess(
-                          context,
-                          message: 'Notifications coming soon.',
-                        );
+                      hasUnreadNotifications: unreadCount > 0,
+                      onNotificationTap: () async {
+                        await context.push(AppRoutes.notifications);
+                        // Refresh the badge when coming back.
+                        ref
+                            .read(unreadNotificationsCountProvider.notifier)
+                            .refresh();
                       },
                     ),
                   ),

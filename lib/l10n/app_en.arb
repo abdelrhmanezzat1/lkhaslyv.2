@@ -1028,5 +1028,18 @@
   "working": "Working",
   "@working": {
     "description": "Working status label"
+  },
+
+  "notificationsTitle": "Notifications",
+  "@notificationsTitle": {
+    "description": "Notification center screen title"
+  },
+  "notificationsEmpty": "No notifications yet",
+  "@notificationsEmpty": {
+    "description": "Empty state for the notification center"
+  },
+  "markAllAsRead": "Mark all as read",
+  "@markAllAsRead": {
+    "description": "Mark all notifications read button tooltip"
   }
 }

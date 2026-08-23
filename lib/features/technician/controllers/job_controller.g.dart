@@ -33,7 +33,9 @@ abstract class _$JobController
     extends BuildlessAutoDisposeAsyncNotifier<TechnicianRequest?> {
   late final String requestId;
 
-  FutureOr<TechnicianRequest?> build(String requestId);
+  FutureOr<TechnicianRequest?> build(
+    String requestId,
+  );
 }
 
 /// Controller for managing active job status.
@@ -54,15 +56,21 @@ class JobControllerFamily extends Family<AsyncValue<TechnicianRequest?>> {
   /// Controller for managing active job status.
   ///
   /// Copied from [JobController].
-  JobControllerProvider call(String requestId) {
-    return JobControllerProvider(requestId);
+  JobControllerProvider call(
+    String requestId,
+  ) {
+    return JobControllerProvider(
+      requestId,
+    );
   }
 
   @override
   JobControllerProvider getProviderOverride(
     covariant JobControllerProvider provider,
   ) {
-    return call(provider.requestId);
+    return call(
+      provider.requestId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -83,28 +91,26 @@ class JobControllerFamily extends Family<AsyncValue<TechnicianRequest?>> {
 /// Controller for managing active job status.
 ///
 /// Copied from [JobController].
-class JobControllerProvider
-    extends
-        AutoDisposeAsyncNotifierProviderImpl<
-          JobController,
-          TechnicianRequest?
-        > {
+class JobControllerProvider extends AutoDisposeAsyncNotifierProviderImpl<
+    JobController, TechnicianRequest?> {
   /// Controller for managing active job status.
   ///
   /// Copied from [JobController].
-  JobControllerProvider(String requestId)
-    : this._internal(
-        () => JobController()..requestId = requestId,
-        from: jobControllerProvider,
-        name: r'jobControllerProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$jobControllerHash,
-        dependencies: JobControllerFamily._dependencies,
-        allTransitiveDependencies:
-            JobControllerFamily._allTransitiveDependencies,
-        requestId: requestId,
-      );
+  JobControllerProvider(
+    String requestId,
+  ) : this._internal(
+          () => JobController()..requestId = requestId,
+          from: jobControllerProvider,
+          name: r'jobControllerProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$jobControllerHash,
+          dependencies: JobControllerFamily._dependencies,
+          allTransitiveDependencies:
+              JobControllerFamily._allTransitiveDependencies,
+          requestId: requestId,
+        );
 
   JobControllerProvider._internal(
     super._createNotifier, {
@@ -122,7 +128,9 @@ class JobControllerProvider
   FutureOr<TechnicianRequest?> runNotifierBuild(
     covariant JobController notifier,
   ) {
-    return notifier.build(requestId);
+    return notifier.build(
+      requestId,
+    );
   }
 
   @override
@@ -143,7 +151,7 @@ class JobControllerProvider
 
   @override
   AutoDisposeAsyncNotifierProviderElement<JobController, TechnicianRequest?>
-  createElement() {
+      createElement() {
     return _JobControllerProviderElement(this);
   }
 
@@ -161,8 +169,6 @@ class JobControllerProvider
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
 mixin JobControllerRef
     on AutoDisposeAsyncNotifierProviderRef<TechnicianRequest?> {
   /// The parameter `requestId` of this provider.
@@ -170,17 +176,12 @@ mixin JobControllerRef
 }
 
 class _JobControllerProviderElement
-    extends
-        AutoDisposeAsyncNotifierProviderElement<
-          JobController,
-          TechnicianRequest?
-        >
-    with JobControllerRef {
+    extends AutoDisposeAsyncNotifierProviderElement<JobController,
+        TechnicianRequest?> with JobControllerRef {
   _JobControllerProviderElement(super.provider);
 
   @override
   String get requestId => (origin as JobControllerProvider).requestId;
 }
-
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

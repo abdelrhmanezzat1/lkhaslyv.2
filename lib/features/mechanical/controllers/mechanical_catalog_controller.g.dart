@@ -33,7 +33,7 @@ class _SystemHash {
 /// Resolves the mechanical issues applicable to [car] from the catalog.
 ///
 /// Matching is BRAND + MODEL ONLY (case-insensitive, trimmed) — the car's
-/// year is never used. Returns a no-match result ([hasMatch] = false, empty
+/// year is never used. Returns a no-match result (hasMatch = false, empty
 /// issue list) when the catalog has no entry for the car's brand+model;
 /// callers then fall back to the free-text description field.
 ///
@@ -44,7 +44,7 @@ const mechanicalIssuesForCarProvider = MechanicalIssuesForCarFamily();
 /// Resolves the mechanical issues applicable to [car] from the catalog.
 ///
 /// Matching is BRAND + MODEL ONLY (case-insensitive, trimmed) — the car's
-/// year is never used. Returns a no-match result ([hasMatch] = false, empty
+/// year is never used. Returns a no-match result (hasMatch = false, empty
 /// issue list) when the catalog has no entry for the car's brand+model;
 /// callers then fall back to the free-text description field.
 ///
@@ -54,7 +54,7 @@ class MechanicalIssuesForCarFamily
   /// Resolves the mechanical issues applicable to [car] from the catalog.
   ///
   /// Matching is BRAND + MODEL ONLY (case-insensitive, trimmed) — the car's
-  /// year is never used. Returns a no-match result ([hasMatch] = false, empty
+  /// year is never used. Returns a no-match result (hasMatch = false, empty
   /// issue list) when the catalog has no entry for the car's brand+model;
   /// callers then fall back to the free-text description field.
   ///
@@ -64,20 +64,26 @@ class MechanicalIssuesForCarFamily
   /// Resolves the mechanical issues applicable to [car] from the catalog.
   ///
   /// Matching is BRAND + MODEL ONLY (case-insensitive, trimmed) — the car's
-  /// year is never used. Returns a no-match result ([hasMatch] = false, empty
+  /// year is never used. Returns a no-match result (hasMatch = false, empty
   /// issue list) when the catalog has no entry for the car's brand+model;
   /// callers then fall back to the free-text description field.
   ///
   /// Copied from [mechanicalIssuesForCar].
-  MechanicalIssuesForCarProvider call(Car car) {
-    return MechanicalIssuesForCarProvider(car);
+  MechanicalIssuesForCarProvider call(
+    Car car,
+  ) {
+    return MechanicalIssuesForCarProvider(
+      car,
+    );
   }
 
   @override
   MechanicalIssuesForCarProvider getProviderOverride(
     covariant MechanicalIssuesForCarProvider provider,
   ) {
-    return call(provider.car);
+    return call(
+      provider.car,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -98,7 +104,7 @@ class MechanicalIssuesForCarFamily
 /// Resolves the mechanical issues applicable to [car] from the catalog.
 ///
 /// Matching is BRAND + MODEL ONLY (case-insensitive, trimmed) — the car's
-/// year is never used. Returns a no-match result ([hasMatch] = false, empty
+/// year is never used. Returns a no-match result (hasMatch = false, empty
 /// issue list) when the catalog has no entry for the car's brand+model;
 /// callers then fall back to the free-text description field.
 ///
@@ -108,24 +114,29 @@ class MechanicalIssuesForCarProvider
   /// Resolves the mechanical issues applicable to [car] from the catalog.
   ///
   /// Matching is BRAND + MODEL ONLY (case-insensitive, trimmed) — the car's
-  /// year is never used. Returns a no-match result ([hasMatch] = false, empty
+  /// year is never used. Returns a no-match result (hasMatch = false, empty
   /// issue list) when the catalog has no entry for the car's brand+model;
   /// callers then fall back to the free-text description field.
   ///
   /// Copied from [mechanicalIssuesForCar].
-  MechanicalIssuesForCarProvider(Car car)
-    : this._internal(
-        (ref) => mechanicalIssuesForCar(ref as MechanicalIssuesForCarRef, car),
-        from: mechanicalIssuesForCarProvider,
-        name: r'mechanicalIssuesForCarProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$mechanicalIssuesForCarHash,
-        dependencies: MechanicalIssuesForCarFamily._dependencies,
-        allTransitiveDependencies:
-            MechanicalIssuesForCarFamily._allTransitiveDependencies,
-        car: car,
-      );
+  MechanicalIssuesForCarProvider(
+    Car car,
+  ) : this._internal(
+          (ref) => mechanicalIssuesForCar(
+            ref as MechanicalIssuesForCarRef,
+            car,
+          ),
+          from: mechanicalIssuesForCarProvider,
+          name: r'mechanicalIssuesForCarProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$mechanicalIssuesForCarHash,
+          dependencies: MechanicalIssuesForCarFamily._dependencies,
+          allTransitiveDependencies:
+              MechanicalIssuesForCarFamily._allTransitiveDependencies,
+          car: car,
+        );
 
   MechanicalIssuesForCarProvider._internal(
     super._createNotifier, {
@@ -142,9 +153,8 @@ class MechanicalIssuesForCarProvider
   @override
   Override overrideWith(
     FutureOr<MechanicalIssuesResult> Function(
-      MechanicalIssuesForCarRef provider,
-    )
-    create,
+            MechanicalIssuesForCarRef provider)
+        create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -179,8 +189,6 @@ class MechanicalIssuesForCarProvider
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
 mixin MechanicalIssuesForCarRef
     on AutoDisposeFutureProviderRef<MechanicalIssuesResult> {
   /// The parameter `car` of this provider.
@@ -195,6 +203,5 @@ class _MechanicalIssuesForCarProviderElement
   @override
   Car get car => (origin as MechanicalIssuesForCarProvider).car;
 }
-
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

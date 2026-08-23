@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,25 +20,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  FlutterError.onError = (FlutterErrorDetails details) {
-    FlutterError.presentError(details);
-
-    // TODO:
-    // FirebaseCrashlytics.instance.recordFlutterFatalError(details);
-    // أو Sentry.captureException(...)
-  };
-
-  PlatformDispatcher.instance.onError = (error, stack) {
-    debugPrint(error.toString());
-    debugPrint(stack.toString());
-
-    // TODO:
-    // FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-
-    return true;
-  };
-
-  try {
+  // Crash handlers are installed in `_bootstrap` right after
+  // Firebase.initializeApp (Crashlytics requires a live Firebase app).
+  FlutterError.onError = _logFlutterError;
+  PlatformDispatcher.instance.onError = _logPlatformError;  try {
     await _bootstrap();
   } catch (e, stack) {
     debugPrint('BOOTSTRAP FAILED');
@@ -63,6 +49,18 @@ Future<void> main() async {
       ),
     );
   }
+}
+
+/// Pre-Firebase fallback: log to the console until `_bootstrap` swaps in
+/// the Crashlytics-aware handlers.
+void _logFlutterError(FlutterErrorDetails details) {
+  FlutterError.presentError(details);
+}
+
+bool _logPlatformError(Object error, StackTrace stack) {
+  debugPrint(error.toString());
+  debugPrint(stack.toString());
+  return true;
 }
 
 Future<void> _bootstrap() async {
@@ -91,6 +89,21 @@ Future<void> _bootstrap() async {
     );
   }
   debugLogFirebaseApps('main._bootstrap AFTER Firebase.initializeApp()');
+
+  // Route errors to Firebase Crashlytics now that a Firebase app is live.
+  // Web is skipped (Crashlytics has no web support); bootstrap failures
+  // before this point keep the debugPrint-only handlers from `main()`.
+  if (!kIsWeb) {
+    FlutterError.onError = (FlutterErrorDetails details) {
+      _logFlutterError(details);
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+    };
+    PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+      final bool handled = _logPlatformError(error, stack);
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return handled;
+    };
+  }
 
   // Set background message handler (no-op on web — service worker handles it)
   if (!kIsWeb) {
@@ -132,8 +145,7 @@ Future<void> _bootstrap() async {
 }
 
 /// Subscribe to role-based topics when user is authenticated
-void _subscribeToRoleTopics() {
-  final authState = Supabase.instance.client.auth.currentUser;
+void _subscribeToRoleTopics() {  final authState = Supabase.instance.client.auth.currentUser;
   if (authState != null) {
     final userType =
         authState.userMetadata?['user_type'] as String? ?? 'client';

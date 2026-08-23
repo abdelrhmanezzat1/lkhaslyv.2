@@ -59,15 +59,21 @@ class CarsForUserFamily extends Family<AsyncValue<List<Car>>> {
   /// loads called from `initState`.
   ///
   /// Copied from [carsForUser].
-  CarsForUserProvider call(String userId) {
-    return CarsForUserProvider(userId);
+  CarsForUserProvider call(
+    String userId,
+  ) {
+    return CarsForUserProvider(
+      userId,
+    );
   }
 
   @override
   CarsForUserProvider getProviderOverride(
     covariant CarsForUserProvider provider,
   ) {
-    return call(provider.userId);
+    return call(
+      provider.userId,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -98,18 +104,24 @@ class CarsForUserProvider extends AutoDisposeFutureProvider<List<Car>> {
   /// loads called from `initState`.
   ///
   /// Copied from [carsForUser].
-  CarsForUserProvider(String userId)
-    : this._internal(
-        (ref) => carsForUser(ref as CarsForUserRef, userId),
-        from: carsForUserProvider,
-        name: r'carsForUserProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$carsForUserHash,
-        dependencies: CarsForUserFamily._dependencies,
-        allTransitiveDependencies: CarsForUserFamily._allTransitiveDependencies,
-        userId: userId,
-      );
+  CarsForUserProvider(
+    String userId,
+  ) : this._internal(
+          (ref) => carsForUser(
+            ref as CarsForUserRef,
+            userId,
+          ),
+          from: carsForUserProvider,
+          name: r'carsForUserProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$carsForUserHash,
+          dependencies: CarsForUserFamily._dependencies,
+          allTransitiveDependencies:
+              CarsForUserFamily._allTransitiveDependencies,
+          userId: userId,
+        );
 
   CarsForUserProvider._internal(
     super._createNotifier, {
@@ -160,23 +172,20 @@ class CarsForUserProvider extends AutoDisposeFutureProvider<List<Car>> {
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
 mixin CarsForUserRef on AutoDisposeFutureProviderRef<List<Car>> {
   /// The parameter `userId` of this provider.
   String get userId;
 }
 
 class _CarsForUserProviderElement
-    extends AutoDisposeFutureProviderElement<List<Car>>
-    with CarsForUserRef {
+    extends AutoDisposeFutureProviderElement<List<Car>> with CarsForUserRef {
   _CarsForUserProviderElement(super.provider);
 
   @override
   String get userId => (origin as CarsForUserProvider).userId;
 }
 
-String _$carsControllerHash() => r'025a08a6cb7863fa80bd867d39a25c2baa577b4f';
+String _$carsControllerHash() => r'0a754a400ec70ca11fb1b4ef7d163b3c9479c249';
 
 /// Controller for the Cars feature.
 ///
@@ -189,15 +198,15 @@ String _$carsControllerHash() => r'025a08a6cb7863fa80bd867d39a25c2baa577b4f';
 @ProviderFor(CarsController)
 final carsControllerProvider =
     AutoDisposeAsyncNotifierProvider<CarsController, List<Car>>.internal(
-      CarsController.new,
-      name: r'carsControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$carsControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  CarsController.new,
+  name: r'carsControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$carsControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$CarsController = AutoDisposeAsyncNotifier<List<Car>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

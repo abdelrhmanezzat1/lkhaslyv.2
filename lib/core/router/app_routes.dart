@@ -18,6 +18,7 @@ class AppRoutes {
   static const String map = '/map';
   static const String serviceRequest = '/service-request';
   static const String orders = '/orders';
+  static const String notifications = '/notifications';
   static const String payment = '/payment';
   static const String technicianHome = '/technician-home';
   static const String incomingRequests = '/technician/incoming';
