@@ -21,6 +21,9 @@ const headers = (token) => ({
   Authorization: `Bearer ${token}`,
   Accept: ACCEPT,
   "X-GitHub-Api-Version": API_VERSION,
+  // GitHub's REST API 403s any request without a User-Agent, and workerd
+  // does not add one to outbound fetches.
+  "User-Agent": "lakhsly-ota-webhook",
 });
 
 const JSON_HEADERS = {
@@ -32,7 +35,7 @@ const JSON_HEADERS = {
 
 const DEVICE_PATH = (env) => `${env.REPO ? `${env.REPO}/` : ""}${env.DEVICES_PATH || "ota/devices.json"}`;
 
-function json(res, code, body) {
+function json(body, code = 200) {
   return new Response(JSON.stringify(body, null, 2), { status: code, headers: JSON_HEADERS });
 }
 
@@ -247,6 +250,7 @@ export default {
 
       return json({ error: "Not found" }, 404);
     } catch (e) {
+      console.error("request failed:", path, e);
       return json({ error: String(e && e.message ? e.message : e) }, 500);
     }
   },
