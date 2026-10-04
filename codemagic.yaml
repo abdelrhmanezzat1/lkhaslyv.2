@@ -24,6 +24,7 @@ workflows:
       groups:
         - app_secrets
         - signing
+        - ci
     scripts:
       - name: Setup Mapbox token
         script: |
@@ -136,6 +137,46 @@ workflows:
           if ls build/ios/ipa/*.ipa >/dev/null 2>&1; then
             cp "$(ls build/ios/ipa/*.ipa | head -n 1)" build/ios/ipa/lakhsly.ipa
           fi
+
+      - name: Publish OTA site
+        script: |
+          set -euo pipefail
+          IPA="$CM_BUILD_DIR/build/ios/ipa/lakhsly.ipa"
+          if [ "${SIGNED:-false}" != "true" ] || [ ! -f "$IPA" ]; then
+            echo "Unsigned build or no IPA - skipping OTA publish."
+            exit 0
+          fi
+          if [ -z "${GH_PAT:-}" ]; then
+            echo "GH_PAT missing (variable group 'ci') - skipping OTA publish."
+            exit 0
+          fi
+          REPO="abdelrhmanezzat1/lkhaslyv.2"
+          AUTH=$(printf 'x-access-token:%s' "$GH_PAT" | base64 | tr -d '\n')
+          rm -rf "$CM_BUILD_DIR/gh-pages"
+          git -c http.extraHeader="Authorization: Basic $AUTH" \
+            clone --depth 1 -b gh-pages "https://github.com/$REPO.git" "$CM_BUILD_DIR/gh-pages"
+          cp "$IPA" "$CM_BUILD_DIR/gh-pages/lakhsly.ipa"
+          git -C "$CM_BUILD_DIR/gh-pages" config user.name ota-bot
+          git -C "$CM_BUILD_DIR/gh-pages" config user.email ota-bot@users.noreply.github.com
+          git -C "$CM_BUILD_DIR/gh-pages" add lakhsly.ipa
+          if git -C "$CM_BUILD_DIR/gh-pages" diff --cached --quiet; then
+            echo "gh-pages already has this IPA."
+          else
+            git -C "$CM_BUILD_DIR/gh-pages" commit -m "ota: publish Codemagic build $CM_BUILD_ID"
+            git -c http.extraHeader="Authorization: Basic $AUTH" \
+              -C "$CM_BUILD_DIR/gh-pages" push origin gh-pages
+          fi
+          cat > "$CM_BUILD_DIR/dispatch.json" <<JSON
+          {"ref":"main","inputs":{"version":"","ipa_url":"https://raw.githubusercontent.com/$REPO/gh-pages/lakhsly.ipa"}}
+          JSON
+          curl -fsS -X POST \
+            -H "Authorization: Bearer $GH_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            --data-binary @"$CM_BUILD_DIR/dispatch.json" \
+            "https://api.github.com/repos/$REPO/actions/workflows/ota-deploy.yml/dispatches"
+          echo "OTA deploy dispatched."
 
     artifacts:
       - build/ios/ipa/*.ipa
