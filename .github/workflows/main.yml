@@ -9,14 +9,7 @@ name: Build macOS App
 
 # ---- متى يشتغل الـ Workflow؟ ----
 on:
-  push:
-    branches:
-      - main          # اشتغل لما تعمل push على branch الـ main
-      - develop       # أو على branch الـ develop
-  pull_request:
-    branches:
-      - main          # أو لما تفتح Pull Request على main
-  workflow_dispatch:  # أو تشغيله يدوي من GitHub
+  workflow_dispatch:  # manual only - runs on every push burned macOS minutes and failed
 
 # =====================================================
 #  الـ Jobs — الشغل الحقيقي بيحصل هنا
