@@ -7,6 +7,10 @@ on:
         description: 'App version to report (leave empty to read from IPA)'
         required: false
         default: ''
+      ipa_url:
+        description: 'Direct URL to the signed IPA (leave empty to use latest lakhsly-ios-signed artifact)'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -29,16 +33,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download latest signed IPA artifact
+      - name: Download signed IPA (URL input or latest artifact)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IPA_URL: ${{ inputs.ipa_url }}
         run: |
           set -euo pipefail
           mkdir -p ipa
-          ART_ID=$(gh api "repos/abdelrhmanezzat1/lkhaslyv.2/actions/artifacts?name=lakhsly-ios-signed&per_page=1" --jq '.artifacts[0].id')
-          gh api "repos/abdelrhmanezzat1/lkhaslyv.2/actions/artifacts/$ART_ID/zip" > "$RUNNER_TEMP/signed.zip"
-          python -c "import zipfile,sys; zipfile.ZipFile(sys.argv[1]).extractall('ipa')" "$RUNNER_TEMP/signed.zip"
-          test -f ipa/lakhsly.ipa || { echo "::error::no lakhsly.ipa found in artifact"; exit 1; }
+          if [ -n "${IPA_URL:-}" ]; then
+            echo "Downloading IPA from input URL."
+            curl -fsSL -o ipa/lakhsly.ipa "$IPA_URL"
+          else
+            ART_ID=$(gh api "repos/abdelrhmanezzat1/lkhaslyv.2/actions/artifacts?name=lakhsly-ios-signed&per_page=1" --jq '.artifacts[0].id')
+            gh api "repos/abdelrhmanezzat1/lkhaslyv.2/actions/artifacts/$ART_ID/zip" > "$RUNNER_TEMP/signed.zip"
+            python -c "import zipfile,sys; zipfile.ZipFile(sys.argv[1]).extractall('ipa')" "$RUNNER_TEMP/signed.zip"
+          fi
+          test -f ipa/lakhsly.ipa || { echo "::error::no lakhsly.ipa found"; exit 1; }
 
       - name: Generate OTA site
         env:

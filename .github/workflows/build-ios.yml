@@ -1,10 +1,9 @@
 name: Build iOS IPA (Signed + OTA)
 
+# Fallback builder: Codemagic (codemagic.yaml) is the primary signed pipeline,
+# so this workflow only runs on manual dispatch. It still publishes the OTA
+# site, so dispatch `ota-deploy.yml` after a Codemagic build instead.
 on:
-  push:
-    branches:
-      - main
-      - master
   workflow_dispatch:
 
 # A single build should never stack up: newest push wins, and no run may
