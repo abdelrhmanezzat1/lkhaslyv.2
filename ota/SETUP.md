@@ -1,5 +1,13 @@
 # Lakhsly OTA - one-time setup (you do these steps)
 
+> **⚠️ SUPERSEDED 2026-10-16 — historical reference only.**
+> The signing assets, team, bundle ID, and device flow described below refer to
+> the OLD setup (`export_anar`, team `4Z7V3V3G9R`, bundle `com.anaranar.lkhsly`,
+> profile `ota/profile.mobileprovision` which expires 2026-10-29). None of the
+> old certificates, profiles, or UDIDs are used by future builds.
+> Current state and cutover steps: see `IOS_SIGNING_MIGRATION_PLAN.md`.
+> New bundle ID: `app.jujube1760.cassava8287` (team `9FTBM39AHP`).
+
 This folder is the whole self-service install pipeline:
 
 - `devices.json` - registry of registered UDIDs (cap 15). The webhook appends here.
@@ -9,6 +17,26 @@ This folder is the whole self-service install pipeline:
   profile; it writes new devices into `devices.json` via the GitHub API.
 
 Do the steps below **once**, in order. Everything after that is automatic.
+
+---
+
+## Current status and decisions (2026-10-05)
+
+- **Primary build = Codemagic** (`codemagic.yaml`, workflow `ios-release`): produces the
+  signed Ad Hoc IPA, pushes it to `gh-pages`, and dispatches `ota-deploy.yml` to publish
+  the install page. All GitHub workflows (`build-ios`, `build-android`, `main`,
+  `ota-deploy`) are **manual dispatch only** — pushes do not start builds.
+- **OTA is serving 3 devices** that are already inside `ota/profile.mobileprovision`.
+- **Personal device (iPhone 16, UDID `00008130-000A1C5A1043401C`)** is registered in the
+  Apple Developer Portal but **not** in the current profile, so OTA/Diawi installs fail
+  with *"Unable to Install - integrity could not be verified"*. **Decision: test this
+  device locally via Xcode** (automatic signing handles it). It is intentionally not being
+  added to the Ad Hoc profile.
+- **Device registration + profile regeneration is deferred** until the next tester joins.
+  Then: give the new UDID → update the profile in Apple Developer Portal (or via the ASC
+  API if `ASC_P8` / `ASC_KEY_ID` / `ASC_ISSUER_ID` are provided — currently **not**
+  configured) → export the updated `ota/profile.mobileprovision` → trigger a Codemagic
+  build.
 
 ---
 

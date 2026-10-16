@@ -45,6 +45,11 @@ app.*.map.json
 /android/app/release
 /android/build/
 
+# Android signing keystore + credentials - NEVER commit (repo is public)
+/android/key.properties
+/android/upload-keystore.jks
+*.jks
+
 .env
 
 # iOS signing material - NEVER commit (repo is public)
@@ -58,8 +63,11 @@ signing/
 *.mobileprovision
 *.certSigningRequest
 
-# ...except the Ad Hoc profile shared for OTA builds (public cert/UDIDs only, no private key)
-!ota/profile.mobileprovision
+# ...except the NEW DxSign Ad Hoc profile shared for CI builds (public cert + 1 UDID, no private key)
+!00008130-000A1C5A1043401C/*.mobileprovision
+
+# DxSign package password file - NEVER commit (plaintext password)
+00008130-000A1C5A1043401C/readme.txt
 
 # OTA webhook worker
 webhook/node_modules/
@@ -68,3 +76,6 @@ webhook/.dev.vars*
 # intl_utils byproducts (unused; app uses l10n/app_localizations*.dart)
 lib/generated/
 lib/l10n/intl_en.arb
+
+# Quarantined unrelated signing artifacts (moved out of build inputs, never commit)
+_quarantine/

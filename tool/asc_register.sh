@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 #
+# *** OBSOLETE (2026-10-16) - DO NOT RUN ***
+# This script regenerates the OLD Ad Hoc profile ota/profile.mobileprovision
+# (export_anar, team 4Z7V3V3G9R, bundle com.anaranar.*). All old signing assets
+# are excluded from future builds (see IOS_SIGNING_MIGRATION_PLAN.md).
+# The CI job that invoked it is disabled (if: false in .github/workflows/build-ios.yml).
+# Kept only as reference for a future rewrite targeting the new team.
+#
 # Registers devices from ota/devices.json with Apple (App Store Connect API)
 # and regenerates ota/profile.mobileprovision (Ad Hoc, bundle com.anaranar.*).
 #
