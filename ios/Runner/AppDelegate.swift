@@ -8,9 +8,6 @@ import UserNotifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    // 1. تسجيل جميع بلحينات Flutter تلقائياً
-    GeneratedPluginRegistrant.register(with: self)
-    
     // 2. تعيين تفويض الإشعارات بأمان بدون طلب APNs المباشر
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self
